@@ -1,3 +1,4 @@
 .envrc
 gcp-sa.json
+deployer-sa.json
 cmd/migration
