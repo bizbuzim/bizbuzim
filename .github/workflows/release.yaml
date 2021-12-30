@@ -17,20 +17,21 @@ jobs:
         go-version: '^1.17'
     - name: Calculate Next Release Version
       run: |
-        echo ${{ secrets.GITHUB_TOKEN }} > token
-        gh auth login --with-token < token
-        go install github.com/davidrjonas/semver-cli@latest
-        commit=$(git log --format="%H" -n 1)
-        last_pr=$(gh api -X GET search/issues -f q="repo:olegsu/bizbuzim is:closed is:pr sort:created-desc $commit" --jq '.items[0].number')
-        if  [[ $last_pr = ""  ]]; then echo "No pull request found" && exit 1; fi;
+        # echo ${{ secrets.GITHUB_TOKEN }} > token
+        # gh auth login --with-token < token
+        # go install github.com/davidrjonas/semver-cli@latest
+        # commit=$(git log --format="%H" -n 1)
+        # last_pr=$(gh api -X GET search/issues -f q="repo:olegsu/bizbuzim is:closed is:pr sort:created-desc $commit" --jq '.items[0].number')
+        # if  [[ $last_pr = ""  ]]; then echo "No pull request found" && exit 1; fi;
         
-        bump=$(gh pr view $last_pr --json labels --jq '.labels | map(select(.name | contains("release")) | .name) | .[0]' | sed s/release-//g)
-        if ! [[ "$bump" =~ ^(minor|patch|major) ]]; then echo "Not a release commit" && exit 1; fi;        
-        echo $bump > bump.txt
-        cat bump.txt
+        # bump=$(gh pr view $last_pr --json labels --jq '.labels | map(select(.name | contains("release")) | .name) | .[0]' | sed s/release-//g)
+        # if ! [[ "$bump" =~ ^(minor|patch|major) ]]; then echo "Not a release commit" && exit 1; fi;        
+        # echo $bump > bump.txt
+        # cat bump.txt
         
-        current=$(gh release list | awk '{print $1}' | awk 'NR==1' | sed s/v//g)
-        semver-cli inc $bump $current > next_version
+        # current=$(gh release list | awk '{print $1}' | awk 'NR==1' | sed s/v//g)
+        # semver-cli inc $bump $current > next_version
+        echo "0.0.2" > next_version
         echo "next version: $(cat next_version)"
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
@@ -40,7 +41,9 @@ jobs:
       with:
         credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
     - name: Build
-      run: docker build -t $(cat docker-repository.txt):$(cat next_version) .
+      run: |
+        gcloud auth list
+        docker build -t $(cat docker-repository.txt):$(cat next_version) .
     - name: Push
       run: |
         gcloud auth configure-docker us-central1-docker.pkg.dev
