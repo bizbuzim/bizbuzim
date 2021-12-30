@@ -17,8 +17,9 @@ func main() {
 	client, err := db.New(
 		db.WithContext(context.Background()),
 		db.WithProject(fatal.GetEnv("PROJECT_ID")),
-		db.WithCredentials([]byte(fatal.GetEnv("FIRESTORE_SA_B64"))),
+		db.WithCredentials(fatal.DecodeB64(fatal.GetEnv("FIRESTORE_SA_B64"))),
 	)
+	dieOnError(err, "failed to connect to database")
 
 	bot, err := tgbotapi.NewBotAPI(fatal.GetEnv("TELEGRAM_BOT_TOKEN"))
 	dieOnError(err, "failed to authenticated")

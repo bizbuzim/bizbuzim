@@ -1,6 +1,7 @@
 package fatal
 
 import (
+	b64 "encoding/base64"
 	"errors"
 	"fmt"
 	"os"
@@ -14,6 +15,12 @@ func GetEnv(key string) string {
 		DieOnError(errEnvNotFound, v)
 	}
 	return v
+}
+
+func DecodeB64(enc string) []byte {
+	res, err := b64.StdEncoding.DecodeString(enc)
+	DieOnError(err, "failed to decode string")
+	return res
 }
 
 func DieOnError(err error, msg string) {
