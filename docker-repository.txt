@@ -1,0 +1,1 @@
+us-central1-docker.pkg.dev/bizbuzim-c552c/bizbuzim/server
