@@ -40,7 +40,9 @@ jobs:
       with:
         credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
     - name: Build
-      run: docker build -t $(cat docker-repository.txt):$(cat next_version) .
+      run: |
+        gcloud auth list
+        docker build -t $(cat docker-repository.txt):$(cat next_version) .
     - name: Push
       run: |
         gcloud auth configure-docker us-central1-docker.pkg.dev
