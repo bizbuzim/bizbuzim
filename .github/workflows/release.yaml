@@ -24,7 +24,7 @@ jobs:
         if  [[ $last_pr = ""  ]]; then echo "No pull request found" && exit 1; fi;
         
         bump=$(gh pr view $last_pr --json labels --jq '.labels | map(select(.name | contains("release")) | .name) | .[0]' | sed s/release-//g)
-        if ! [[ "$bump" =~ ^(release-minor|release-patch|release-major) ]]; then echo "Not a release commit" && exit 1; fi;        
+        if ! [[ "$bump" =~ ^(minor|patch|major) ]]; then echo "Not a release commit" && exit 1; fi;        
         echo $bump > bump.txt
         cat bump.txt
         
