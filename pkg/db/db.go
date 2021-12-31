@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"time"
 
@@ -11,6 +12,13 @@ import (
 	"google.golang.org/api/option"
 )
 
+const (
+	DBDriverFirestore = "firestore"
+	DBDriverMemory    = "memory"
+)
+
+var errDriverNotSupported = errors.New("driver not supported")
+
 type (
 	DB struct {
 		project     string
@@ -18,6 +26,7 @@ type (
 		client      *firestore.Client
 		fb          *firebase.App
 		ctx         context.Context
+		driver      string
 	}
 
 	Option func(d *DB)
@@ -43,20 +52,28 @@ func New(opts ...Option) (*DB, error) {
 		o(d)
 	}
 
-	conf := &firebase.Config{ProjectID: d.project}
-	creds := option.WithCredentialsJSON(d.credentials)
-	app, err := firebase.NewApp(d.ctx, conf, creds)
-	if err != nil {
-		return nil, fmt.Errorf("failed to authenticate with firebase: %w", err)
+	if d.driver == DBDriverMemory {
+		return d, nil
 	}
 
-	d.fb = app
-	client, err := app.Firestore(d.ctx)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create firestore client: %w", err)
+	if d.driver == DBDriverFirestore {
+		conf := &firebase.Config{ProjectID: d.project}
+		creds := option.WithCredentialsJSON(d.credentials)
+		app, err := firebase.NewApp(d.ctx, conf, creds)
+		if err != nil {
+			return nil, fmt.Errorf("failed to authenticate with firebase: %w", err)
+		}
+
+		d.fb = app
+		client, err := app.Firestore(d.ctx)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create firestore client: %w", err)
+		}
+		d.client = client
+
+		return d, nil
 	}
-	d.client = client
-	return d, nil
+	return nil, errDriverNotSupported
 }
 
 func WithContext(ctx context.Context) Option {
@@ -67,6 +84,7 @@ func WithContext(ctx context.Context) Option {
 func WithProject(project string) Option {
 	return func(d *DB) {
 		d.project = project
+		d.driver = DBDriverFirestore
 	}
 }
 func WithCredentials(credentials []byte) Option {
@@ -74,8 +92,16 @@ func WithCredentials(credentials []byte) Option {
 		d.credentials = credentials
 	}
 }
+func WithMemoryDB() Option {
+	return func(d *DB) {
+		d.driver = DBDriverFirestore
+	}
+}
 
 func (d *DB) Create(ctx context.Context, date time.Time, doc Document) (string, error) {
+	if !d.isFirestoreDriver() {
+		return "", nil
+	}
 	root := d.client.Collection(fmt.Sprintf("%d", date.Year()))
 	dref := root.Doc(date.Month().String())
 	data, err := doc.JSON()
@@ -88,6 +114,9 @@ func (d *DB) Create(ctx context.Context, date time.Time, doc Document) (string, 
 }
 
 func (d *DB) CreateRaw(ctx context.Context, date time.Time, doc RawDocument) (string, error) {
+	if !d.isFirestoreDriver() {
+		return "", nil
+	}
 	root := d.client.Collection(fmt.Sprintf("%d", date.Year()))
 	dref := root.Doc(date.Month().String())
 	data, err := doc.JSON()
@@ -101,6 +130,10 @@ func (d *DB) CreateRaw(ctx context.Context, date time.Time, doc RawDocument) (st
 
 func (d *DB) Close() error {
 	return d.client.Close()
+}
+
+func (d *DB) isFirestoreDriver() bool {
+	return d.driver == DBDriverFirestore
 }
 
 func (doc Document) JSON() (map[string]interface{}, error) {
