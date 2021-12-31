@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/brianvoe/gofakeit/v6"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/olegsu/bizbuzim/pkg/db"
 	"github.com/olegsu/go-tools/pkg/logger"
@@ -23,8 +24,21 @@ type (
 	}
 )
 
+var (
+	completed = []string{
+		"👍 Good job",
+		"😉 Your'e awesome",
+	}
+	partially = []string{
+		"🤭 Saved, you can finish it later.",
+	}
+	failed = []string{
+		"👎 Oh crap ... ",
+	}
+)
+
 func processNewExpenseMessage(ctx context.Context, lgr *logger.Logger, msg tgbotapi.Message, bot *tgbotapi.BotAPI, dal db.Dal) error {
-	var storeError error
+	replayMessage := strings.Builder{}
 	data, err := attemptToParseMessage(msg)
 	if err != nil {
 		lgr.Info("failed to parse messege, storing in raw table", "error", err.Error())
@@ -33,10 +47,12 @@ func processNewExpenseMessage(ctx context.Context, lgr *logger.Logger, msg tgbot
 			CreateAt: msg.Time(),
 		})
 		if err != nil {
-			lgr.Info("failed to add new record", "error", err.Error())
-			return err
+			replayMessage.WriteString(random(failed))
+			lgr.Info("failed to add new record to raw table", "error", err.Error())
+		} else {
+			replayMessage.WriteString(random(partially))
+			lgr.Info("saved", "id", id)
 		}
-		lgr.Info("saved", "id", id)
 	} else {
 		lgr.Info("storing in expenses table", "data", data)
 		id, err := dal.Create(ctx, msg.Time(), db.Document{
@@ -48,19 +64,15 @@ func processNewExpenseMessage(ctx context.Context, lgr *logger.Logger, msg tgbot
 			CreateAt:    data.Date,
 		})
 		if err != nil {
-			lgr.Info("failed to add new record", "error", err.Error())
-			return err
+			replayMessage.WriteString(random(failed))
+			lgr.Info("failed to add new record to expenses table", "error", err.Error())
+		} else {
+			replayMessage.WriteString(random(completed))
+			lgr.Info("saved", "id", id)
 		}
-		lgr.Info("saved", "id", id)
 	}
 
-	replayText := "👍 OK"
-	if storeError != nil {
-		lgr.Info("failed to add record to airtable", "error", storeError.Error())
-		replayText = "👎 Oh crap ... "
-	}
-
-	replay := tgbotapi.NewMessage(msg.Chat.ID, replayText)
+	replay := tgbotapi.NewMessage(msg.Chat.ID, replayMessage.String())
 	replay.ReplyToMessageID = msg.MessageID
 	bot.Send(replay)
 	return nil
@@ -109,4 +121,8 @@ func attemptToParseMessage(msg tgbotapi.Message) (*StructuredMessage, error) {
 		Date:        msg.Time(),
 		Price:       price,
 	}, nil
+}
+
+func random(arr []string) string {
+	return arr[gofakeit.Number(0, len(arr)-1)]
 }
