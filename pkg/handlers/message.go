@@ -31,6 +31,12 @@ func MessageHandler(lgr *logger.Logger, bot *tgbotapi.BotAPI, dal *db.DB) func(w
 
 func ProcessUpdate(ctx context.Context, lgr *logger.Logger, bot *tgbotapi.BotAPI, msg tgbotapi.Message, dal *db.DB) {
 	lgr.Info("processing message", "text", msg.Text)
+	if msg.Text == "/help" {
+		if err := help(ctx, lgr, msg, bot); err != nil {
+			lgr.Info("failed to process /help message")
+		}
+		return
+	}
 	if err := processNewExpenseMessage(ctx, lgr, msg, bot, dal); err != nil {
 		lgr.Info("failed to process message", "error", err.Error())
 	}
