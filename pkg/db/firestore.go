@@ -50,8 +50,8 @@ func (f *firestoreDal) Close() error {
 
 func newFirestoreDal(ctx context.Context, options options) (*firestoreDal, error) {
 	f := &firestoreDal{}
-	conf := &firebase.Config{ProjectID: f.project}
-	creds := option.WithCredentialsJSON(f.credentials)
+	conf := &firebase.Config{ProjectID: options.firestoreProject}
+	creds := option.WithCredentialsJSON(options.firestoreCredentials)
 	app, err := firebase.NewApp(ctx, conf, creds)
 	if err != nil {
 		return nil, fmt.Errorf("failed to authenticate with firebase: %w", err)
