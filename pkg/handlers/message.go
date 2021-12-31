@@ -39,7 +39,7 @@ func MessageHandler(lgr *logger.Logger, bot *tgbotapi.BotAPI, dal *db.DB) func(w
 			return
 		}
 		if update.Message != nil {
-			ProcessUpdate(r.Context(), lgr, bot, *update.Message, dal)
+			go ProcessUpdate(r.Context(), lgr, bot, *update.Message, dal)
 		}
 	}
 }
