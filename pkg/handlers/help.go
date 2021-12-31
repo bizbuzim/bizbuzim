@@ -22,6 +22,9 @@ To add new expense just send me a message in format:
 
 💬 Commands I support:
 /help - show this message
+/uncompleted - show all the expenses that I was not able to process
+/complete <ID> - compelte uncompleted expense
+/expenses - show all todays expenses
 `
 
 func help(ctx context.Context, lgr *logger.Logger, msg tgbotapi.Message, bot *tgbotapi.BotAPI) error {
