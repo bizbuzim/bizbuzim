@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/olegsu/bizbuzim/pkg/db"
@@ -34,6 +35,27 @@ func ProcessUpdate(ctx context.Context, lgr *logger.Logger, bot *tgbotapi.BotAPI
 	if msg.Text == "/help" {
 		if err := help(ctx, lgr, msg, bot); err != nil {
 			lgr.Info("failed to process /help message")
+		}
+		return
+	}
+
+	if msg.Text == "/uncompleted" {
+		if err := uncompleted(ctx, lgr, msg, bot); err != nil {
+			lgr.Info("failed to process /uncompleted message")
+		}
+		return
+	}
+
+	if msg.Text == "/expenses" {
+		if err := expenses(ctx, lgr, msg, bot); err != nil {
+			lgr.Info("failed to process /uncompleted message")
+		}
+		return
+	}
+
+	if strings.HasPrefix(msg.Text, "/complete") {
+		if err := complete(ctx, lgr, msg, bot); err != nil {
+			lgr.Info("failed to process /uncompleted message")
 		}
 		return
 	}
