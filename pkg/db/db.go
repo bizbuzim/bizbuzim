@@ -9,6 +9,7 @@ import (
 
 	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
+	"github.com/olegsu/go-tools/pkg/logger"
 	"google.golang.org/api/option"
 )
 
@@ -27,6 +28,7 @@ type (
 		fb          *firebase.App
 		ctx         context.Context
 		driver      string
+		lgr         *logger.Logger
 	}
 
 	Option func(d *DB)
@@ -47,7 +49,9 @@ type (
 )
 
 func New(opts ...Option) (*DB, error) {
-	d := &DB{}
+	d := &DB{
+		lgr: logger.New(logger.WithoutStd()),
+	}
 	for _, o := range opts {
 		o(d)
 	}
@@ -94,7 +98,12 @@ func WithCredentials(credentials []byte) Option {
 }
 func WithMemoryDB() Option {
 	return func(d *DB) {
-		d.driver = DBDriverFirestore
+		d.driver = DBDriverMemory
+	}
+}
+func WithLogger(lgr *logger.Logger) Option {
+	return func(d *DB) {
+		d.lgr = lgr
 	}
 }
 
