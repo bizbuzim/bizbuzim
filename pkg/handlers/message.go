@@ -39,12 +39,12 @@ func MessageHandler(lgr *logger.Logger, bot *tgbotapi.BotAPI, dal *db.DB) func(w
 			return
 		}
 		if update.Message != nil {
-			process(r.Context(), lgr, bot, *update.Message, dal)
+			ProcessUpdate(r.Context(), lgr, bot, *update.Message, dal)
 		}
 	}
 }
 
-func process(ctx context.Context, lgr *logger.Logger, bot *tgbotapi.BotAPI, msg tgbotapi.Message, dal *db.DB) {
+func ProcessUpdate(ctx context.Context, lgr *logger.Logger, bot *tgbotapi.BotAPI, msg tgbotapi.Message, dal *db.DB) {
 	lgr.Info("processing message", "text", msg.Text)
 
 	var storeError error
