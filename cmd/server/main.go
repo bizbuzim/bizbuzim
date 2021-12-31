@@ -17,19 +17,14 @@ func main() {
 
 	driver := os.Getenv("DATABASE_DRIVER")
 	opts := []db.Option{
-		db.WithContext(context.Background()),
 		db.WithLogger(lgr.Fork("component", "database", "driver", driver)),
 	}
 	if driver == db.DBDriverFirestore {
-		opts = append(opts, db.WithProject(fatal.GetEnv("PROJECT_ID")))
-		opts = append(opts, db.WithCredentials(fatal.DecodeB64(fatal.GetEnv("FIRESTORE_SA_B64"))))
+		opts = append(opts, db.WithFirestoreProject(fatal.GetEnv("PROJECT_ID")))
+		opts = append(opts, db.WithFirestoreCredentials(fatal.DecodeB64(fatal.GetEnv("FIRESTORE_SA_B64"))))
 	}
 
-	if driver == db.DBDriverMemory {
-		opts = append(opts, db.WithMemoryDB())
-	}
-
-	client, err := db.New(opts...)
+	client, err := db.New(context.Background(), driver, opts...)
 	dieOnError(err, "failed to connect to database")
 
 	bot, err := tgbotapi.NewBotAPI(fatal.GetEnv("TELEGRAM_BOT_TOKEN"))

@@ -23,7 +23,7 @@ type (
 	}
 )
 
-func processNewExpenseMessage(ctx context.Context, lgr *logger.Logger, msg tgbotapi.Message, bot *tgbotapi.BotAPI, dal *db.DB) error {
+func processNewExpenseMessage(ctx context.Context, lgr *logger.Logger, msg tgbotapi.Message, bot *tgbotapi.BotAPI, dal db.Dal) error {
 	var storeError error
 	data, err := attemptToParseMessage(msg)
 	if err != nil {

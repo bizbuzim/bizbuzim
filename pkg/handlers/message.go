@@ -10,7 +10,7 @@ import (
 	"github.com/olegsu/go-tools/pkg/logger"
 )
 
-func MessageHandler(lgr *logger.Logger, bot *tgbotapi.BotAPI, dal *db.DB) func(w http.ResponseWriter, r *http.Request) {
+func MessageHandler(lgr *logger.Logger, bot *tgbotapi.BotAPI, dal db.Dal) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		update, err := bot.HandleUpdate(r)
 		if err != nil {
@@ -29,7 +29,7 @@ func MessageHandler(lgr *logger.Logger, bot *tgbotapi.BotAPI, dal *db.DB) func(w
 	}
 }
 
-func ProcessUpdate(ctx context.Context, lgr *logger.Logger, bot *tgbotapi.BotAPI, msg tgbotapi.Message, dal *db.DB) {
+func ProcessUpdate(ctx context.Context, lgr *logger.Logger, bot *tgbotapi.BotAPI, msg tgbotapi.Message, dal db.Dal) {
 	lgr.Info("processing message", "text", msg.Text)
 	if msg.Text == "/help" {
 		if err := help(ctx, lgr, msg, bot); err != nil {
