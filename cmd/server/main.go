@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"net/http"
+	"os"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/olegsu/bizbuzim/pkg/db"
@@ -26,13 +27,27 @@ func main() {
 
 	lgr.Info("Authentication with Telegram completed", "user", bot.Self.UserName)
 
-	wh, err := tgbotapi.NewWebhook(fatal.GetEnv("TELEGRAM_BOT_WEBHOOK"))
-	dieOnError(err, "failed to create webhook")
+	hook := os.Getenv("TELEGRAM_BOT_WEBHOOK")
+	if hook == "" {
+		lgr.Info("Hook was not provided, starting bot with polling")
+		u := tgbotapi.NewUpdate(0)
+		u.Timeout = 60
+		updates := bot.GetUpdatesChan(u)
+		for u := range updates {
+			if u.Message == nil {
+				continue
+			}
+			go handlers.ProcessUpdate(context.Background(), lgr, bot, *u.Message, client)
+		}
+	} else {
+		wh, err := tgbotapi.NewWebhook(hook)
+		dieOnError(err, "failed to create webhook")
 
-	resp, err := bot.Request(wh)
-	dieOnError(err, "failed to register webhook")
-	lgr.Info("webhook registration completed", "description", resp.Description)
+		resp, err := bot.Request(wh)
+		dieOnError(err, "failed to register webhook")
+		lgr.Info("webhook registration completed", "description", resp.Description)
 
+	}
 	http.HandleFunc("/", handlers.MessageHandler(lgr, bot, client))
 	err = http.ListenAndServe(":8080", nil)
 	dieOnError(err, "failed to start server")
