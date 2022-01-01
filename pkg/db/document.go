@@ -14,18 +14,9 @@ type (
 		Description string    `json:"description"`
 		CreateAt    time.Time `json:"createdAt"`
 	}
-
-	RawDocument struct {
-		Text     string    `json:"text"`
-		CreateAt time.Time `json:"createdAt"`
-	}
 )
 
 func (doc Document) JSON() (map[string]interface{}, error) {
-	return toJson(doc)
-}
-
-func (doc RawDocument) JSON() (map[string]interface{}, error) {
 	return toJson(doc)
 }
 
