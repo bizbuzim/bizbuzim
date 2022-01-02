@@ -9,14 +9,15 @@ import (
 
 	"github.com/brianvoe/gofakeit/v6"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"github.com/olegsu/bizbuzim/pkg/db"
+	"github.com/google/uuid"
+	"github.com/olegsu/bizbuzim/pkg/dal"
 	"github.com/olegsu/go-tools/pkg/logger"
 )
 
 type (
 	StructuredMessage struct {
 		Name        string
-		Price       float64
+		Price       string
 		Categories  []string
 		Source      string
 		Description string
@@ -37,14 +38,21 @@ var (
 	}
 )
 
-func processNewExpenseMessage(ctx context.Context, lgr *logger.Logger, msg tgbotapi.Message, bot *tgbotapi.BotAPI, dal db.Dal) error {
+func processNewExpenseMessage(ctx context.Context, lgr *logger.Logger, msg tgbotapi.Message, bot *tgbotapi.BotAPI, queries *dal.Queries) error {
 	replayMessage := strings.Builder{}
 	data, err := attemptToParseMessage(msg)
+	id := uuid.Must(uuid.NewUUID())
+	user := ""
+	if msg.From != nil {
+		user = msg.From.String()
+	}
 	if err != nil {
 		lgr.Info("failed to parse messege, storing in raw table", "error", err.Error())
-		id, err := dal.CreateRaw(ctx, msg.Time(), db.RawDocument{
-			Text:     msg.Text,
-			CreateAt: msg.Time(),
+		err := queries.CreateRawExpense(ctx, dal.CreateRawExpenseParams{
+			ID:        id,
+			Text:      msg.Text,
+			CreatedAt: msg.Time(),
+			CreatedBy: user,
 		})
 		if err != nil {
 			replayMessage.WriteString(random(failed))
@@ -55,14 +63,17 @@ func processNewExpenseMessage(ctx context.Context, lgr *logger.Logger, msg tgbot
 		}
 	} else {
 		lgr.Info("storing in expenses table", "data", data)
-		id, err := dal.Create(ctx, msg.Time(), db.Document{
+		err := queries.CreateExpense(ctx, dal.CreateExpenseParams{
+			ID:          id,
 			Name:        data.Name,
+			Payment:     data.Source,
 			Price:       data.Price,
-			Categories:  data.Categories,
-			Source:      data.Source,
+			Tags:        data.Categories,
 			Description: data.Description,
-			CreateAt:    data.Date,
+			CreatedAt:   msg.Time(),
+			CreatedBy:   user,
 		})
+
 		if err != nil {
 			replayMessage.WriteString(random(failed))
 			lgr.Info("failed to add new record to expenses table", "error", err.Error())
@@ -90,7 +101,8 @@ func attemptToParseMessage(msg tgbotapi.Message) (*StructuredMessage, error) {
 
 	name := parts[0]
 
-	price, err := strconv.ParseFloat(strings.TrimSpace(parts[1]), 64)
+	price := strings.TrimSpace(parts[1])
+	_, err := strconv.ParseFloat(price, 64)
 	if err != nil {
 		return nil, err
 	}
