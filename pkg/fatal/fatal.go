@@ -29,9 +29,9 @@ func DieOnError(err error, msg string) {
 	}
 
 	if msg != "" {
-		fmt.Printf("[ERROR] %s: %s", err.Error(), msg)
+		fmt.Printf("[ERROR] %s: %s\n", err.Error(), msg)
 	} else {
-		fmt.Printf("[ERROR] %s", err.Error())
+		fmt.Printf("[ERROR] %s\n", err.Error())
 	}
 
 	os.Exit(1)
