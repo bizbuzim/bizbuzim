@@ -30,7 +30,10 @@ func (f *firestoreDal) Create(ctx context.Context, date time.Time, doc Document)
 	}
 	expenses := dref.Collection("expenses")
 	ref, _, err := expenses.Add(ctx, data)
-	return ref.ID, err
+	if err != nil {
+		return "", err
+	}
+	return ref.ID, nil
 }
 func (f *firestoreDal) CreateRaw(ctx context.Context, date time.Time, doc RawDocument) (string, error) {
 	root := f.client.Collection(fmt.Sprintf("%d", date.Year()))
@@ -41,7 +44,10 @@ func (f *firestoreDal) CreateRaw(ctx context.Context, date time.Time, doc RawDoc
 	}
 	expenses := dref.Collection("raw")
 	ref, _, err := expenses.Add(ctx, data)
-	return ref.ID, err
+	if err != nil {
+		return "", err
+	}
+	return ref.ID, nil
 }
 
 func (f *firestoreDal) Close() error {
