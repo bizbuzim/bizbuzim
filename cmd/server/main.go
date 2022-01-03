@@ -21,16 +21,30 @@ func main() {
 	lgr := logger.New()
 	lgr.Info("starting server")
 
-	host := fatal.GetEnv("POSTGRES_HOST")
 	user := fatal.GetEnv("POSTGRES_USER")
-	port := fatal.GetEnv("POSTGRES_PORT")
 	password := fatal.GetEnv("POSTGRES_PASSWORD")
 	dbname := fatal.GetEnv("POSTGRES_DATABASE")
-	connstr := fmt.Sprintf("host=%s port=%s user=%s "+
-		"password=%s dbname=%s sslmode=disable",
-		host, port, user, password, dbname)
-	lgr.Info("connecting to database", "host", host, "user", user, "port", port, "database", dbname)
-	db, err := sql.Open("postgres", connstr)
+
+	uri := ""
+	gcp := os.Getenv("INSTANCE_CONNECTION_NAME")
+	if gcp != "" {
+		lgr.Info("connecting to gcp sql server")
+		socketDir, isSet := os.LookupEnv("DB_SOCKET_DIR")
+		if !isSet {
+			lgr.Info("socket dir is not set")
+			socketDir = "/cloudsql"
+		}
+		uri = fmt.Sprintf("%s:%s@unix(/%s/%s)/%s?parseTime=true", user, password, socketDir, gcp, dbname)
+	} else {
+		lgr.Info("connecting to postgres directly")
+		host := fatal.GetEnv("POSTGRES_HOST")
+		port := fatal.GetEnv("POSTGRES_PORT")
+		uri = fmt.Sprintf("host=%s port=%s user=%s "+
+			"password=%s dbname=%s sslmode=disable",
+			host, port, user, password, dbname)
+	}
+
+	db, err := sql.Open("postgres", uri)
 	dieOnError(err, "failed to connect to db")
 
 	dieOnError(db.Ping(), "failed to ping to the database")
