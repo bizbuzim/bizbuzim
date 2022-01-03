@@ -34,7 +34,7 @@ func main() {
 			lgr.Info("socket dir is not set")
 			socketDir = "/cloudsql"
 		}
-		uri = fmt.Sprintf("%s:%s@unix(/%s/%s)/%s?parseTime=true", user, password, socketDir, gcp, dbname)
+		uri = fmt.Sprintf("user=%s password=%s database=%s host=%s/%s", user, password, dbname, socketDir, gcp)
 	} else {
 		lgr.Info("connecting to postgres directly")
 		host := fatal.GetEnv("POSTGRES_HOST")
