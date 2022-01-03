@@ -19,6 +19,7 @@ import (
 
 func main() {
 	lgr := logger.New()
+	lgr.Info("starting server")
 
 	host := fatal.GetEnv("POSTGRES_HOST")
 	user := fatal.GetEnv("POSTGRES_USER")
@@ -28,6 +29,7 @@ func main() {
 	connstr := fmt.Sprintf("host=%s port=%s user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
+	lgr.Info("connecting to database", "host", host, "user", user, "port", port, "database", dbname)
 	db, err := sql.Open("postgres", connstr)
 	dieOnError(err, "failed to connect to db")
 
