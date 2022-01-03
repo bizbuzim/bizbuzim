@@ -43,10 +43,10 @@ CREATE TABLE public.expenses (
     name character varying NOT NULL,
     payment character varying NOT NULL,
     price numeric NOT NULL,
-    tags text[],
+    tags text[] NOT NULL,
     description character varying DEFAULT ''::character varying NOT NULL,
-    "createdAt" timestamp without time zone DEFAULT now() NOT NULL,
-    "createdBy" character varying NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    created_by character varying NOT NULL
 );
 
 
@@ -59,8 +59,8 @@ ALTER TABLE public.expenses OWNER TO postgres;
 CREATE TABLE public.raw_expenses (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
     text text NOT NULL,
-    "createdAt" timestamp without time zone DEFAULT now() NOT NULL,
-    "createdBy" character varying NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    created_by character varying NOT NULL
 );
 
 
