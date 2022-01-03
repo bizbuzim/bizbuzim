@@ -6,7 +6,7 @@ new-migration:
 run-migrations: check-env
 	echo "Running migrations"
 	migrate -path db/migrations/ -database ${POSTGRESQL_URL} --verbose up
-	pg_dump --host=localhost -U postgres --port=5432 -d postgres -s > db/schema.sql
+	pg_dump --host=localhost -U postgres --port=5432 -d postgres -s -n public > db/schema.sql
 
 .PHONY: gen-code
 gen-code: check-env
