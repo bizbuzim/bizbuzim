@@ -17,7 +17,7 @@ import (
 type (
 	StructuredMessage struct {
 		Name        string
-		Price       string
+		Price       float64
 		Categories  []string
 		Source      string
 		Description string
@@ -38,7 +38,7 @@ var (
 	}
 )
 
-func processNewExpenseMessage(ctx context.Context, lgr *logger.Logger, msg tgbotapi.Message, bot *tgbotapi.BotAPI, queries *dal.Queries) error {
+func processNewExpenseMessage(ctx context.Context, lgr *logger.Logger, msg tgbotapi.Message, bot *tgbotapi.BotAPI, db dal.DB) error {
 	replayMessage := strings.Builder{}
 	data, err := attemptToParseMessage(msg)
 	id := uuid.Must(uuid.NewUUID())
@@ -48,13 +48,13 @@ func processNewExpenseMessage(ctx context.Context, lgr *logger.Logger, msg tgbot
 	}
 	if err != nil {
 		lgr.Info("failed to parse messege, storing in raw table", "error", err.Error())
-		err := queries.CreateRawExpense(ctx, dal.CreateRawExpenseParams{
+		raw := dal.RawExpense{
 			ID:        id,
 			Text:      msg.Text,
 			CreatedAt: msg.Time(),
 			CreatedBy: user,
-		})
-		if err != nil {
+		}
+		if err := raw.Insert(ctx, db); err != nil {
 			replayMessage.WriteString(random(failed))
 			lgr.Info("failed to add new record to raw table", "error", err.Error())
 		} else {
@@ -62,8 +62,7 @@ func processNewExpenseMessage(ctx context.Context, lgr *logger.Logger, msg tgbot
 			lgr.Info("saved", "id", id)
 		}
 	} else {
-		lgr.Info("storing in expenses table", "data", data)
-		err := queries.CreateExpense(ctx, dal.CreateExpenseParams{
+		expense := dal.Expense{
 			ID:          id,
 			Name:        data.Name,
 			Payment:     data.Source,
@@ -72,9 +71,9 @@ func processNewExpenseMessage(ctx context.Context, lgr *logger.Logger, msg tgbot
 			Description: data.Description,
 			CreatedAt:   msg.Time(),
 			CreatedBy:   user,
-		})
-
-		if err != nil {
+		}
+		lgr.Info("storing in expenses table", "data", data)
+		if err := expense.Insert(ctx, db); err != nil {
 			replayMessage.WriteString(random(failed))
 			lgr.Info("failed to add new record to expenses table", "error", err.Error())
 		} else {
@@ -101,8 +100,8 @@ func attemptToParseMessage(msg tgbotapi.Message) (*StructuredMessage, error) {
 
 	name := parts[0]
 
-	price := strings.TrimSpace(parts[1])
-	_, err := strconv.ParseFloat(price, 64)
+	p := strings.TrimSpace(parts[1])
+	price, err := strconv.ParseFloat(p, 64)
 	if err != nil {
 		return nil, err
 	}

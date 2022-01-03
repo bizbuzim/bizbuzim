@@ -11,7 +11,7 @@ import (
 	"github.com/olegsu/go-tools/pkg/logger"
 )
 
-func MessageHandler(lgr *logger.Logger, bot *tgbotapi.BotAPI, queries *dal.Queries) func(w http.ResponseWriter, r *http.Request) {
+func MessageHandler(lgr *logger.Logger, bot *tgbotapi.BotAPI, db dal.DB) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		update, err := bot.HandleUpdate(r)
 		if err != nil {
@@ -25,12 +25,12 @@ func MessageHandler(lgr *logger.Logger, bot *tgbotapi.BotAPI, queries *dal.Queri
 			return
 		}
 		if update.Message != nil {
-			go ProcessUpdate(context.Background(), lgr, bot, *update.Message, queries)
+			go ProcessUpdate(context.Background(), lgr, bot, *update.Message, db)
 		}
 	}
 }
 
-func ProcessUpdate(ctx context.Context, lgr *logger.Logger, bot *tgbotapi.BotAPI, msg tgbotapi.Message, queries *dal.Queries) {
+func ProcessUpdate(ctx context.Context, lgr *logger.Logger, bot *tgbotapi.BotAPI, msg tgbotapi.Message, db dal.DB) {
 	lgr.Info("processing message", "text", msg.Text, "user", msg.From.UserName, "channel", msg.Chat.Title)
 	if msg.Text == "/help" {
 		if err := help(ctx, lgr, msg, bot); err != nil {
@@ -59,7 +59,7 @@ func ProcessUpdate(ctx context.Context, lgr *logger.Logger, bot *tgbotapi.BotAPI
 		}
 		return
 	}
-	if err := processNewExpenseMessage(ctx, lgr, msg, bot, queries); err != nil {
+	if err := processNewExpenseMessage(ctx, lgr, msg, bot, db); err != nil {
 		lgr.Info("failed to process message", "error", err.Error())
 	}
 }
