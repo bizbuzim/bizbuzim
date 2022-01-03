@@ -11,8 +11,9 @@ run-migrations: check-env
 .PHONY: gen-code
 gen-code: check-env
 	rm db/query.sql
+	rm pkg/dal/*
 	for f in $(shell pwd)/db/queries/*.sql; do (cat "$$f"; echo "\n") >> db/query.sql; done;
-	sqlc generate -f sqlc.yaml
+	xo schema ${POSTGRESQL_URL} -o pkg/dal --go-pkg=dal
 
 check-env:
 ifndef POSTGRESQL_URL
