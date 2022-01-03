@@ -4,6 +4,7 @@
   * sqlc - https://docs.sqlc.dev/en/latest/tutorials/getting-started-postgresql.html
 
 * All table should be in plural
+* No camelCase columns, use snake_case
 
 
 * Flow
