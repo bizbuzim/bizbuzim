@@ -47,8 +47,9 @@ jobs:
       run: |
         gcloud auth configure-docker us-central1-docker.pkg.dev
         docker push $(cat docker-repository.txt):$(cat next_version)
-    - name: Update Cloud run
-      run: gcloud run services update server --region us-central1 --image $(cat docker-repository.txt):$(cat next_version)
     - name: Release
       run: gh release create v$(cat next_version)
+    - name: Update Cloud run
+      run: gcloud run services update server --region us-central1 --image $(cat docker-repository.txt):$(cat next_version)
+
 
