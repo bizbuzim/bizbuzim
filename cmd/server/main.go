@@ -2,30 +2,40 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"os"
 
+	"database/sql"
+
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"github.com/olegsu/bizbuzim/pkg/db"
+	"github.com/olegsu/bizbuzim/pkg/dal"
 	"github.com/olegsu/bizbuzim/pkg/fatal"
 	"github.com/olegsu/bizbuzim/pkg/handlers"
 	"github.com/olegsu/go-tools/pkg/logger"
+
+	_ "github.com/lib/pq"
 )
 
 func main() {
 	lgr := logger.New()
 
-	driver := os.Getenv("DATABASE_DRIVER")
-	opts := []db.Option{
-		db.WithLogger(lgr.Fork("component", "database", "driver", driver)),
-	}
-	if driver == db.DBDriverFirestore {
-		opts = append(opts, db.WithFirestoreProject(fatal.GetEnv("PROJECT_ID")))
-		opts = append(opts, db.WithFirestoreCredentials(fatal.DecodeB64(fatal.GetEnv("FIRESTORE_SA_B64"))))
-	}
+	host := fatal.GetEnv("POSTGRES_HOST")
+	user := fatal.GetEnv("POSTGRES_USER")
+	port := fatal.GetEnv("POSTGRES_PORT")
+	password := fatal.GetEnv("POSTGRES_PASSWORD")
+	dbname := fatal.GetEnv("POSTGRES_DATABASE")
+	connstr := fmt.Sprintf("host=%s port=%s user=%s "+
+		"password=%s dbname=%s sslmode=disable",
+		host, port, user, password, dbname)
+	db, err := sql.Open("postgres", connstr)
+	dieOnError(err, "failed to connect to db")
 
-	client, err := db.New(context.Background(), driver, opts...)
-	dieOnError(err, "failed to connect to database")
+	dieOnError(db.Ping(), "failed to ping to the database")
+
+	lgr.Info("connected to db")
+
+	queries := dal.New(db)
 
 	bot, err := tgbotapi.NewBotAPI(fatal.GetEnv("TELEGRAM_BOT_TOKEN"))
 	dieOnError(err, "failed to authenticated")
@@ -42,7 +52,7 @@ func main() {
 			if u.Message == nil {
 				continue
 			}
-			go handlers.ProcessUpdate(context.Background(), lgr, bot, *u.Message, client)
+			go handlers.ProcessUpdate(context.Background(), lgr, bot, *u.Message, queries)
 		}
 	} else {
 		wh, err := tgbotapi.NewWebhook(hook)
@@ -53,7 +63,7 @@ func main() {
 		lgr.Info("webhook registration completed", "description", resp.Description)
 
 	}
-	http.HandleFunc("/", handlers.MessageHandler(lgr, bot, client))
+	http.HandleFunc("/", handlers.MessageHandler(lgr, bot, queries))
 	err = http.ListenAndServe(":8080", nil)
 	dieOnError(err, "failed to start server")
 }
