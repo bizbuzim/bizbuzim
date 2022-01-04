@@ -23,6 +23,10 @@ gen-code: check-env
 		-i expenses \
 		-i raw_expenses
 
+.PHONY: hasura-setup
+hasura-setup:
+	hasura metadata apply
+
 check-env:
 ifndef POSTGRESQL_URL
 	$(error POSTGRESQL_URL is undefined)
