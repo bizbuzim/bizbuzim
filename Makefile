@@ -25,8 +25,16 @@ gen-code: check-env
 
 .PHONY: hasura-setup
 hasura-setup:
-	hasura metadata apply
+	hasura init --project hasura
+	hasura metadata apply \
+		--endpoint http://$(HASURA_HOST):$(HASURA_PORT) \
+		--skip-update-check \
+		--project hasura
 
+.PHONY: dev-setup
+dev-setup:
+	docker compose up -d
+	
 check-env:
 ifndef POSTGRESQL_URL
 	$(error POSTGRESQL_URL is undefined)
