@@ -2,3 +2,4 @@
 gcp-sa.json
 deployer-sa.json
 cmd/migration
+*/node_modules
