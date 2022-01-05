@@ -10,7 +10,7 @@ services:
     environment:
       POSTGRES_PASSWORD: postgrespassword
   graphile:
-    image: graphile/postgraphile
+    image: graphile/postgraphile:4
     ports:
       - "5000:5000"
     depends_on:
