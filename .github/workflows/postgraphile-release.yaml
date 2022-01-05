@@ -1,0 +1,24 @@
+name: release
+
+on: [workflow_dispatch]
+
+concurrency: server-release
+
+jobs:
+  postgraphile:
+    name: postgraphile
+    runs-on: "ubuntu-18.04"
+    steps:
+    - id: 'auth'
+      name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v0.4.0'
+      with:
+        credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
+    - name: Push
+      run: |
+        docker pull graphile/postgraphile:4
+        docker tag graphile/postgraphile:4 $(cat docker-repository.txt)/postgraphile:4
+        gcloud auth configure-docker us-central1-docker.pkg.dev
+        docker push $(cat docker-repository.txt)/postgraphile:4
+    - name: Update Cloud run
+      run: gcloud run services update postgraphile --region us-central1 --image graphile/postgraphile
