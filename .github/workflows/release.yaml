@@ -42,14 +42,12 @@ jobs:
     - name: Build
       run: |
         gcloud auth list
-        docker build -t $(cat docker-repository.txt):$(cat next_version) .
+        docker build -t $(cat docker-repository.txt)/server:$(cat next_version) .
     - name: Push
       run: |
         gcloud auth configure-docker us-central1-docker.pkg.dev
-        docker push $(cat docker-repository.txt):$(cat next_version)
+        docker push $(cat docker-repository.txt)/server:$(cat next_version)
     - name: Release
       run: gh release create v$(cat next_version)
     - name: Update Cloud run
-      run: gcloud run services update server --region us-central1 --image $(cat docker-repository.txt):$(cat next_version)
-
-
+      run: gcloud run services update server --region us-central1 --image $(cat docker-repository.txt)/server:$(cat next_version)
