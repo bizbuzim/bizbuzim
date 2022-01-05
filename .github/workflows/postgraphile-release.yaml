@@ -17,9 +17,8 @@ jobs:
         credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
     - name: Push
       run: |
-        docker pull graphile/postgraphile:4
-        docker tag graphile/postgraphile:4 $(cat docker-repository.txt)/postgraphile:4
+        docker build -t $(cat docker-repository.txt)/postgraphile -f graphile/Dockerfile .
         gcloud auth configure-docker us-central1-docker.pkg.dev
-        docker push $(cat docker-repository.txt)/postgraphile:4
+        docker push $(cat docker-repository.txt)/postgraphile
     - name: Update Cloud run
-      run: gcloud run services update postgraphile --region us-central1 --image graphile/postgraphile
+      run: gcloud run services update postgraphile --region us-central1 --image $(cat docker-repository.txt)/postgraphile
