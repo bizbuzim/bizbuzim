@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "express": "^4.17.2",
-    "postgraphile": "^4.12.8"
-  }
-}
