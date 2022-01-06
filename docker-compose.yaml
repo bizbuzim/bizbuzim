@@ -14,7 +14,7 @@ services:
     ports:
       - 8080:8080
     volumes:
-    - ./bizbuzim:/config
+    - ./graphjin:/config
     depends_on:
     - postgres
     environment:
