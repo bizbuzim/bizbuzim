@@ -9,17 +9,23 @@ services:
     - db_data:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: postgrespassword
-  graphile:
-    image: graphile/postgraphile:4
+  graphjin:
+    image: dosco/graphjin:v0.17.5
     ports:
-      - "5000:5000"
-    depends_on:
-    - "postgres"
-    restart: always
-    init: true
+      - 8080:8080
     volumes:
-      - "./:/app"
-    command: --connection postgres://postgres:postgrespassword@postgres:5432/postgres\?sslmode=disable --enhance-graphiql --schema public --watch --allow-explain --export-schema-graphql /app/schema.graphql
+    - ./bizbuzim:/config
+    depends_on:
+    - postgres
+    environment:
+      GO_ENV: "dev"
+      GJ_DATABASE_TYPE: postgres
+      GJ_DATABASE_DBNAME: postgres
+      GJ_DATABASE_HOST: postgres
+      GJ_DATABASE_USER: postgres
+      GJ_DATABASE_PORT: 5432
+      GJ_DATABASE_PASSWORD: postgrespassword
+      PORT: 8080
 volumes:
   db_data:
     driver: local
