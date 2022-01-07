@@ -2,8 +2,6 @@ name: release
 
 on: [workflow_dispatch]
 
-concurrency: server-release
-
 jobs:
   postgraphile:
     name: postgraphile
