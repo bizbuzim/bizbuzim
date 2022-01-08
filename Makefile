@@ -5,12 +5,23 @@ new-migration:
 .PHONY: run-migrations
 run-migrations: check-env
 	echo "Running migrations"
-	migrate -path db/migrations/ -database ${POSTGRESQL_URL} --verbose up
+	# migrate -path db/migrations/ -database ${POSTGRESQL_URL} --verbose up
+	docker run -v $(shell pwd)/db/migrations:/migrations \
+		--network host \
+		-u $(id -u ${USER}):$(id -g ${USER}) \
+		migrate/migrate -path=/migrations/ -database ${POSTGRESQL_URL} up
 	tables=$(for i in $(bizbuzim_tables); do echo $$i; done;)
-	pg_dump --host=localhost -U postgres --port=5432 -d postgres -s \
+	docker run -it -e PGPASSWORD=${POSTGRES_PASSWORD} -v $(shell pwd)/db:/db --network host \
+		postgres:latest \
+		pg_dump -s \
+		--host=localhost \
+		-U postgres \
+		--port 5432 \
+		-d postgres \
 		--table=expenses \
-		--table=raw_expenses \
-		> db/schema.sql
+		--table=raw_expenses > db/schema.sql
+		
+	
 
 .PHONY: gen-code
 gen-code: check-env
@@ -23,17 +34,10 @@ gen-code: check-env
 		-i expenses \
 		-i raw_expenses
 
-.PHONY: hasura-setup
-hasura-setup:
-	hasura init --project hasura
-	hasura metadata apply \
-		--endpoint http://$(HASURA_HOST):$(HASURA_PORT) \
-		--skip-update-check \
-		--project hasura
-
 .PHONY: dev-setup
 dev-setup:
-	docker compose up -d
+	docker compose down
+	UID=$(shell id -u ${USER}) GID=$(shell id -g ${USER}) docker compose up -d
 	
 check-env:
 ifndef POSTGRESQL_URL
