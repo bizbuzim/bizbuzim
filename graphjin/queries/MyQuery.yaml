@@ -1,8 +1,0 @@
-name: MyQuery
-query: |-
-    query MyQuery {
-      raw_expenses(limit: 1) {
-        id
-      }
-    }
-vars: "null"
