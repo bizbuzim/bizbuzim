@@ -1,26 +1,25 @@
+.PHONY: dev-tools
+dev-tools:
+	docker build -f Dockerfile.tools -t bizbuzim/tools .
+
+.PHONY: run-dev-tools
+run-dev-tools:
+	docker run -it \
+		-v $(shell pwd):/app \
+		--network host \
+		-e PGPASSWORD=${POSTGRES_PASSWORD} \
+		-u $(shell id -u ${USER}):$(shell id -g ${USER}) \
+		bizbuzim/tools $(cmd)
+
 .PHONY: new-migration
 new-migration:
-	migrate create -ext sql -dir db/migrations -seq $(name)
+	make run-dev-tools cmd="migrate create -ext sql -dir /app/db/migrations -seq $(name)"
 
 .PHONY: run-migrations
 run-migrations: check-env
 	echo "Running migrations"
-	# migrate -path db/migrations/ -database ${POSTGRESQL_URL} --verbose up
-	docker run -v $(shell pwd)/db/migrations:/migrations \
-		--network host \
-		-u $(id -u ${USER}):$(id -g ${USER}) \
-		migrate/migrate -path=/migrations/ -database ${POSTGRESQL_URL} up
-	tables=$(for i in $(bizbuzim_tables); do echo $$i; done;)
-	docker run -it -e PGPASSWORD=${POSTGRES_PASSWORD} -v $(shell pwd)/db:/db --network host \
-		postgres:latest \
-		pg_dump -s \
-		--host=localhost \
-		-U postgres \
-		--port 5432 \
-		-d postgres \
-		--table=expenses \
-		--table=raw_expenses > db/schema.sql
-		
+	make run-dev-tools cmd="migrate -path=/app/db/migrations -database ${POSTGRESQL_URL} up"
+	make -s run-dev-tools cmd="pg_dump -s --host=localhost -U postgres --port 5432 -d postgres --table=expenses --table=raw_expenses" > db/schema.sql
 	
 
 .PHONY: gen-code

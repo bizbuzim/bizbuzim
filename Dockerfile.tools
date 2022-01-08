@@ -1,0 +1,10 @@
+FROM golang:1.17-alpine3.15 as xo
+RUN apk add gcc g++
+RUN go install github.com/xo/xo@d70880d59a86ff1ceb07db57a60f6ab7c0f69153
+
+FROM migrate/migrate:v4.15.1 as migrate
+
+FROM postgres:14.1-alpine3.15 as postgres
+
+COPY --from=migrate /usr/local/bin/migrate /usr/local/bin/migrate
+COPY --from=xo /go/bin/xo /usr/local/bin/xo
