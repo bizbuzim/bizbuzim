@@ -8,9 +8,11 @@ import (
 
 	"database/sql"
 
+	"github.com/dosco/graphjin/core"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/olegsu/bizbuzim/pkg/fatal"
 	"github.com/olegsu/bizbuzim/pkg/handlers"
+	"github.com/olegsu/bizbuzim/pkg/http/graphql"
 	"github.com/olegsu/go-tools/pkg/logger"
 
 	_ "github.com/lib/pq"
@@ -52,6 +54,10 @@ func main() {
 
 	}
 	http.HandleFunc("/", handlers.MessageHandler(lgr, bot, db))
+	if os.Getenv("USE_GRAPHJIN") != "" {
+		err := useGraphjin(db, lgr)
+		fatal.DieOnError(err, "failed to use graphjin")
+	}
 	err = http.ListenAndServe(":8000", nil)
 	dieOnError(err, "failed to start server")
 }
@@ -59,6 +65,14 @@ func main() {
 func dieOnError(err error, msg string) {
 	fatal.DieOnError(err, msg)
 }
+
+func newGraphQLHandler(gj *core.GraphJin, lgr *logger.Logger) *graphql.Handler {
+	return &graphql.Handler{
+		Logger: lgr,
+		GJ:     gj,
+	}
+}
+
 func buildDatabaseConnURI(lgr *logger.Logger) string {
 	user := fatal.GetEnv("POSTGRES_USER")
 	password := fatal.GetEnv("POSTGRES_PASSWORD")
@@ -83,4 +97,15 @@ func buildDatabaseConnURI(lgr *logger.Logger) string {
 	}
 
 	return uri
+}
+
+func useGraphjin(db *sql.DB, lgr *logger.Logger) error {
+	gj, err := core.NewGraphJin(nil, db)
+	if err != nil {
+		return err
+	}
+	lgr.Info("graphjin configured")
+
+	http.HandleFunc("/api/v1/graphql", newGraphQLHandler(gj, lgr).Handle)
+	return nil
 }
