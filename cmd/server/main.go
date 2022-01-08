@@ -38,12 +38,15 @@ func main() {
 		u := tgbotapi.NewUpdate(0)
 		u.Timeout = 60
 		updates := bot.GetUpdatesChan(u)
-		for u := range updates {
-			if u.Message == nil {
-				continue
+		go func() {
+			for u := range updates {
+				if u.Message == nil {
+					continue
+				}
+				go handlers.ProcessUpdate(context.Background(), lgr, bot, *u.Message, db)
 			}
-			go handlers.ProcessUpdate(context.Background(), lgr, bot, *u.Message, db)
-		}
+		}()
+
 	} else {
 		wh, err := tgbotapi.NewWebhook(hook)
 		dieOnError(err, "failed to create webhook")
