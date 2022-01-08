@@ -18,6 +18,10 @@ import (
 	_ "github.com/lib/pq"
 )
 
+const (
+	apiTelegram = "/hook/telegram"
+)
+
 func main() {
 	lgr := logger.New()
 	lgr.Info("starting server")
@@ -48,7 +52,7 @@ func main() {
 		}()
 
 	} else {
-		wh, err := tgbotapi.NewWebhook(hook)
+		wh, err := tgbotapi.NewWebhook(hook + apiTelegram)
 		dieOnError(err, "failed to create webhook")
 
 		resp, err := bot.Request(wh)
@@ -56,7 +60,7 @@ func main() {
 		lgr.Info("webhook registration completed", "description", resp.Description)
 
 	}
-	http.HandleFunc("/", handlers.MessageHandler(lgr, bot, db))
+	http.HandleFunc(apiTelegram, handlers.MessageHandler(lgr, bot, db))
 	if os.Getenv("USE_GRAPHJIN") != "" {
 		err := useGraphjin(db, lgr)
 		fatal.DieOnError(err, "failed to use graphjin")
