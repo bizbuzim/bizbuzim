@@ -121,7 +121,7 @@ func attemptToParseMessage(msg tgbotapi.Message) (*StructuredMessage, error) {
 
 	description := ""
 	if len(parts) >= 5 {
-		description = strings.Join(parts[5:], "\n")
+		description = strings.Join(parts[4:], "\n")
 	}
 
 	return &StructuredMessage{
