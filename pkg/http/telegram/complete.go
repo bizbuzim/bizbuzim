@@ -1,4 +1,4 @@
-package handlers
+package telegram
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"github.com/olegsu/go-tools/pkg/logger"
 )
 
-func uncompleted(ctx context.Context, lgr *logger.Logger, msg tgbotapi.Message, bot *tgbotapi.BotAPI) error {
+func complete(ctx context.Context, lgr *logger.Logger, msg tgbotapi.Message, bot *tgbotapi.BotAPI) error {
 	replay := tgbotapi.NewMessage(msg.Chat.ID, "coming soon")
 	_, err := bot.Send(replay)
 	return err
