@@ -20,6 +20,7 @@ type (
 )
 
 func (h *Handler) Handle(w http.ResponseWriter, r *http.Request) {
+	h.Logger.Info("handling request")
 	update, err := h.TGBot.HandleUpdate(r)
 	if err != nil {
 		errMsg, _ := json.Marshal(map[string]string{"error": err.Error()})
