@@ -40,7 +40,7 @@ var (
 
 func processNewExpenseMessage(ctx context.Context, lgr *logger.Logger, msg tgbotapi.Message, bot *tgbotapi.BotAPI, db dal.DB) error {
 	replayMessage := strings.Builder{}
-	data, err := attemptToParseMessage(msg.Text)
+	data, err := attemptToParseMessage(msg.Text, msg.Time())
 	id := uuid.Must(uuid.NewUUID())
 	user := ""
 	if msg.From != nil {
@@ -88,7 +88,7 @@ func processNewExpenseMessage(ctx context.Context, lgr *logger.Logger, msg tgbot
 	return nil
 }
 
-func attemptToParseMessage(msg string) (*StructuredMessage, error) {
+func attemptToParseMessage(msg string, date time.Time) (*StructuredMessage, error) {
 	parts := strings.Split(msg, "\n")
 	if len(parts) < 3 {
 		return nil, fmt.Errorf("missing fields")
@@ -125,7 +125,7 @@ func attemptToParseMessage(msg string) (*StructuredMessage, error) {
 		Source:      source,
 		Categories:  categories,
 		Description: description,
-		Date:        msg.Time(),
+		Date:        date,
 		Price:       price,
 	}, nil
 }
