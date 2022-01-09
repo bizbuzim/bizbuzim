@@ -32,7 +32,7 @@ func (h *Handler) Handle(w http.ResponseWriter, r *http.Request) {
 	if update.Message.From == nil {
 		return
 	}
-	if update.Message == nil {
+	if update.Message != nil {
 		go ProcessUpdate(context.Background(), h.Logger, h.TGBot, *update.Message, h.Dal)
 	}
 }
