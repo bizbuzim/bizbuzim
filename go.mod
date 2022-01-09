@@ -10,11 +10,13 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/lib/pq v1.10.4
 	github.com/olegsu/go-tools v0.0.0-20210831145405-166a09aff939
+	github.com/stretchr/testify v1.7.0
 )
 
 require (
 	github.com/avast/retry-go v3.0.0+incompatible // indirect
 	github.com/chirino/graphql v0.0.0-20210707003802-dfaf250c773e // indirect
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dlclark/regexp2 v1.4.1-0.20201116162257-a2a8dda75c91 // indirect
 	github.com/dop251/goja v0.0.0-20211203105952-bf6af58bbcc8 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
@@ -32,6 +34,7 @@ require (
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/pelletier/go-toml v1.9.4 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rs/xid v1.3.0 // indirect
 	github.com/spf13/afero v1.6.0 // indirect
 	github.com/spf13/cast v1.4.1 // indirect
