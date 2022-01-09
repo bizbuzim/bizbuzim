@@ -1,10 +1,12 @@
 FROM golang:1.17-alpine as build
 
-RUN apk add gcc g++
+RUN apk add gcc g++ make
 
 WORKDIR /app
 
 COPY . .
+
+RUN make unit-test
 
 RUN go build -o server cmd/server/main.go
 

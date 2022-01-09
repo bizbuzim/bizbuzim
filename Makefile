@@ -37,6 +37,14 @@ gen-code: check-env
 dev-setup:
 	docker compose down
 	UID=$(shell id -u ${USER}) GID=$(shell id -g ${USER}) docker compose up -d
+
+.PHONY: unit-test
+unit-test:
+	rm -rf .cover/ .test/
+	mkdir .cover/ .test/
+	go test -v -covermode=atomic -coverprofile=".cover/cover.out" github.com/olegsu/bizbuzim/.../.
+	go tool cover -html=.cover/cover.out -o=.cover/coverage.html
+
 	
 check-env:
 ifndef POSTGRESQL_URL
