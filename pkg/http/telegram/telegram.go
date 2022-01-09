@@ -23,6 +23,7 @@ func (h *Handler) Handle(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info("handling request")
 	update, err := h.TGBot.HandleUpdate(r)
 	if err != nil {
+		h.Logger.Info("failed to read body", "error", err.Error())
 		errMsg, _ := json.Marshal(map[string]string{"error": err.Error()})
 		w.WriteHeader(http.StatusBadRequest)
 		w.Header().Set("Content-Type", "application/json")
@@ -30,6 +31,7 @@ func (h *Handler) Handle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if update.Message.From == nil {
+		h.Logger.Info("the message was sent by no-one")
 		return
 	}
 	if update.Message == nil {
