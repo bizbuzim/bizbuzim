@@ -91,7 +91,7 @@ func processNewExpenseMessage(ctx context.Context, lgr *logger.Logger, msg tgbot
 func attemptToParseMessage(msg string) (*StructuredMessage, error) {
 	parts := strings.Split(msg, "\n")
 	if len(parts) < 3 {
-		return nil, fmt.Errorf("Missing fields")
+		return nil, fmt.Errorf("missing fields")
 	}
 
 	if len(parts) > 5 {
