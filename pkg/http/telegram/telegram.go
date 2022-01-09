@@ -1,4 +1,4 @@
-package handlers
+package telegram
 
 import (
 	"context"
@@ -11,22 +11,28 @@ import (
 	"github.com/olegsu/go-tools/pkg/logger"
 )
 
-func MessageHandler(lgr *logger.Logger, bot *tgbotapi.BotAPI, db dal.DB) func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		update, err := bot.HandleUpdate(r)
-		if err != nil {
-			errMsg, _ := json.Marshal(map[string]string{"error": err.Error()})
-			w.WriteHeader(http.StatusBadRequest)
-			w.Header().Set("Content-Type", "application/json")
-			_, _ = w.Write(errMsg)
-			return
-		}
-		if update.Message.From == nil {
-			return
-		}
-		if update.Message != nil {
-			go ProcessUpdate(context.Background(), lgr, bot, *update.Message, db)
-		}
+type (
+	Handler struct {
+		Dal    dal.DB
+		Logger *logger.Logger
+		TGBot  *tgbotapi.BotAPI
+	}
+)
+
+func (h *Handler) Handle(w http.ResponseWriter, r *http.Request) {
+	update, err := h.TGBot.HandleUpdate(r)
+	if err != nil {
+		errMsg, _ := json.Marshal(map[string]string{"error": err.Error()})
+		w.WriteHeader(http.StatusBadRequest)
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write(errMsg)
+		return
+	}
+	if update.Message.From == nil {
+		return
+	}
+	if update.Message == nil {
+		go ProcessUpdate(context.Background(), h.Logger, h.TGBot, *update.Message, h.Dal)
 	}
 }
 

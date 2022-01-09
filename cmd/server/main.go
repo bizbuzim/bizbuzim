@@ -11,8 +11,8 @@ import (
 	"github.com/dosco/graphjin/core"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/olegsu/bizbuzim/pkg/fatal"
-	"github.com/olegsu/bizbuzim/pkg/handlers"
 	"github.com/olegsu/bizbuzim/pkg/http/graphql"
+	"github.com/olegsu/bizbuzim/pkg/http/telegram"
 	"github.com/olegsu/go-tools/pkg/logger"
 
 	_ "github.com/lib/pq"
@@ -47,7 +47,7 @@ func main() {
 				if u.Message == nil {
 					continue
 				}
-				go handlers.ProcessUpdate(context.Background(), lgr, bot, *u.Message, db)
+				go telegram.ProcessUpdate(context.Background(), lgr, bot, *u.Message, db)
 			}
 		}()
 
@@ -60,7 +60,12 @@ func main() {
 		lgr.Info("webhook registration completed", "description", resp.Description)
 
 	}
-	http.HandleFunc(apiTelegram, handlers.MessageHandler(lgr, bot, db))
+	tgHandler := telegram.Handler{
+		Dal:    db,
+		Logger: lgr.Fork("handler", "telegram"),
+		TGBot:  bot,
+	}
+	http.HandleFunc(apiTelegram, tgHandler.Handle)
 	if os.Getenv("USE_GRAPHJIN") != "" {
 		err := useGraphjin(db, lgr)
 		fatal.DieOnError(err, "failed to use graphjin")
