@@ -94,10 +94,6 @@ func attemptToParseMessage(msg string) (*StructuredMessage, error) {
 		return nil, fmt.Errorf("missing fields")
 	}
 
-	if len(parts) > 5 {
-		return nil, fmt.Errorf("Too many fields")
-	}
-
 	name := parts[0]
 
 	p := strings.TrimSpace(parts[1])
