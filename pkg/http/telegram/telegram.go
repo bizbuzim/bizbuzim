@@ -20,7 +20,6 @@ type (
 )
 
 func (h *Handler) Handle(w http.ResponseWriter, r *http.Request) {
-	h.Logger.Info("handling request")
 	update, err := h.TGBot.HandleUpdate(r)
 	if err != nil {
 		h.Logger.Info("failed to read body", "error", err.Error())
@@ -40,7 +39,7 @@ func (h *Handler) Handle(w http.ResponseWriter, r *http.Request) {
 }
 
 func ProcessUpdate(ctx context.Context, lgr *logger.Logger, bot *tgbotapi.BotAPI, msg tgbotapi.Message, db dal.DB) {
-	lgr.Info("processing message", "text", msg.Text, "user", msg.From.UserName, "channel", msg.Chat.Title)
+	lgr.Info("processing message", "text", msg.Text, "user", msg.From.UserName, "channel", msg.Chat.Title, "channel-id", msg.Chat.ID)
 	if msg.Text == "/help" {
 		if err := help(ctx, lgr, msg, bot); err != nil {
 			lgr.Info("failed to process /help message")
