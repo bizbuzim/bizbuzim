@@ -2,6 +2,7 @@ package telegram
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"strconv"
 	"strings"
@@ -53,6 +54,10 @@ func processNewExpenseMessage(ctx context.Context, lgr *logger.Logger, msg tgbot
 			Text:      msg.Text,
 			CreatedAt: msg.Time(),
 			CreatedBy: user,
+			ExternalChannelID: sql.NullString{
+				String: fmt.Sprintf("%d", msg.Chat.ID),
+				Valid:  true,
+			},
 		}
 		if err := raw.Insert(ctx, db); err != nil {
 			replayMessage.WriteString(random(failed))
@@ -71,6 +76,10 @@ func processNewExpenseMessage(ctx context.Context, lgr *logger.Logger, msg tgbot
 			Description: data.Description,
 			CreatedAt:   msg.Time(),
 			CreatedBy:   user,
+			ExternalChannelID: sql.NullString{
+				String: fmt.Sprintf("%d", msg.Chat.ID),
+				Valid:  true,
+			},
 		}
 		lgr.Info("storing in expenses table", "data", data)
 		if err := expense.Insert(ctx, db); err != nil {
