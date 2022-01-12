@@ -4,6 +4,7 @@ package dal
 
 import (
 	"context"
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -11,14 +12,15 @@ import (
 
 // Expense represents a row from 'public.expenses'.
 type Expense struct {
-	ID          uuid.UUID   `json:"id"`          // id
-	Name        string      `json:"name"`        // name
-	Payment     string      `json:"payment"`     // payment
-	Price       float64     `json:"price"`       // price
-	Tags        StringSlice `json:"tags"`        // tags
-	Description string      `json:"description"` // description
-	CreatedAt   time.Time   `json:"created_at"`  // created_at
-	CreatedBy   string      `json:"created_by"`  // created_by
+	ID                uuid.UUID      `json:"id"`                  // id
+	Name              string         `json:"name"`                // name
+	Payment           string         `json:"payment"`             // payment
+	Price             float64        `json:"price"`               // price
+	Tags              StringSlice    `json:"tags"`                // tags
+	Description       string         `json:"description"`         // description
+	CreatedAt         time.Time      `json:"created_at"`          // created_at
+	CreatedBy         string         `json:"created_by"`          // created_by
+	ExternalChannelID sql.NullString `json:"external_channel_id"` // external_channel_id
 	// xo fields
 	_exists, _deleted bool
 }
@@ -44,13 +46,13 @@ func (e *Expense) Insert(ctx context.Context, db DB) error {
 	}
 	// insert (manual)
 	const sqlstr = `INSERT INTO public.expenses (` +
-		`id, name, payment, price, tags, description, created_at, created_by` +
+		`id, name, payment, price, tags, description, created_at, created_by, external_channel_id` +
 		`) VALUES (` +
-		`$1, $2, $3, $4, $5, $6, $7, $8` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9` +
 		`)`
 	// run
-	logf(sqlstr, e.ID, e.Name, e.Payment, e.Price, e.Tags, e.Description, e.CreatedAt, e.CreatedBy)
-	if _, err := db.ExecContext(ctx, sqlstr, e.ID, e.Name, e.Payment, e.Price, e.Tags, e.Description, e.CreatedAt, e.CreatedBy); err != nil {
+	logf(sqlstr, e.ID, e.Name, e.Payment, e.Price, e.Tags, e.Description, e.CreatedAt, e.CreatedBy, e.ExternalChannelID)
+	if _, err := db.ExecContext(ctx, sqlstr, e.ID, e.Name, e.Payment, e.Price, e.Tags, e.Description, e.CreatedAt, e.CreatedBy, e.ExternalChannelID); err != nil {
 		return logerror(err)
 	}
 	// set exists
@@ -68,11 +70,11 @@ func (e *Expense) Update(ctx context.Context, db DB) error {
 	}
 	// update with composite primary key
 	const sqlstr = `UPDATE public.expenses SET ` +
-		`name = $1, payment = $2, price = $3, tags = $4, description = $5, created_at = $6, created_by = $7 ` +
-		`WHERE id = $8`
+		`name = $1, payment = $2, price = $3, tags = $4, description = $5, created_at = $6, created_by = $7, external_channel_id = $8 ` +
+		`WHERE id = $9`
 	// run
-	logf(sqlstr, e.Name, e.Payment, e.Price, e.Tags, e.Description, e.CreatedAt, e.CreatedBy, e.ID)
-	if _, err := db.ExecContext(ctx, sqlstr, e.Name, e.Payment, e.Price, e.Tags, e.Description, e.CreatedAt, e.CreatedBy, e.ID); err != nil {
+	logf(sqlstr, e.Name, e.Payment, e.Price, e.Tags, e.Description, e.CreatedAt, e.CreatedBy, e.ExternalChannelID, e.ID)
+	if _, err := db.ExecContext(ctx, sqlstr, e.Name, e.Payment, e.Price, e.Tags, e.Description, e.CreatedAt, e.CreatedBy, e.ExternalChannelID, e.ID); err != nil {
 		return logerror(err)
 	}
 	return nil
@@ -94,16 +96,16 @@ func (e *Expense) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO public.expenses (` +
-		`id, name, payment, price, tags, description, created_at, created_by` +
+		`id, name, payment, price, tags, description, created_at, created_by, external_channel_id` +
 		`) VALUES (` +
-		`$1, $2, $3, $4, $5, $6, $7, $8` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9` +
 		`)` +
 		` ON CONFLICT (id) DO ` +
 		`UPDATE SET ` +
-		`name = EXCLUDED.name, payment = EXCLUDED.payment, price = EXCLUDED.price, tags = EXCLUDED.tags, description = EXCLUDED.description, created_at = EXCLUDED.created_at, created_by = EXCLUDED.created_by `
+		`name = EXCLUDED.name, payment = EXCLUDED.payment, price = EXCLUDED.price, tags = EXCLUDED.tags, description = EXCLUDED.description, created_at = EXCLUDED.created_at, created_by = EXCLUDED.created_by, external_channel_id = EXCLUDED.external_channel_id `
 	// run
-	logf(sqlstr, e.ID, e.Name, e.Payment, e.Price, e.Tags, e.Description, e.CreatedAt, e.CreatedBy)
-	if _, err := db.ExecContext(ctx, sqlstr, e.ID, e.Name, e.Payment, e.Price, e.Tags, e.Description, e.CreatedAt, e.CreatedBy); err != nil {
+	logf(sqlstr, e.ID, e.Name, e.Payment, e.Price, e.Tags, e.Description, e.CreatedAt, e.CreatedBy, e.ExternalChannelID)
+	if _, err := db.ExecContext(ctx, sqlstr, e.ID, e.Name, e.Payment, e.Price, e.Tags, e.Description, e.CreatedAt, e.CreatedBy, e.ExternalChannelID); err != nil {
 		return logerror(err)
 	}
 	// set exists
@@ -138,7 +140,7 @@ func (e *Expense) Delete(ctx context.Context, db DB) error {
 func ExpenseByID(ctx context.Context, db DB, id uuid.UUID) (*Expense, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`id, name, payment, price, tags, description, created_at, created_by ` +
+		`id, name, payment, price, tags, description, created_at, created_by, external_channel_id ` +
 		`FROM public.expenses ` +
 		`WHERE id = $1`
 	// run
@@ -146,7 +148,7 @@ func ExpenseByID(ctx context.Context, db DB, id uuid.UUID) (*Expense, error) {
 	e := Expense{
 		_exists: true,
 	}
-	if err := db.QueryRowContext(ctx, sqlstr, id).Scan(&e.ID, &e.Name, &e.Payment, &e.Price, &e.Tags, &e.Description, &e.CreatedAt, &e.CreatedBy); err != nil {
+	if err := db.QueryRowContext(ctx, sqlstr, id).Scan(&e.ID, &e.Name, &e.Payment, &e.Price, &e.Tags, &e.Description, &e.CreatedAt, &e.CreatedBy, &e.ExternalChannelID); err != nil {
 		return nil, logerror(err)
 	}
 	return &e, nil

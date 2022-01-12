@@ -21,6 +21,21 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: channel_configurations; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.channel_configurations (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    name character varying NOT NULL,
+    source character varying NOT NULL,
+    external_id character varying NOT NULL,
+    configuration json DEFAULT '{}'::jsonb NOT NULL
+);
+
+
+ALTER TABLE public.channel_configurations OWNER TO postgres;
+
+--
 -- Name: expenses; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -32,7 +47,8 @@ CREATE TABLE public.expenses (
     tags text[] NOT NULL,
     description character varying DEFAULT ''::character varying NOT NULL,
     created_at timestamp without time zone DEFAULT now() NOT NULL,
-    created_by character varying NOT NULL
+    created_by character varying NOT NULL,
+    external_channel_id character varying
 );
 
 
@@ -46,11 +62,20 @@ CREATE TABLE public.raw_expenses (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
     text text NOT NULL,
     created_at timestamp without time zone DEFAULT now() NOT NULL,
-    created_by character varying NOT NULL
+    created_by character varying NOT NULL,
+    external_channel_id character varying
 );
 
 
 ALTER TABLE public.raw_expenses OWNER TO postgres;
+
+--
+-- Name: channel_configurations PK_channel_configurations_id; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.channel_configurations
+    ADD CONSTRAINT "PK_channel_configurations_id" PRIMARY KEY (id);
+
 
 --
 -- Name: expenses PK_expenses_id; Type: CONSTRAINT; Schema: public; Owner: postgres

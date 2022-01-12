@@ -4,6 +4,7 @@ package dal
 
 import (
 	"context"
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -11,10 +12,11 @@ import (
 
 // RawExpense represents a row from 'public.raw_expenses'.
 type RawExpense struct {
-	ID        uuid.UUID `json:"id"`         // id
-	Text      string    `json:"text"`       // text
-	CreatedAt time.Time `json:"created_at"` // created_at
-	CreatedBy string    `json:"created_by"` // created_by
+	ID                uuid.UUID      `json:"id"`                  // id
+	Text              string         `json:"text"`                // text
+	CreatedAt         time.Time      `json:"created_at"`          // created_at
+	CreatedBy         string         `json:"created_by"`          // created_by
+	ExternalChannelID sql.NullString `json:"external_channel_id"` // external_channel_id
 	// xo fields
 	_exists, _deleted bool
 }
@@ -40,13 +42,13 @@ func (re *RawExpense) Insert(ctx context.Context, db DB) error {
 	}
 	// insert (manual)
 	const sqlstr = `INSERT INTO public.raw_expenses (` +
-		`id, text, created_at, created_by` +
+		`id, text, created_at, created_by, external_channel_id` +
 		`) VALUES (` +
-		`$1, $2, $3, $4` +
+		`$1, $2, $3, $4, $5` +
 		`)`
 	// run
-	logf(sqlstr, re.ID, re.Text, re.CreatedAt, re.CreatedBy)
-	if _, err := db.ExecContext(ctx, sqlstr, re.ID, re.Text, re.CreatedAt, re.CreatedBy); err != nil {
+	logf(sqlstr, re.ID, re.Text, re.CreatedAt, re.CreatedBy, re.ExternalChannelID)
+	if _, err := db.ExecContext(ctx, sqlstr, re.ID, re.Text, re.CreatedAt, re.CreatedBy, re.ExternalChannelID); err != nil {
 		return logerror(err)
 	}
 	// set exists
@@ -64,11 +66,11 @@ func (re *RawExpense) Update(ctx context.Context, db DB) error {
 	}
 	// update with composite primary key
 	const sqlstr = `UPDATE public.raw_expenses SET ` +
-		`text = $1, created_at = $2, created_by = $3 ` +
-		`WHERE id = $4`
+		`text = $1, created_at = $2, created_by = $3, external_channel_id = $4 ` +
+		`WHERE id = $5`
 	// run
-	logf(sqlstr, re.Text, re.CreatedAt, re.CreatedBy, re.ID)
-	if _, err := db.ExecContext(ctx, sqlstr, re.Text, re.CreatedAt, re.CreatedBy, re.ID); err != nil {
+	logf(sqlstr, re.Text, re.CreatedAt, re.CreatedBy, re.ExternalChannelID, re.ID)
+	if _, err := db.ExecContext(ctx, sqlstr, re.Text, re.CreatedAt, re.CreatedBy, re.ExternalChannelID, re.ID); err != nil {
 		return logerror(err)
 	}
 	return nil
@@ -90,16 +92,16 @@ func (re *RawExpense) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO public.raw_expenses (` +
-		`id, text, created_at, created_by` +
+		`id, text, created_at, created_by, external_channel_id` +
 		`) VALUES (` +
-		`$1, $2, $3, $4` +
+		`$1, $2, $3, $4, $5` +
 		`)` +
 		` ON CONFLICT (id) DO ` +
 		`UPDATE SET ` +
-		`text = EXCLUDED.text, created_at = EXCLUDED.created_at, created_by = EXCLUDED.created_by `
+		`text = EXCLUDED.text, created_at = EXCLUDED.created_at, created_by = EXCLUDED.created_by, external_channel_id = EXCLUDED.external_channel_id `
 	// run
-	logf(sqlstr, re.ID, re.Text, re.CreatedAt, re.CreatedBy)
-	if _, err := db.ExecContext(ctx, sqlstr, re.ID, re.Text, re.CreatedAt, re.CreatedBy); err != nil {
+	logf(sqlstr, re.ID, re.Text, re.CreatedAt, re.CreatedBy, re.ExternalChannelID)
+	if _, err := db.ExecContext(ctx, sqlstr, re.ID, re.Text, re.CreatedAt, re.CreatedBy, re.ExternalChannelID); err != nil {
 		return logerror(err)
 	}
 	// set exists
@@ -134,7 +136,7 @@ func (re *RawExpense) Delete(ctx context.Context, db DB) error {
 func RawExpenseByID(ctx context.Context, db DB, id uuid.UUID) (*RawExpense, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`id, text, created_at, created_by ` +
+		`id, text, created_at, created_by, external_channel_id ` +
 		`FROM public.raw_expenses ` +
 		`WHERE id = $1`
 	// run
@@ -142,7 +144,7 @@ func RawExpenseByID(ctx context.Context, db DB, id uuid.UUID) (*RawExpense, erro
 	re := RawExpense{
 		_exists: true,
 	}
-	if err := db.QueryRowContext(ctx, sqlstr, id).Scan(&re.ID, &re.Text, &re.CreatedAt, &re.CreatedBy); err != nil {
+	if err := db.QueryRowContext(ctx, sqlstr, id).Scan(&re.ID, &re.Text, &re.CreatedAt, &re.CreatedBy, &re.ExternalChannelID); err != nil {
 		return nil, logerror(err)
 	}
 	return &re, nil
