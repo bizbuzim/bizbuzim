@@ -8,6 +8,7 @@ export const GET_ALL_EXPENSES = gql`{
     name
     payment
     tags
+    price
   }
 }
 `
