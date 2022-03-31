@@ -1,18 +1,18 @@
 import "./App.css";
 import styled from "styled-components";
-import { ExpensesTable } from "./components/expenses-table";
-import { Home } from "./views/home";
-import { Routes, Route } from "react-router-dom";
+import { Sidebar } from "./components/sidebar";
+import { Router } from "./components/router";
 
-const Container = styled.div``;
+const Container = styled.div`
+  display: flex;
+  height: 100vh;
+`;
 
 function App() {
   return (
     <Container className="app">
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="expenses" element={<ExpensesTable />} />
-      </Routes>
+      <Sidebar />
+      <Router />
     </Container>
   );
 }
