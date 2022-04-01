@@ -33,6 +33,7 @@ export function Expenses() {
         <DatePickerContainer>
           From:
           <DatePicker
+            initial={fromDate}
             onDateChanged={(d) => {
               setFromDate(d);
             }}
@@ -41,6 +42,7 @@ export function Expenses() {
         <DatePickerContainer>
           To:{" "}
           <DatePicker
+            initial={toDate}
             onDateChanged={(d) => {
               setToDate(d);
             }}
