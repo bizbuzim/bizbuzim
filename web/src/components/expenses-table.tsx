@@ -4,6 +4,7 @@ import { GET_ALL_EXPENSES } from "../queries/get-all-expenses";
 import styled from "styled-components";
 import { useTable } from "react-table";
 import { DatePicker } from "./date-picker";
+import { Divider } from "./divider";
 
 const Styles = styled.div`
   padding: 1rem;
@@ -35,6 +36,11 @@ const Styles = styled.div`
   }
 `;
 
+const DatePickerContainer = styled.div`
+  display: inline-flex;
+  flex-direction: row;
+  gap: 1em;
+`;
 interface Options {
   columns: any;
   data: any;
@@ -122,18 +128,23 @@ export function ExpensesTable() {
   );
   return (
     <Styles>
-      From:{" "}
-      <DatePicker
-        onDateChanged={(d) => {
-          setFromDate(d);
-        }}
-      />
-      To:{" "}
-      <DatePicker
-        onDateChanged={(d) => {
-          setToDate(d);
-        }}
-      />
+      <DatePickerContainer>
+        From:
+        <DatePicker
+          onDateChanged={(d) => {
+            setFromDate(d);
+          }}
+        />
+      </DatePickerContainer>
+      <DatePickerContainer>
+        To:{" "}
+        <DatePicker
+          onDateChanged={(d) => {
+            setToDate(d);
+          }}
+        />
+      </DatePickerContainer>
+      <Divider />
       <Table columns={columns} data={data} />
     </Styles>
   );
