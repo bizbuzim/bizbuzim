@@ -3,6 +3,7 @@ import client from "./../services/gql";
 import { GET_ALL_EXPENSES } from "../queries/get-all-expenses";
 import styled from "styled-components";
 import { useTable } from "react-table";
+import { DatePicker } from "./date-picker";
 
 const Styles = styled.div`
   padding: 1rem;
@@ -76,17 +77,23 @@ function Table({ columns, data }: Options) {
 
 export function ExpensesTable() {
   const [data, setData] = useState([]);
+  const [fromDate, setFromDate] = useState(new Date());
+  const [toDate, setToDate] = useState(new Date());
   useEffect(() => {
     const fetch = async () => {
       const res = await client.query({
         query: GET_ALL_EXPENSES,
+        variables: {
+          from: fromDate,
+          to: toDate,
+        },
       });
 
       setData(res.data.expenses);
     };
 
     fetch();
-  }, []);
+  }, [fromDate, toDate]);
   const columns = useMemo(
     () => [
       {
@@ -115,6 +122,18 @@ export function ExpensesTable() {
   );
   return (
     <Styles>
+      From:{" "}
+      <DatePicker
+        onDateChanged={(d) => {
+          setFromDate(d);
+        }}
+      />
+      To:{" "}
+      <DatePicker
+        onDateChanged={(d) => {
+          setToDate(d);
+        }}
+      />
       <Table columns={columns} data={data} />
     </Styles>
   );
