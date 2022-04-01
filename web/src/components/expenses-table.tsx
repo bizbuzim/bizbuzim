@@ -6,6 +6,7 @@ import { useTable } from "react-table";
 
 const Styles = styled.div`
   padding: 1rem;
+  overflow: scroll;
 
   table {
     border-spacing: 0;
