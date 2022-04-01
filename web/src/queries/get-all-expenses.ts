@@ -3,7 +3,7 @@ import {
 } from "@apollo/client";
 
 export const GET_ALL_EXPENSES = gql`{
-  expenses(order_by: {created_at: desc}, where: {created_at: {gt: "2022-01-03"}}) {
+  expenses(order_by: {created_at: desc}, where: {and: [{created_at: {lt: $to}}, {created_at: {gte: $from}}]}) {
     id
     name
     payment
