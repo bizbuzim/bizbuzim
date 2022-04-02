@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import client from "./../services/gql";
 import { GET_ALL_EXPENSES } from "../queries/get-all-expenses";
 import styled from "styled-components";
+import { BiDotsVerticalRounded } from "react-icons/bi";
 import Chance from "chance";
 
 const Styles = styled.div`
@@ -40,14 +41,17 @@ const StyledRow = styled.div`
 function Row({ expense }: { expense: Expense }) {
   return (
     <StyledRow key={expense.id}>
-      <div>{expense.name}</div>
-      <div>{expense.price}</div>
+      <StyledRowName>{expense.name}</StyledRowName>
+      <StyledRowPrice>{expense.price}</StyledRowPrice>
       <StyledLabelsContainer>
         {expense.tags.map((t, i) => {
           return (
             <StyledLabeledText key={i + Date.now()}>{t}</StyledLabeledText>
           );
         })}
+        <StyledRowActions>
+          <BiDotsVerticalRounded size={"1.4em"} />
+        </StyledRowActions>
       </StyledLabelsContainer>
     </StyledRow>
   );
