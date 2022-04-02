@@ -53,9 +53,9 @@ export function Filters(props: Props) {
     <FiltersContainer>
       <BsFilter size={"2em"} />
       <FilterContainer>
-        From:
         <DatePicker
           initial={fromDate}
+          label="Date From"
           onDateChanged={(d) => {
             setFromDate(d);
             props.fromDateChange(d);
@@ -63,9 +63,9 @@ export function Filters(props: Props) {
         />
       </FilterContainer>
       <FilterContainer>
-        To:{" "}
         <DatePicker
           initial={toDate}
+          label="Date To"
           onDateChanged={(d) => {
             setToDate(d);
             props.toDateChange(d);
