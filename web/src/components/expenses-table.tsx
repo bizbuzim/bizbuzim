@@ -24,14 +24,34 @@ const StyledLabeledText = styled.div`
 
 const StyledLabelsContainer = styled.div`
   display: inline-flex;
+  min-width: 5em;
+`;
+
+const StyledRowActions = styled.div`
+  align-self: center;
+  direction: rtl;
+  min-width: 2em;
+`;
+
+const StyledRowPrice = styled.div`
+  min-width: 5em;
+  margin-right: auto;
+  margin-left: 4em;
+`;
+
+const StyledRowName = styled.div`
+  min-width: 5em;
+  width: 100px;
+  flex-shrink: 0;
+  margin-left: 1em;
 `;
 
 const StyledRow = styled.div`
-  display: grid;
-  grid-template-columns: auto 30px auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-content: center;
   min-height: 40px;
-  text-align: center;
-  grid-gap: 1rem;
   border-style: solid;
   border-color: #ccc;
   border-radius: 10px;
