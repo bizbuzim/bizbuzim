@@ -2,16 +2,21 @@ import { useState, useEffect } from "react";
 import _ from "lodash";
 import styled from "styled-components";
 import Select from "react-select";
+import { BsFilter } from "react-icons/bs";
 import { DatePicker } from "./../components/date-picker";
 import client from "./../services/gql";
 import { GET_TAGS } from "../queries/get-tags";
 
-const FilterContainer = styled.div``;
+const FiltersContainer = styled.div`
+  display: inline-flex;
+`;
 
-const DatePickerContainer = styled.div`
+const FilterContainer = styled.div`
   display: inline-flex;
   flex-direction: row;
-  gap: 1em;
+  margin: 1em;
+  min-width: 10em;
+  max-width: 15em;
 `;
 
 export interface Props {
@@ -45,8 +50,9 @@ export function Filters(props: Props) {
     fetch();
   }, [tags.length]);
   return (
-    <FilterContainer>
-      <DatePickerContainer>
+    <FiltersContainer>
+      <BsFilter size={"2em"} />
+      <FilterContainer>
         From:
         <DatePicker
           initial={fromDate}
@@ -55,8 +61,8 @@ export function Filters(props: Props) {
             props.fromDateChange(d);
           }}
         />
-      </DatePickerContainer>
-      <DatePickerContainer>
+      </FilterContainer>
+      <FilterContainer>
         To:{" "}
         <DatePicker
           initial={toDate}
@@ -65,8 +71,10 @@ export function Filters(props: Props) {
             props.toDateChange(d);
           }}
         />
-      </DatePickerContainer>
-      <Select options={tags} isMulti={true} />
-    </FilterContainer>
+      </FilterContainer>
+      <FilterContainer>
+        Tags: w <Select options={tags} isMulti={true} />
+      </FilterContainer>
+    </FiltersContainer>
   );
 }
