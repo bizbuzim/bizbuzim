@@ -24,7 +24,7 @@ const HeaderContainer = styled.div`
 `;
 const FiltersContainer = styled.div`
   grid-area: filter;
-  height: 5vh;
+  height: 10vh;
 `;
 const MenuContainer = styled.div`
   grid-area: menu;
@@ -32,7 +32,7 @@ const MenuContainer = styled.div`
 `;
 const MainContainer = styled.div`
   grid-area: main;
-  height: 90vh;
+  height: 85vh;
 `;
 
 function App() {
