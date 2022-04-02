@@ -74,7 +74,6 @@ export function ExpensesTable(props: Props) {
           to: props.dateTo,
         },
       });
-
       setData(res.data.expenses);
     };
 
