@@ -21,9 +21,7 @@ export interface Props {
   toDateChange: (d: Date) => void;
 }
 export function Filters(props: Props) {
-  const [fromDate, setFromDate] = useState(
-    props.fromDate || new Date("2022-03-01")
-  );
+  const [fromDate, setFromDate] = useState(props.fromDate || new Date());
   const [toDate, setToDate] = useState(props.toDate || new Date());
   const [tags, setTags] = useState<{ value: string; label: string }[]>([]);
   useEffect(() => {
