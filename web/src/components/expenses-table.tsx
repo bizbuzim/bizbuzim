@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import client from "./../services/gql";
 import { GET_ALL_EXPENSES } from "../queries/get-all-expenses";
 import styled from "styled-components";
+import Chance from "chance";
 
 const Styles = styled.div`
   padding: 1rem;
@@ -11,9 +12,9 @@ const Styles = styled.div`
 const StyledLabeledText = styled.div`
   text-align: center;
   border-radius: 20px;
-  border-color: #ccc;
-  border-style: solid;
-  background-color: #ccc;
+  background-color: ${() => {
+    return new Chance().color({ format: "hex" });
+  }};
   margin-right: 2px;
   margin-top: 2px;
   margin-bottom: 2px;
