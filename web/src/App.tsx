@@ -35,6 +35,7 @@ const MenuContainer = styled.div`
 const MainContainer = styled.div`
   grid-area: main;
   height: 85vh;
+  overflow: scroll;
 `;
 
 function App() {
