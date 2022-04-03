@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import client from "./../services/gql";
+import { useQuery } from "@apollo/client";
 import { GET_ALL_EXPENSES } from "../queries/get-all-expenses";
 import styled from "styled-components";
 import { BiDotsVerticalRounded } from "react-icons/bi";
@@ -81,29 +81,38 @@ interface Expense {
   price: string;
 }
 
+interface GetallExpensesBody {
+  expenses: Expense[];
+}
+
 interface Props {
   dateFrom: Date;
   dateTo: Date;
 }
 export function ExpensesTable(props: Props) {
-  const [data, setData] = useState<Expense[]>([]);
-  useEffect(() => {
-    const fetch = async () => {
-      const res = await client.query({
-        query: GET_ALL_EXPENSES,
-        variables: {
-          from: props.dateFrom,
-          to: props.dateTo,
-        },
-      });
-      setData(res.data.expenses);
-    };
+  let { loading, error, data } = useQuery<GetallExpensesBody>(
+    GET_ALL_EXPENSES,
+    {
+      variables: {
+        from: props.dateFrom,
+        to: props.dateTo,
+      },
+    }
+  );
+  if (loading) {
+    return <div>loading...</div>;
+  }
 
-    fetch();
-  }, [props.dateFrom, props.dateTo]);
+  if (error) {
+    return <div>error {error}</div>;
+  }
+
+  if (!data) {
+    data = { expenses: [] };
+  }
   return (
     <Styles>
-      {data.map((v, i) => {
+      {data.expenses.map((v, i) => {
         return <Row key={i} expense={v} />;
       })}
     </Styles>

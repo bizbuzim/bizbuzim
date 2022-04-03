@@ -1,5 +1,7 @@
 import "./App.css";
 import styled from "styled-components";
+import client from "./services/gql";
+import { ApolloProvider } from "@apollo/client";
 import { useState } from "react";
 import { Sidebar } from "./components/sidebar";
 import { Router } from "./components/router";
@@ -40,22 +42,24 @@ function App() {
   const [dateTo, setDateTo] = useState<Date>(new Date());
   return (
     <Container className="app">
-      <HeaderContainer>header</HeaderContainer>
-      <MenuContainer>
-        <Sidebar />
-      </MenuContainer>
-      <FiltersContainer>
-        <Filters
-          fromDate={dateFrom}
-          toDate={dateTo}
-          fromDateChange={setDateFrom}
-          toDateChange={setDateTo}
-        />
-        <Divider />
-      </FiltersContainer>
-      <MainContainer>
-        <Router dateFrom={dateFrom} dateTo={dateTo} />
-      </MainContainer>
+      <ApolloProvider client={client}>
+        <HeaderContainer>header</HeaderContainer>
+        <MenuContainer>
+          <Sidebar />
+        </MenuContainer>
+        <FiltersContainer>
+          <Filters
+            fromDate={dateFrom}
+            toDate={dateTo}
+            fromDateChange={setDateFrom}
+            toDateChange={setDateTo}
+          />
+          <Divider />
+        </FiltersContainer>
+        <MainContainer>
+          <Router dateFrom={dateFrom} dateTo={dateTo} />
+        </MainContainer>
+      </ApolloProvider>
     </Container>
   );
 }
