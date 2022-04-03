@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_ALL_EXPENSES } from "../queries/get-all-expenses";
 import styled from "styled-components";
