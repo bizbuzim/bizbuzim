@@ -7,7 +7,6 @@ import Chip from "@mui/material/Chip";
 
 const Styles = styled.div`
   padding: 1rem;
-  overflow: scroll;
 `;
 
 const StyledLabelsContainer = styled.div`
