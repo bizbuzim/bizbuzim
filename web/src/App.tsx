@@ -51,8 +51,8 @@ function App() {
           fromDateChange={setDateFrom}
           toDateChange={setDateTo}
         />
+        <Divider />
       </FiltersContainer>
-      <Divider />
       <MainContainer>
         <Router dateFrom={dateFrom} dateTo={dateTo} />
       </MainContainer>
