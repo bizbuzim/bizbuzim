@@ -1,17 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import _ from "lodash";
 import styled from "styled-components";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
 import OutlinedInput from "@mui/material/OutlinedInput";
-import InputLabel from "@mui/material/InputLabel";
 import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 
 import { BsFilter } from "react-icons/bs";
 import { DatePicker } from "./../components/date-picker";
-import client from "./../services/gql";
 import { GET_TAGS } from "../queries/get-tags";
+import { useQuery } from "@apollo/client";
 
 const FiltersContainer = styled.div`
   display: inline-flex;
@@ -46,28 +45,31 @@ export interface Props {
 export function Filters(props: Props) {
   const [fromDate, setFromDate] = useState(props.fromDate || new Date());
   const [toDate, setToDate] = useState(props.toDate || new Date());
-  const [tags, setTags] = useState<{ value: string; label: string }[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  useEffect(() => {
-    const fetch = async () => {
-      const res = await client.query({
-        query: GET_TAGS,
-        variables: {
-          from: fromDate,
-          to: toDate,
-        },
-      });
-      const t = _.map(res.data.expenses, (v) => v.tags);
-      const f = _.flatten(t);
-      const u = _.uniq(f);
-      setTags(
-        _.map(u, (vv) => {
-          return { value: vv, label: vv };
-        })
-      );
-    };
-    fetch();
-  }, [tags.length]);
+  let { loading, error, data } = useQuery(GET_TAGS, {
+    variables: {
+      from: fromDate,
+      to: toDate,
+    },
+  });
+  if (loading) {
+    return <div>loading</div>;
+  }
+
+  if (error) {
+    return <div>error: {error}</div>;
+  }
+  const tags = _.chain(data.expenses)
+    .map((v) => v.tags)
+    .flatten()
+    .uniq()
+    .map((v) =>
+      Object.assign({
+        value: v,
+        label: v,
+      })
+    )
+    .value();
   return (
     <FiltersContainer>
       <BsFilter size={"2em"} />
