@@ -20,6 +20,7 @@ const FilterContainer = styled.div`
   display: inline-flex;
   flex-direction: row;
   margin: 1em;
+  margin-bottom: 0;
   min-width: 10em;
   max-width: 15em;
   max-height: 5em;
