@@ -4,22 +4,11 @@ import { GET_ALL_EXPENSES } from "../queries/get-all-expenses";
 import styled from "styled-components";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import Chance from "chance";
+import Chip from "@mui/material/Chip";
 
 const Styles = styled.div`
   padding: 1rem;
   overflow: scroll;
-`;
-
-const StyledLabeledText = styled.div`
-  text-align: center;
-  border-radius: 20px;
-  background-color: ${() => {
-    return new Chance().color({ format: "hex" });
-  }};
-  margin-right: 2px;
-  margin-top: 2px;
-  margin-bottom: 2px;
-  min-width: 60px;
 `;
 
 const StyledLabelsContainer = styled.div`
@@ -65,8 +54,16 @@ function Row({ expense }: { expense: Expense }) {
       <StyledRowPrice>{expense.price}</StyledRowPrice>
       <StyledLabelsContainer>
         {expense.tags.map((t, i) => {
+          const c = new Chance();
+          const color = c.color({ format: "hex" });
           return (
-            <StyledLabeledText key={i + Date.now()}>{t}</StyledLabeledText>
+            <Chip
+              style={{
+                backgroundColor: color,
+              }}
+              label={t}
+              key={i}
+            />
           );
         })}
         <StyledRowActions>
