@@ -1,8 +1,9 @@
 import "./App.css";
-import styled from "styled-components";
-import client from "./services/gql";
-import { ApolloProvider } from "@apollo/client";
 import { useState } from "react";
+import styled from "styled-components";
+import { ApolloProvider } from "@apollo/client";
+
+import client from "./services/gql";
 import { Sidebar } from "./components/sidebar";
 import { Router } from "./components/router";
 import { Filters } from "./views/filters";

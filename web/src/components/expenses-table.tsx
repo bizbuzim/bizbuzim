@@ -1,9 +1,10 @@
 import { useQuery } from "@apollo/client";
-import { GET_ALL_EXPENSES } from "../queries/get-all-expenses";
 import styled from "styled-components";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import Chance from "chance";
 import Chip from "@mui/material/Chip";
+
+import { GET_ALL_EXPENSES } from "../queries/get-all-expenses";
 
 const Styles = styled.div`
   padding: 1rem;
@@ -88,7 +89,7 @@ interface Props {
   dateTo: Date;
 }
 export function ExpensesTable(props: Props) {
-  let { loading, error, data } = useQuery<GetallExpensesBody>(
+  const { loading, error, data } = useQuery<GetallExpensesBody>(
     GET_ALL_EXPENSES,
     {
       variables: {
@@ -105,12 +106,9 @@ export function ExpensesTable(props: Props) {
     return <div>error {error}</div>;
   }
 
-  if (!data) {
-    data = { expenses: [] };
-  }
   return (
     <Styles>
-      {data.expenses.map((v, i) => {
+      {data?.expenses.map((v, i) => {
         return <Row key={i} expense={v} />;
       })}
     </Styles>

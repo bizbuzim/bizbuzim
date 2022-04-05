@@ -11,6 +11,7 @@ export interface PickerProps {
 }
 export function DatePicker(props: PickerProps) {
   const [startDate, setStartDate] = useState(props.initial || new Date());
+
   return (
     <LocalizationProvider dateAdapter={DateAdapter}>
       <Picker
@@ -24,7 +25,7 @@ export function DatePicker(props: PickerProps) {
           setStartDate(d);
           props.onDateChanged(d);
         }}
-        renderInput={(params: any) => <TextField {...params} />}
+        renderInput={(params) => <TextField {...params} />}
       />
     </LocalizationProvider>
   );

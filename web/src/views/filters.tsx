@@ -6,11 +6,12 @@ import Chip from "@mui/material/Chip";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
-
 import { BsFilter } from "react-icons/bs";
-import { DatePicker } from "./../components/date-picker";
-import { GET_TAGS } from "../queries/get-tags";
 import { useQuery } from "@apollo/client";
+
+import { GET_TAGS } from "../queries/get-tags";
+
+import { DatePicker } from "./../components/date-picker";
 
 const FiltersContainer = styled.div`
   display: inline-flex;
@@ -47,18 +48,26 @@ export function Filters(props: Props) {
   const [fromDate, setFromDate] = useState(props.fromDate || new Date());
   const [toDate, setToDate] = useState(props.toDate || new Date());
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  let { loading, error, data } = useQuery(GET_TAGS, {
+  const { error, loading, data } = useQuery(GET_TAGS, {
     variables: {
       from: fromDate,
       to: toDate,
     },
   });
   if (loading) {
-    return <div>loading</div>;
+    return (
+      <>
+        <div>loading</div>
+      </>
+    );
   }
 
   if (error) {
-    return <div>error: {error}</div>;
+    return (
+      <>
+        <div>error: {error}</div>
+      </>
+    );
   }
   const tags = _.chain(data.expenses)
     .map((v) => v.tags)
@@ -72,57 +81,59 @@ export function Filters(props: Props) {
     )
     .value();
   return (
-    <FiltersContainer>
-      <BsFilter size={"2em"} />
-      <FilterContainer>
-        <DatePicker
-          initial={fromDate}
-          label="Date From"
-          onDateChanged={(d) => {
-            setFromDate(d);
-            props.fromDateChange(d);
-          }}
-        />
-      </FilterContainer>
-      <FilterContainer>
-        <DatePicker
-          initial={toDate}
-          label="Date To"
-          onDateChanged={(d) => {
-            setToDate(d);
-            props.toDateChange(d);
-          }}
-        />
-      </FilterContainer>
-      <FilterContainer>
-        <Select
-          multiple
-          value={selectedTags}
-          onChange={(event: SelectChangeEvent<string[]>) => {
-            const {
-              target: { value },
-            } = event;
-            setSelectedTags(
-              typeof value === "string" ? value.split(",") : value
-            );
-          }}
-          input={<OutlinedInput />}
-          renderValue={(selected: string[]) => (
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-              {selected.map((value: string) => (
-                <Chip key={value} label={value} />
-              ))}
-            </Box>
-          )}
-          MenuProps={MenuProps}
-        >
-          {tags.map((tag, i) => (
-            <MenuItem key={tag.label} value={tag.value}>
-              {tag.label}
-            </MenuItem>
-          ))}
-        </Select>
-      </FilterContainer>
-    </FiltersContainer>
+    <>
+      <FiltersContainer>
+        <BsFilter size={"2em"} />
+        <FilterContainer>
+          <DatePicker
+            initial={fromDate}
+            label="Date From"
+            onDateChanged={(d) => {
+              setFromDate(d);
+              props.fromDateChange(d);
+            }}
+          />
+        </FilterContainer>
+        <FilterContainer>
+          <DatePicker
+            initial={toDate}
+            label="Date To"
+            onDateChanged={(d) => {
+              setToDate(d);
+              props.toDateChange(d);
+            }}
+          />
+        </FilterContainer>
+        <FilterContainer>
+          <Select
+            multiple
+            value={selectedTags}
+            onChange={(event: SelectChangeEvent<string[]>) => {
+              const {
+                target: { value },
+              } = event;
+              setSelectedTags(
+                typeof value === "string" ? value.split(",") : value
+              );
+            }}
+            input={<OutlinedInput />}
+            renderValue={(selected: string[]) => (
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                {selected.map((value: string) => (
+                  <Chip key={value} label={value} />
+                ))}
+              </Box>
+            )}
+            MenuProps={MenuProps}
+          >
+            {tags.map((tag, i) => (
+              <MenuItem key={tag.label} value={tag.value}>
+                {tag.label}
+              </MenuItem>
+            ))}
+          </Select>
+        </FilterContainer>
+      </FiltersContainer>
+    </>
   );
 }
