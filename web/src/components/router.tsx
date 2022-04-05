@@ -1,6 +1,7 @@
+import { Routes, Route } from "react-router-dom";
+
 import { Expenses } from "./../views/expenses";
 import { Home } from "./../views/home";
-import { Routes, Route } from "react-router-dom";
 
 export interface Props {
   dateFrom: Date;

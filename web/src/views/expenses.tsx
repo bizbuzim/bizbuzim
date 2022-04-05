@@ -1,4 +1,5 @@
 import styled from "styled-components";
+
 import { ExpensesTable } from "./../components/expenses-table";
 
 const TableContainer = styled.div``;
