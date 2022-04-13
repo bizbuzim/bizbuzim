@@ -2,12 +2,15 @@ import "./App.css";
 import { useState } from "react";
 import styled from "styled-components";
 import { ApolloProvider } from "@apollo/client";
+import { Auth0Provider } from "@auth0/auth0-react";
 
 import client from "./services/gql";
 import { Sidebar } from "./components/sidebar";
 import { Router } from "./components/router";
+import { Login } from "./components/login";
 import { Filters } from "./views/filters";
 import { Divider } from "./components/divider";
+import { Auth0ClientId, Auth0Domain } from "./config";
 
 const Container = styled.div`
   display: grid;
@@ -44,24 +47,31 @@ function App() {
   const [dateTo, setDateTo] = useState<Date>(new Date());
   return (
     <Container className="app">
-      <ApolloProvider client={client}>
-        <HeaderContainer>header</HeaderContainer>
-        <MenuContainer>
-          <Sidebar />
-        </MenuContainer>
-        <FiltersContainer>
-          <Filters
-            fromDate={dateFrom}
-            toDate={dateTo}
-            fromDateChange={setDateFrom}
-            toDateChange={setDateTo}
-          />
-          <Divider />
-        </FiltersContainer>
-        <MainContainer>
-          <Router dateFrom={dateFrom} dateTo={dateTo} />
-        </MainContainer>
-      </ApolloProvider>
+      <Auth0Provider
+        domain={Auth0Domain || ""}
+        clientId={Auth0ClientId || ""}
+        redirectUri={window.location.origin}
+      >
+        <Login />
+        <ApolloProvider client={client}>
+          <HeaderContainer>header</HeaderContainer>
+          <MenuContainer>
+            <Sidebar />
+          </MenuContainer>
+          <FiltersContainer>
+            <Filters
+              fromDate={dateFrom}
+              toDate={dateTo}
+              fromDateChange={setDateFrom}
+              toDateChange={setDateTo}
+            />
+            <Divider />
+          </FiltersContainer>
+          <MainContainer>
+            <Router dateFrom={dateFrom} dateTo={dateTo} />
+          </MainContainer>
+        </ApolloProvider>
+      </Auth0Provider>
     </Container>
   );
 }
