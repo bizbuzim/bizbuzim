@@ -7,7 +7,7 @@ module.exports = {
     "plugin:@typescript-eslint/recommended",
     "prettier/@typescript-eslint",
     "plugin:prettier/recommended",
-    "react-app"
+    "react-app",
   ],
   plugins: ["@typescript-eslint"],
   env: { browser: true },
@@ -17,9 +17,7 @@ module.exports = {
     "import/no-named-as-default": "off",
     "import/no-named-as-default-member": "off",
     "import/order": ["error", { "newlines-between": "always" }],
-    "no-console": ["error", { allow: ["warn"] }],
-    "react/react-in-jsx-scope": "off"
+    "react/react-in-jsx-scope": "off",
+    "no-console": "warn",
   },
 };
-
-
