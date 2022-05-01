@@ -7,12 +7,14 @@ export const GET_ALL_EXPENSES = gql`
       where: {
         and: [{ created_at: { lt: $to } }, { created_at: { gte: $from } }]
       }
+      limit: 300
     ) {
       id
       name
       payment
       tags
       price
+      created_at
     }
   }
 `;
