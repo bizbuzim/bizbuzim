@@ -17,7 +17,7 @@ export function DatePicker(props: PickerProps) {
       <Picker
         label={props.label || "Date"}
         value={startDate}
-        inputFormat="MM/dd/yyyy"
+        inputFormat="DD/MM/yyyy"
         onChange={(d) => {
           if (!d) {
             return;
