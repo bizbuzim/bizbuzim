@@ -1,21 +1,13 @@
-import { useAuth0 } from "@auth0/auth0-react";
 import { Routes, Route } from "react-router-dom";
 
-import { Expenses } from "./../views/expenses";
+import Expenses from "./../views/expenses";
 import { Home } from "./../views/home";
 
-export interface Props {
-  dateFrom: Date;
-  dateTo: Date;
-}
-export function Router({ dateFrom, dateTo }: Props) {
+export function Router() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route
-        path="expenses"
-        element={<Expenses fromDate={dateFrom} toDate={dateTo} />}
-      />
+      <Route path="expenses" element={<Expenses />} />
     </Routes>
   );
 }

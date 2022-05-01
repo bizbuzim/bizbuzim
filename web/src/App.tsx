@@ -1,16 +1,20 @@
 import "./App.css";
 import { useState } from "react";
 import styled from "styled-components";
-import { ApolloProvider } from "@apollo/client";
+import { ApolloProvider, useQuery } from "@apollo/client";
 import { Auth0Provider } from "@auth0/auth0-react";
+import _ from "lodash";
 
+import { GET_ALL_EXPENSES } from "./queries/get-all-expenses";
 import client from "./services/gql";
 import { Sidebar } from "./components/sidebar";
-import { Router } from "./components/router";
 import { Login } from "./components/login";
 import { Filters } from "./views/filters";
 import { Divider } from "./components/divider";
 import { Auth0ClientId, Auth0Domain } from "./config";
+import { Router } from "./components/router";
+import { Expense } from "./views/expenses/types";
+import { ExpensesContext } from "./context/expenses";
 
 const Container = styled.div`
   display: grid;
@@ -43,8 +47,6 @@ const MainContainer = styled.div`
 `;
 
 function App() {
-  const [dateFrom, setDateFrom] = useState<Date>(new Date("2022-03-01"));
-  const [dateTo, setDateTo] = useState<Date>(new Date());
   return (
     <Container className="app">
       <Auth0Provider
@@ -54,26 +56,55 @@ function App() {
       >
         <Login />
         <ApolloProvider client={client}>
-          <HeaderContainer>header</HeaderContainer>
-          <MenuContainer>
-            <Sidebar />
-          </MenuContainer>
-          <FiltersContainer>
-            <Filters
-              fromDate={dateFrom}
-              toDate={dateTo}
-              fromDateChange={setDateFrom}
-              toDateChange={setDateTo}
-            />
-            <Divider />
-          </FiltersContainer>
-          <MainContainer>
-            <Router dateFrom={dateFrom} dateTo={dateTo} />
-          </MainContainer>
+          <Application />
         </ApolloProvider>
       </Auth0Provider>
     </Container>
   );
 }
+
+const Application = () => {
+  const [dateFrom, setDateFrom] = useState<Date>(new Date("2022-03-01"));
+  const [dateTo, setDateTo] = useState<Date>(new Date());
+  const { loading, error, data } = useQuery<{
+    expenses: Expense[];
+  }>(GET_ALL_EXPENSES, {
+    variables: {
+      from: dateFrom,
+      to: dateTo,
+    },
+  });
+  return (
+    <ExpensesContext.Provider
+      value={{
+        isLoading: loading,
+        error: error?.message,
+        expenses: data?.expenses || [],
+        tags: _.chain(data?.expenses)
+          .map((e) => e.tags)
+          .flattenDeep()
+          .uniq()
+          .value(),
+      }}
+    >
+      <HeaderContainer>header</HeaderContainer>
+      <MenuContainer>
+        <Sidebar />
+      </MenuContainer>
+      <FiltersContainer>
+        <Filters
+          fromDate={dateFrom}
+          toDate={dateTo}
+          fromDateChange={setDateFrom}
+          toDateChange={setDateTo}
+        />
+        <Divider />
+      </FiltersContainer>
+      <MainContainer>
+        <Router />
+      </MainContainer>
+    </ExpensesContext.Provider>
+  );
+};
 
 export default App;
