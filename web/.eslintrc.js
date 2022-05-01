@@ -19,5 +19,6 @@ module.exports = {
     "import/order": ["error", { "newlines-between": "always" }],
     "react/react-in-jsx-scope": "off",
     "no-console": "warn",
+    "explicit-module-boundary-types": "off",
   },
 };
