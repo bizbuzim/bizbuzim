@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import _ from "lodash";
 import styled from "styled-components";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
@@ -7,9 +7,8 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import { BsFilter } from "react-icons/bs";
-import { useQuery } from "@apollo/client";
 
-import { GET_TAGS } from "../queries/get-tags";
+import { ExpensesContext } from "../context/expenses";
 
 import { DatePicker } from "./../components/date-picker";
 
@@ -48,18 +47,13 @@ export function Filters(props: Props) {
   const [fromDate, setFromDate] = useState(props.fromDate || new Date());
   const [toDate, setToDate] = useState(props.toDate || new Date());
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const { error, loading, data } = useQuery(GET_TAGS, {
-    variables: {
-      from: fromDate,
-      to: toDate,
-    },
-  });
-  if (loading) {
-    return (
-      <>
-        <div>loading</div>
-      </>
-    );
+  const { isLoading, error, tags } = useContext(ExpensesContext);
+  const uniqueTags = useMemo(
+    () => tags.map((t) => Object.assign({}, { value: t, label: t })),
+    [tags]
+  );
+  if (isLoading) {
+    return <div>loading</div>;
   }
 
   if (error) {
@@ -69,17 +63,6 @@ export function Filters(props: Props) {
       </>
     );
   }
-  const tags = _.chain(data.expenses)
-    .map((v) => v.tags)
-    .flatten()
-    .uniq()
-    .map((v) =>
-      Object.assign({
-        value: v,
-        label: v,
-      })
-    )
-    .value();
   return (
     <>
       <FiltersContainer>
@@ -126,7 +109,7 @@ export function Filters(props: Props) {
             )}
             MenuProps={MenuProps}
           >
-            {tags.map((tag, i) => (
+            {uniqueTags.map((tag, i) => (
               <MenuItem key={tag.label} value={tag.value}>
                 {tag.label}
               </MenuItem>
