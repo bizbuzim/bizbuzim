@@ -1,8 +1,7 @@
-import { ApolloClient, InMemoryCache } from "@apollo/client";
+import { createClient } from "urql";
 
 import { BaseURL } from "./../config";
 
-export default new ApolloClient({
-  cache: new InMemoryCache(),
-  uri: `${BaseURL}/api/v1/graphql`,
+export default createClient({
+  url: `${BaseURL}/api/v1/graphql`,
 });
