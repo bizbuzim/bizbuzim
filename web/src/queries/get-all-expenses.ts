@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from "urql";
 
 export const GET_ALL_EXPENSES = gql`
   query GetAllExpenses($from: Date, $to: Date) {

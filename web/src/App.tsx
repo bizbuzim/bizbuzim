@@ -1,7 +1,7 @@
 import "./App.css";
 import { useState } from "react";
 import styled from "styled-components";
-import { ApolloProvider, useQuery } from "@apollo/client";
+import { Provider, useQuery } from "urql";
 import { Auth0Provider } from "@auth0/auth0-react";
 import _ from "lodash";
 
@@ -55,9 +55,9 @@ function App() {
         redirectUri={window.location.origin}
       >
         <Login />
-        <ApolloProvider client={client}>
+        <Provider value={client}>
           <Application />
-        </ApolloProvider>
+        </Provider>
       </Auth0Provider>
     </Container>
   );
@@ -66,18 +66,20 @@ function App() {
 const Application = () => {
   const [dateFrom, setDateFrom] = useState<Date>(new Date("2022-03-01"));
   const [dateTo, setDateTo] = useState<Date>(new Date());
-  const { loading, error, data } = useQuery<{
+  const [result] = useQuery<{
     expenses: Expense[];
-  }>(GET_ALL_EXPENSES, {
+  }>({
+    query: GET_ALL_EXPENSES,
     variables: {
       from: dateFrom,
       to: dateTo,
     },
   });
+  const { data, error, fetching } = result;
   return (
     <ExpensesContext.Provider
       value={{
-        isLoading: loading,
+        isLoading: fetching,
         error: error?.message,
         expenses: data?.expenses || [],
         tags: _.chain(data?.expenses)
