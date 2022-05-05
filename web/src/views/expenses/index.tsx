@@ -2,6 +2,7 @@ import { useContext } from "react";
 import styled from "styled-components";
 
 import { ExpensesContext } from "../../context/expenses";
+import { FiltersContext } from "../../context/filters";
 
 import Table from "./table";
 
@@ -17,6 +18,7 @@ const Container = styled.div`
 
 const Expenses = () => {
   const { isLoading, error, expenses } = useContext(ExpensesContext);
+  const { tags } = useContext(FiltersContext);
   if (isLoading) {
     return <div>loading...</div>;
   }
@@ -24,9 +26,15 @@ const Expenses = () => {
   if (error) {
     return <div>error {error}</div>;
   }
+  let filtered = expenses;
+  if (tags.length > 0) {
+    filtered = expenses.filter((e) => {
+      return e.tags.some((t) => tags.includes(t));
+    });
+  }
   return (
     <Container>
-      <Table headers={["No.", "Name", "Price", "Labels"]} rows={expenses} />
+      <Table headers={["No.", "Name", "Price", "Labels"]} rows={filtered} />
     </Container>
   );
 };

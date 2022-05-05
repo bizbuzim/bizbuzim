@@ -38,16 +38,21 @@ const MenuProps = {
 };
 
 export interface Props {
-  fromDate?: Date;
+  fromDate: Date;
   fromDateChange: (d: Date) => void;
-  toDate?: Date;
+  toDate: Date;
   toDateChange: (d: Date) => void;
+  tagsSelected: (tags: string[]) => void;
 }
-export function Filters(props: Props) {
-  const [fromDate, setFromDate] = useState(props.fromDate || new Date());
-  const [toDate, setToDate] = useState(props.toDate || new Date());
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+export function Filters({
+  fromDate,
+  toDate,
+  fromDateChange,
+  toDateChange,
+  tagsSelected,
+}: Props) {
   const { isLoading, error, tags } = useContext(ExpensesContext);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const uniqueTags = useMemo(
     () => tags.map((t) => Object.assign({}, { value: t, label: t })),
     [tags]
@@ -71,20 +76,14 @@ export function Filters(props: Props) {
           <DatePicker
             initial={fromDate}
             label="Date From"
-            onDateChanged={(d) => {
-              setFromDate(d);
-              props.fromDateChange(d);
-            }}
+            onDateChanged={fromDateChange}
           />
         </FilterContainer>
         <FilterContainer>
           <DatePicker
             initial={toDate}
             label="Date To"
-            onDateChanged={(d) => {
-              setToDate(d);
-              props.toDateChange(d);
-            }}
+            onDateChanged={toDateChange}
           />
         </FilterContainer>
         <FilterContainer>
@@ -95,9 +94,9 @@ export function Filters(props: Props) {
               const {
                 target: { value },
               } = event;
-              setSelectedTags(
-                typeof value === "string" ? value.split(",") : value
-              );
+              const r = typeof value === "string" ? value.split(",") : value;
+              tagsSelected(r);
+              setSelectedTags(r);
             }}
             input={<OutlinedInput />}
             renderValue={(selected: string[]) => (
