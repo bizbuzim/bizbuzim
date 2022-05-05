@@ -10,7 +10,7 @@ const Container = styled.div`
   display: flex;
   flex: 0 0 auto;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   height: 100%;
   min-height: 30rem;
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);
