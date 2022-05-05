@@ -12,13 +12,21 @@ import {
 } from "recharts";
 
 import { ExpensesContext } from "../../context/expenses";
+import { FiltersContext } from "../../context/filters";
 import { Expense } from "../../views/expenses/types";
 
 export function ExpensesBarChart() {
   const { expenses, isLoading } = useContext(ExpensesContext);
+  const { tags } = useContext(FiltersContext);
+  let filtered = expenses;
+  if (tags.length > 0) {
+    filtered = expenses.filter((e) => {
+      return e.tags.some((t) => tags.includes(t));
+    });
+  }
   const data = useMemo(() => {
     const groups: { [key: string]: Expense[] } = {};
-    expenses.forEach((e) => {
+    filtered.forEach((e) => {
       const date = new Date(e.created_at).toDateString();
       if (!groups[date]) {
         groups[date] = [];
@@ -31,7 +39,7 @@ export function ExpensesBarChart() {
         price: v.reduce((p, c) => p + _.toNumber(c.price), 0),
       };
     });
-  }, [expenses]);
+  }, [filtered]);
   if (isLoading) {
     return <></>;
   }
