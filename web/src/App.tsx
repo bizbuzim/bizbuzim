@@ -1,11 +1,11 @@
 import "./App.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Provider, useQuery } from "urql";
-import { Auth0Provider } from "@auth0/auth0-react";
+import { Provider } from "urql";
 import _ from "lodash";
+import { Auth0Provider } from "@auth0/auth0-react";
 
-import { GET_ALL_EXPENSES } from "./queries/get-all-expenses";
+import { useGetAllExpensesQuery } from "./generated/graphql";
 import client from "./services/gql";
 import { Sidebar } from "./components/sidebar";
 import { Login } from "./components/login";
@@ -13,8 +13,8 @@ import { Filters } from "./views/filters";
 import { Divider } from "./components/divider";
 import { Auth0ClientId, Auth0Domain } from "./config";
 import { Router } from "./components/router";
-import { Expense } from "./views/expenses/types";
 import { ExpensesContext } from "./context/expenses";
+import { FiltersContext } from "./context/filters";
 
 const Container = styled.div`
   display: grid;
@@ -64,48 +64,63 @@ function App() {
 }
 
 const Application = () => {
-  const [dateFrom, setDateFrom] = useState<Date>(new Date("2022-03-01"));
+  const [dateFrom, setDateFrom] = useState<Date>(new Date("2022-04-01"));
   const [dateTo, setDateTo] = useState<Date>(new Date());
-  const [result] = useQuery<{
-    expenses: Expense[];
-  }>({
-    query: GET_ALL_EXPENSES,
+  const [tags, setTags] = useState<string[]>([]);
+  const [result] = useGetAllExpensesQuery({
     variables: {
       from: dateFrom,
       to: dateTo,
     },
   });
   const { data, error, fetching } = result;
+
+  const t = _.chain(data?.expenses)
+    .map((e) => e.tags)
+    .flattenDeep()
+    .uniq()
+    .compact()
+    .value();
+
   return (
-    <ExpensesContext.Provider
+    <FiltersContext.Provider
       value={{
-        isLoading: fetching,
-        error: error?.message,
-        expenses: data?.expenses || [],
-        tags: _.chain(data?.expenses)
-          .map((e) => e.tags)
-          .flattenDeep()
-          .uniq()
-          .value(),
+        dates: {
+          from: dateFrom,
+          to: dateTo,
+        },
+        tags,
       }}
     >
-      <HeaderContainer>header</HeaderContainer>
-      <MenuContainer>
-        <Sidebar />
-      </MenuContainer>
-      <FiltersContainer>
-        <Filters
-          fromDate={dateFrom}
-          toDate={dateTo}
-          fromDateChange={setDateFrom}
-          toDateChange={setDateTo}
-        />
-        <Divider />
-      </FiltersContainer>
-      <MainContainer>
-        <Router />
-      </MainContainer>
-    </ExpensesContext.Provider>
+      <ExpensesContext.Provider
+        value={{
+          expenses: data?.expenses || [],
+          isLoading: fetching,
+          error: error?.message,
+          tags: t,
+        }}
+      >
+        <HeaderContainer>header</HeaderContainer>
+        <MenuContainer>
+          <Sidebar />
+        </MenuContainer>
+        <FiltersContainer>
+          <Filters
+            fromDate={dateFrom}
+            toDate={dateTo}
+            fromDateChange={setDateFrom}
+            toDateChange={setDateTo}
+            tagsSelected={(t) => {
+              setTags(t);
+            }}
+          />
+          <Divider />
+        </FiltersContainer>
+        <MainContainer>
+          <Router />
+        </MainContainer>
+      </ExpensesContext.Provider>
+    </FiltersContext.Provider>
   );
 };
 
