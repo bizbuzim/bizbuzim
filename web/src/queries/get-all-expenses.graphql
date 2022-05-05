@@ -1,0 +1,13 @@
+query GetAllExpenses($from: timestamp!, $to: timestamp!) {
+  expenses(
+    order_by: { created_at: desc }
+    where: { _and: { created_at: { _gte: $from, _lt: $to } } }
+  ) {
+    id
+    name
+    payment
+    tags
+    price
+    created_at
+  }
+}
