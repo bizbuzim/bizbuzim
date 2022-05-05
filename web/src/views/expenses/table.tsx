@@ -1,20 +1,37 @@
 import Chance from "chance";
 import _ from "lodash";
 import Chip from "@mui/material/Chip";
+import styled from "styled-components";
 
 import { StyledRow, StyledTD, StyledLabelTD, StyledTH } from "./styles";
 import { Expense } from "./types";
 
+const StyledTHead = styled.thead`
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  background-color: #000;
+  color: #fff;
+`;
+
+const StyledTFoot = styled.tfoot`
+  position: sticky;
+  position: -webkit-sticky;
+  bottom: 0;
+  background-color: #000;
+  color: #fff;
+`;
+
 const Table = ({ headers, rows }: { headers: string[]; rows: Expense[] }) => {
   return (
     <table style={{ width: "100%" }}>
-      <thead>
+      <StyledTHead>
         <tr>
           {headers.map((h, i) => (
             <StyledTH key={i}>{h}</StyledTH>
           ))}
         </tr>
-      </thead>
+      </StyledTHead>
       <tbody>
         {rows.map((v, i) => (
           <Row
@@ -25,14 +42,14 @@ const Table = ({ headers, rows }: { headers: string[]; rows: Expense[] }) => {
           />
         ))}
       </tbody>
-      <tfoot style={{ backgroundColor: "gray" }}>
+      <StyledTFoot>
         <tr>
           <td></td>
           <td></td>
           <td>Total: {rows.reduce((v, c) => v + _.toNumber(c.price), 0)}</td>
           <td></td>
         </tr>
-      </tfoot>
+      </StyledTFoot>
     </table>
   );
 };
