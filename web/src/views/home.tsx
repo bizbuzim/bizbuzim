@@ -1,4 +1,4 @@
-import { useContext, useMemo } from "react";
+import { useContext, useMemo, useState } from "react";
 import styled from "styled-components";
 import _ from "lodash";
 
@@ -18,6 +18,7 @@ const Container = styled.div`
 
 export function Home() {
   const { expenses, isLoading } = useContext(ExpensesContext);
+  const [stackedChart, setStackedChart] = useState(false);
   const total = useMemo(() => {
     return expenses.reduce((p, c) => _.toNumber(c.price) + p, 0);
   }, [expenses]);
@@ -27,7 +28,14 @@ export function Home() {
   return (
     <Container>
       <div>Total: {_.toNumber(total).toFixed(1)}</div>
-      <ExpensesBarChart />
+      <button
+        onClick={() => {
+          setStackedChart(!stackedChart);
+        }}
+      >
+        Stack
+      </button>
+      <ExpensesBarChart stacked={stackedChart} />
     </Container>
   );
 }
