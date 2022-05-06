@@ -506,7 +506,7 @@ export type GetAllExpensesQuery = { __typename?: 'query_root', expenses: Array<{
 export const GetAllExpensesDocument = gql`
     query GetAllExpenses($from: timestamp!, $to: timestamp!) {
   expenses(
-    order_by: {created_at: desc}
+    order_by: {created_at: asc}
     where: {_and: {created_at: {_gte: $from, _lt: $to}}}
   ) {
     id
