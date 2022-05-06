@@ -7,6 +7,8 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import { BsFilter } from "react-icons/bs";
+import InputUnstyled from "@mui/base/InputUnstyled";
+import { Input } from "@mui/material";
 
 import { ExpensesContext } from "../context/expenses";
 
@@ -43,6 +45,7 @@ export interface Props {
   toDate: Date;
   toDateChange: (d: Date) => void;
   tagsSelected: (tags: string[]) => void;
+  searchChange: (d: string) => void;
 }
 export function Filters({
   fromDate,
@@ -50,6 +53,7 @@ export function Filters({
   fromDateChange,
   toDateChange,
   tagsSelected,
+  searchChange,
 }: Props) {
   const { isLoading, error, tags } = useContext(ExpensesContext);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -72,6 +76,13 @@ export function Filters({
     <>
       <FiltersContainer>
         <BsFilter size={"2em"} />
+        <FilterContainer>
+          <input
+            onChange={(e) => {
+              searchChange(e.target.value);
+            }}
+          />
+        </FilterContainer>
         <FilterContainer>
           <DatePicker
             initial={fromDate}

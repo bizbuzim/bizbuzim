@@ -6,10 +6,12 @@ export const FiltersContext = createContext<{
     to: Date;
   };
   tags: string[];
+  search: string;
 }>({
   dates: {
     from: new Date("04/05/2022"),
     to: new Date(),
   },
   tags: [],
+  search: "",
 });
