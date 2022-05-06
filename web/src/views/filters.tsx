@@ -7,8 +7,7 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import { BsFilter } from "react-icons/bs";
-import InputUnstyled from "@mui/base/InputUnstyled";
-import { Input } from "@mui/material";
+import TextField from "@mui/material/TextField";
 
 import { ExpensesContext } from "../context/expenses";
 
@@ -77,10 +76,9 @@ export function Filters({
       <FiltersContainer>
         <BsFilter size={"2em"} />
         <FilterContainer>
-          <input
-            onChange={(e) => {
-              searchChange(e.target.value);
-            }}
+          <TextField
+            onChange={(e) => searchChange(e.target.value)}
+            label="Search"
           />
         </FilterContainer>
         <FilterContainer>
