@@ -67,6 +67,7 @@ const Application = () => {
   const [dateFrom, setDateFrom] = useState<Date>(new Date("2022-04-01"));
   const [dateTo, setDateTo] = useState<Date>(new Date());
   const [tags, setTags] = useState<string[]>([]);
+  const [search, setSearch] = useState("");
   const [result] = useGetAllExpensesQuery({
     variables: {
       from: dateFrom,
@@ -90,6 +91,7 @@ const Application = () => {
           to: dateTo,
         },
         tags,
+        search,
       }}
     >
       <ExpensesContext.Provider
@@ -113,6 +115,7 @@ const Application = () => {
             tagsSelected={(t) => {
               setTags(t);
             }}
+            searchChange={setSearch}
           />
           <Divider />
         </FiltersContainer>
