@@ -10,12 +10,16 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import Chance from "chance";
 
 import { ExpensesContext } from "../../context/expenses";
 import { FiltersContext } from "../../context/filters";
 import { Expense } from "../../views/expenses/types";
 
-export function ExpensesBarChart() {
+interface processedExpense extends Expense {
+  processed: boolean;
+}
+export function ExpensesBarChart({ stacked }: { stacked: boolean }) {
   const { expenses, isLoading } = useContext(ExpensesContext);
   const { tags } = useContext(FiltersContext);
   let filtered = expenses;
@@ -24,24 +28,77 @@ export function ExpensesBarChart() {
       return e.tags.some((t) => tags.includes(t));
     });
   }
-  const data = useMemo(() => {
-    const groups: { [key: string]: Expense[] } = {};
+  const { dates } = useMemo(() => {
+    const groups: {
+      [key: string]: {
+        expenses: processedExpense[];
+        uniqueTags: Set<string>;
+      };
+    } = {};
     filtered.forEach((e) => {
       const date = new Date(e.created_at).toDateString();
       if (!groups[date]) {
-        groups[date] = [];
+        groups[date] = {
+          expenses: [],
+          uniqueTags: new Set(),
+        };
       }
-      groups[date].push(e);
+      groups[date].expenses.push({ ...e, processed: false });
+      e.tags.forEach((t) => {
+        groups[date].uniqueTags.add(t);
+      });
     });
-    return _.map(groups, (v, k) => {
-      return {
-        name: k,
-        price: v.reduce((p, c) => p + _.toNumber(c.price), 0),
-      };
-    });
+    return { dates: groups };
   }, [filtered]);
+  const data = useMemo(() => {
+    return _.map(dates, (v, k) => {
+      const res: {
+        name: string;
+        price: number;
+        tags: { [key: string]: number };
+      } = {
+        name: k,
+        price: v.expenses.reduce((p, c) => p + _.toNumber(c.price), 0),
+        tags: {},
+      };
+      v.uniqueTags.forEach((t) => {
+        res.tags[t] = v.expenses.reduce((p, c) => {
+          if (c.processed) {
+            return p;
+          }
+          if (!c.tags.includes(t)) {
+            return p;
+          }
+          c.processed = true;
+          return p + _.toNumber(c.price);
+        }, 0);
+      });
+      return res;
+    });
+  }, [dates]);
+  const uniqTags = _.chain(filtered)
+    .map((e) => e.tags)
+    .flattenDeep()
+    .uniq()
+    .compact()
+    .value();
   if (isLoading) {
     return <></>;
+  }
+  let bars = <Bar dataKey="price" stackId="a" fill="#8884d8" />;
+  if (stacked) {
+    bars = (
+      <>
+        {uniqTags.map((t, i) => (
+          <Bar
+            dataKey={`tags.${t}`}
+            stackId={"a"}
+            key={i}
+            fill={new Chance().color({ format: "hex" })}
+          />
+        ))}
+      </>
+    );
   }
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -61,7 +118,7 @@ export function ExpensesBarChart() {
         <YAxis />
         <Tooltip />
         <Legend />
-        <Bar dataKey="price" stackId="a" fill="#8884d8" />
+        {bars}
       </BarChart>
     </ResponsiveContainer>
   );
