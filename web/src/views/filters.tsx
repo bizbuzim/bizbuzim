@@ -97,6 +97,9 @@ export function Filters({
         </FilterContainer>
         <FilterContainer>
           <Select
+            style={{
+              minWidth: "9rem",
+            }}
             multiple
             value={selectedTags}
             onChange={(event: SelectChangeEvent<string[]>) => {
