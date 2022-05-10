@@ -79,8 +79,14 @@ export function Filters({
           />
         </FilterContainer>
         <FilterContainer>
-          <BZSelect items={tags} onItemSelected={tagsSelected} />
-          <BZSelect items={payments} onItemSelected={paymentsSelected} />
+          <BZSelect title="Tags" items={tags} onItemSelected={tagsSelected} />
+        </FilterContainer>
+        <FilterContainer>
+          <BZSelect
+            title="Payments"
+            items={payments}
+            onItemSelected={paymentsSelected}
+          />
         </FilterContainer>
       </FiltersContainer>
     </>
