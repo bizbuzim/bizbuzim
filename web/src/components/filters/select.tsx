@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
 import Box from "@mui/material/Box";
@@ -22,14 +23,16 @@ export default function BZSelect({
   items: string[];
   onItemSelected: (item: string[]) => void;
 }) {
+  const [selected, setSelected] = useState<string[]>([]);
   return (
     <Select
       multiple
-      value={items}
+      value={selected}
       onChange={(event: SelectChangeEvent<string[]>) => {
         const { value } = event.target;
         const r = typeof value === "string" ? value.split(",") : value;
         onItemSelected(r);
+        setSelected(r);
       }}
       input={<OutlinedInput />}
       renderValue={(selected: string[]) => (
@@ -41,9 +44,9 @@ export default function BZSelect({
       )}
       MenuProps={MenuProps}
     >
-      {[{ label: "213", value: "132" }].map((tag, i) => (
-        <MenuItem key={tag.label} value={tag.value}>
-          {tag.label}
+      {items.map((item, i) => (
+        <MenuItem key={item} value={item}>
+          {item}
         </MenuItem>
       ))}
     </Select>
