@@ -7,8 +7,10 @@ export const ExpensesContext = createContext<{
   error?: string;
   expenses: Expense[];
   tags: string[];
+  payments: string[];
 }>({
   isLoading: true,
   expenses: [],
   tags: [],
+  payments: [],
 });

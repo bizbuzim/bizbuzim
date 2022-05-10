@@ -21,7 +21,7 @@ interface processedExpense extends Expense {
 }
 export function ExpensesBarChart({ stacked }: { stacked: boolean }) {
   const { expenses, isLoading } = useContext(ExpensesContext);
-  const { tags, search } = useContext(FiltersContext);
+  const { tags, search, payments } = useContext(FiltersContext);
   let filtered = expenses;
   if (tags.length > 0) {
     filtered = expenses.filter((e) => {
@@ -30,6 +30,10 @@ export function ExpensesBarChart({ stacked }: { stacked: boolean }) {
   }
   if (search) {
     filtered = filtered.filter((e) => e.name.includes(search));
+  }
+
+  if (payments.length > 0) {
+    filtered = filtered.filter((e) => payments.includes(e.payment));
   }
   const { dates } = useMemo(() => {
     const groups: {

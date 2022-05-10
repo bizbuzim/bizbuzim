@@ -68,6 +68,7 @@ const Application = () => {
   const [dateTo, setDateTo] = useState<Date>(new Date());
   const [tags, setTags] = useState<string[]>([]);
   const [search, setSearch] = useState("");
+  const [payments, setPayments] = useState<string[]>([]);
   const [result] = useGetAllExpensesQuery({
     variables: {
       from: dateFrom,
@@ -83,6 +84,12 @@ const Application = () => {
     .compact()
     .value();
 
+  const p = _.chain(data?.expenses)
+    .map((e) => e.payment)
+    .uniq()
+    .compact()
+    .value();
+
   return (
     <FiltersContext.Provider
       value={{
@@ -92,6 +99,7 @@ const Application = () => {
         },
         tags,
         search,
+        payments,
       }}
     >
       <ExpensesContext.Provider
@@ -100,6 +108,7 @@ const Application = () => {
           isLoading: fetching,
           error: error?.message,
           tags: t,
+          payments: p,
         }}
       >
         <HeaderContainer>header</HeaderContainer>
@@ -114,6 +123,7 @@ const Application = () => {
             toDateChange={setDateTo}
             tagsSelected={setTags}
             searchChange={setSearch}
+            paymentsSelected={setPayments}
           />
           <Divider />
         </FiltersContainer>

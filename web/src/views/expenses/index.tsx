@@ -18,7 +18,7 @@ const Container = styled.div`
 
 const Expenses = () => {
   const { isLoading, error, expenses } = useContext(ExpensesContext);
-  const { tags, search } = useContext(FiltersContext);
+  const { tags, search, payments } = useContext(FiltersContext);
   if (isLoading) {
     return <div>loading...</div>;
   }
@@ -35,6 +35,10 @@ const Expenses = () => {
 
   if (search) {
     filtered = filtered.filter((e) => e.name.includes(search));
+  }
+
+  if (payments.length > 0) {
+    filtered = filtered.filter((e) => payments.includes(e.payment));
   }
   return (
     <Container>

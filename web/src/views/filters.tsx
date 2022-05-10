@@ -29,6 +29,7 @@ export interface Props {
   toDate: Date;
   toDateChange: (d: Date) => void;
   tagsSelected: (tags: string[]) => void;
+  paymentsSelected: (payments: string[]) => void;
   searchChange: (d: string) => void;
 }
 export function Filters({
@@ -38,8 +39,9 @@ export function Filters({
   toDateChange,
   tagsSelected,
   searchChange,
+  paymentsSelected,
 }: Props) {
-  const { isLoading, error, tags } = useContext(ExpensesContext);
+  const { isLoading, error, tags, payments } = useContext(ExpensesContext);
 
   if (isLoading) {
     return <div>loading</div>;
@@ -78,6 +80,7 @@ export function Filters({
         </FilterContainer>
         <FilterContainer>
           <BZSelect items={tags} onItemSelected={tagsSelected} />
+          <BZSelect items={payments} onItemSelected={paymentsSelected} />
         </FilterContainer>
       </FiltersContainer>
     </>
