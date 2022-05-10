@@ -69,23 +69,30 @@ function Row({
       <StyledTD>{expense.name}</StyledTD>
       <StyledTD>{expense.price}</StyledTD>
       <StyledLabelTD>
-        {expense.tags.map((t, i) => {
-          const c = new Chance();
-          const color = c.color({ format: "hex" });
-          return (
-            <Chip
-              style={{
-                backgroundColor: color,
-                marginLeft: "7px",
-                marginRight: "2px",
-              }}
-              label={t}
-              key={i}
-            />
-          );
-        })}
+        <Labels tags={expense.tags} />
       </StyledLabelTD>
     </StyledRow>
+  );
+}
+
+function Labels({ tags }: { tags: string[] }) {
+  const c = new Chance();
+  return (
+    <>
+      {tags.map((t, i) => {
+        return (
+          <Chip
+            style={{
+              backgroundColor: c.color({ format: "hex" }),
+              marginLeft: "7px",
+              marginRight: "2px",
+            }}
+            label={t}
+            key={i}
+          />
+        );
+      })}
+    </>
   );
 }
 
