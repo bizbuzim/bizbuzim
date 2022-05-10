@@ -7,6 +7,7 @@ export const FiltersContext = createContext<{
   };
   tags: string[];
   search: string;
+  payments: string[];
 }>({
   dates: {
     from: new Date("04/05/2022"),
@@ -14,4 +15,5 @@ export const FiltersContext = createContext<{
   },
   tags: [],
   search: "",
+  payments: [],
 });
