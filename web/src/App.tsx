@@ -112,9 +112,7 @@ const Application = () => {
             toDate={dateTo}
             fromDateChange={setDateFrom}
             toDateChange={setDateTo}
-            tagsSelected={(t) => {
-              setTags(t);
-            }}
+            tagsSelected={setTags}
             searchChange={setSearch}
           />
           <Divider />
