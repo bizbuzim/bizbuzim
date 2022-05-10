@@ -19,7 +19,6 @@ import { FiltersContext } from "./context/filters";
 const Container = styled.div`
   display: grid;
   grid-template-areas:
-    "header header header header header header header header"
     "menu filter filter filter filter filter filter filter"
     "menu main main main main main main main"
     "menu main main main main main main main"
@@ -28,10 +27,6 @@ const Container = styled.div`
   height: 100vh;
 `;
 
-const HeaderContainer = styled.div`
-  grid-area: header;
-  height: 5vh;
-`;
 const FiltersContainer = styled.div`
   grid-area: filter;
   height: 10vh;
@@ -42,7 +37,7 @@ const MenuContainer = styled.div`
 `;
 const MainContainer = styled.div`
   grid-area: main;
-  height: 85vh;
+  height: 90vh;
   overflow: scroll;
 `;
 
@@ -111,7 +106,6 @@ const Application = () => {
           payments: p,
         }}
       >
-        <HeaderContainer>header</HeaderContainer>
         <MenuContainer>
           <Sidebar />
         </MenuContainer>
