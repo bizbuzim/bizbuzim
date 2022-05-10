@@ -48,6 +48,7 @@ const Table = ({ headers, rows }: { headers: string[]; rows: Expense[] }) => {
           <td></td>
           <td>Total: {rows.reduce((v, c) => v + _.toNumber(c.price), 0)}</td>
           <td></td>
+          <td></td>
         </tr>
       </StyledTFoot>
     </table>
@@ -66,6 +67,7 @@ function Row({
   return (
     <StyledRow key={expense.id} color={color}>
       <StyledTD>{index + 1}</StyledTD>
+      <StyledTD>{new Date(expense.created_at).toLocaleString()}</StyledTD>
       <StyledTD>{expense.name}</StyledTD>
       <StyledTD>{expense.price}</StyledTD>
       <StyledLabelTD>

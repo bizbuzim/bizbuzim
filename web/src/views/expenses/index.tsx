@@ -38,7 +38,10 @@ const Expenses = () => {
   }
   return (
     <Container>
-      <Table headers={["No.", "Name", "Price", "Labels"]} rows={filtered} />
+      <Table
+        headers={["No.", "Date", "Name", "Price", "Labels"]}
+        rows={filtered}
+      />
     </Container>
   );
 };
