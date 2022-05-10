@@ -2,6 +2,10 @@ import Chance from "chance";
 import _ from "lodash";
 import Chip from "@mui/material/Chip";
 import styled from "styled-components";
+import { useContext } from "react";
+import { color } from "@mui/system";
+
+import { ExpensesContext } from "../../context/expenses";
 
 import { StyledRow, StyledTD, StyledLabelTD, StyledTH } from "./styles";
 import { Expense } from "./types";
@@ -78,14 +82,14 @@ function Row({
 }
 
 function Labels({ tags }: { tags: string[] }) {
-  const c = new Chance();
+  const { tags: colorized } = useContext(ExpensesContext);
   return (
     <>
       {tags.map((t, i) => {
         return (
           <Chip
             style={{
-              backgroundColor: c.color({ format: "hex" }),
+              backgroundColor: colorized.find((_t) => _t.name === t)?.color,
               marginLeft: "7px",
               marginRight: "2px",
             }}

@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Provider } from "urql";
 import _ from "lodash";
 import { Auth0Provider } from "@auth0/auth0-react";
+import { Chance } from "chance";
 
 import { useGetAllExpensesQuery } from "./generated/graphql";
 import client from "./services/gql";
@@ -72,11 +73,18 @@ const Application = () => {
   });
   const { data, error, fetching } = result;
 
+  const chance = new Chance();
   const t = _.chain(data?.expenses)
     .map((e) => e.tags)
     .flattenDeep()
     .uniq()
     .compact()
+    .map((t) => {
+      return {
+        name: t,
+        color: chance.color({ format: "hex" }),
+      };
+    })
     .value();
 
   const p = _.chain(data?.expenses)

@@ -79,7 +79,11 @@ export function Filters({
           />
         </FilterContainer>
         <FilterContainer>
-          <BZSelect title="Tags" items={tags} onItemSelected={tagsSelected} />
+          <BZSelect
+            title="Tags"
+            items={tags.map((t) => t.name)}
+            onItemSelected={tagsSelected}
+          />
         </FilterContainer>
         <FilterContainer>
           <BZSelect
