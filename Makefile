@@ -22,7 +22,9 @@ gen-code: check-env
 		-o pkg/dal \
 		--go-pkg=dal \
 		-i expenses \
-		-i raw_expenses
+		-i raw_expenses \
+		-i sources \
+		-j 
 
 .PHONY: dev-setup
 dev-setup:
