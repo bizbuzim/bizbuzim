@@ -48,7 +48,7 @@ func (h *Handler) Handle(w http.ResponseWriter, r *http.Request) {
 func ProcessUpdate(ctx context.Context, lgr *logger.Logger, bot *tgbotapi.BotAPI, msg tgbotapi.Message, db dal.DB) {
 	lgr.Info("processing message", "text", msg.Text, "user", msg.From.UserName, "channel", msg.Chat.Title, "channel-id", msg.Chat.ID)
 	if msg.Chat.Type != "group" {
-		if err := sendMessageToClient(msg.MessageID, "Private chats with Bizbuzim bot is not supported, please open a channel and add me.", msg.Chat.ID, bot); err != nil {
+		if err := sendMessageToClient(nil, "Private chats with Bizbuzim bot is not supported, please open a channel and add me.", msg.Chat.ID, bot); err != nil {
 			lgr.Error(err, "failed to send message to client")
 		}
 		return
@@ -57,7 +57,7 @@ func ProcessUpdate(ctx context.Context, lgr *logger.Logger, bot *tgbotapi.BotAPI
 	sources, err := dal.SourcesByIdxSourceExternalID(ctx, db, strconv.Itoa(int(chat)))
 	if err != nil {
 		lgr.Info("failed to get source", "error", err.Error())
-		if err := sendMessageToClient(msg.MessageID, "something went wrong...", msg.Chat.ID, bot); err != nil {
+		if err := sendMessageToClient(nil, "something went wrong...", msg.Chat.ID, bot); err != nil {
 			lgr.Error(err, "failed to send message to client")
 		}
 		return
@@ -65,7 +65,7 @@ func ProcessUpdate(ctx context.Context, lgr *logger.Logger, bot *tgbotapi.BotAPI
 	if len(sources) == 0 {
 		lgr.Info("source not found", "id", chat)
 		m := fmt.Sprintf("Hey %s, welcome to Bizbuzim.\nThis channel is not integrated yet, please add it first (id=%d)", msg.From.UserName, msg.Chat.ID)
-		if err := sendMessageToClient(msg.MessageID, m, msg.Chat.ID, bot); err != nil {
+		if err := sendMessageToClient(nil, m, msg.Chat.ID, bot); err != nil {
 			lgr.Error(err, "failed to send message to client")
 		}
 		return

@@ -91,12 +91,14 @@ func processNewExpenseMessage(ctx context.Context, lgr *logger.Logger, msg tgbot
 		}
 	}
 
-	return sendMessageToClient(msg.MessageID, replayMessage.String(), msg.Chat.ID, bot)
+	return sendMessageToClient(&msg.MessageID, replayMessage.String(), msg.Chat.ID, bot)
 }
 
-func sendMessageToClient(msg int, content string, chat int64, bot *tgbotapi.BotAPI) error {
+func sendMessageToClient(msg *int, content string, chat int64, bot *tgbotapi.BotAPI) error {
 	m := tgbotapi.NewMessage(chat, content)
-	m.ReplyToMessageID = msg
+	if msg != nil {
+		m.ReplyToMessageID = *msg
+	}
 	_, err := bot.Send(m)
 	return err
 }
