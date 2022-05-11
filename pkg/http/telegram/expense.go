@@ -40,19 +40,22 @@ var (
 )
 
 func processNewExpenseMessage(ctx context.Context, lgr *logger.Logger, msg tgbotapi.Message, bot *tgbotapi.BotAPI, db dal.DB) error {
+	chat := msg.Chat.ID
+	sources, err := dal.SourcesByIdxSourceExternalID(ctx, db, strconv.Itoa(int(chat)))
+	if err != nil {
+		lgr.Info("failed to get source", "error", err.Error())
+		return sendMessageToClient(msg.MessageID, "something went wrong...", msg.Chat.ID, bot)
+	}
+	if len(sources) == 0 {
+		return sendMessageToClient(msg.MessageID, fmt.Sprintf("source %d not found", msg.Chat.ID), msg.Chat.ID, bot)
+	}
+
 	replayMessage := strings.Builder{}
 	data, err := attemptToParseMessage(msg.Text, msg.Time())
 	id := uuid.Must(uuid.NewUUID())
 	user := ""
 	if msg.From != nil {
 		user = msg.From.String()
-	}
-	chat := msg.Chat.ID
-	sources, err := dal.SourcesByIdxSourceExternalID(ctx, db, strconv.Itoa(int(chat)))
-	if err != nil {
-		lgr.Info("failed to get source", "error", err.Error())
-	} else {
-		lgr.Info("found sources", "sources", sources[0].Name)
 	}
 	if err != nil {
 		lgr.Info("failed to parse messege, storing in raw table", "error", err.Error())
@@ -98,10 +101,14 @@ func processNewExpenseMessage(ctx context.Context, lgr *logger.Logger, msg tgbot
 		}
 	}
 
-	replay := tgbotapi.NewMessage(msg.Chat.ID, replayMessage.String())
-	replay.ReplyToMessageID = msg.MessageID
-	bot.Send(replay)
-	return nil
+	return sendMessageToClient(msg.MessageID, replayMessage.String(), msg.Chat.ID, bot)
+}
+
+func sendMessageToClient(msg int, content string, chat int64, bot *tgbotapi.BotAPI) error {
+	m := tgbotapi.NewMessage(chat, content)
+	m.ReplyToMessageID = msg
+	_, err := bot.Send(m)
+	return err
 }
 
 func attemptToParseMessage(msg string, date time.Time) (*StructuredMessage, error) {
