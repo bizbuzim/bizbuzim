@@ -52,6 +52,7 @@ func main() {
 	} else {
 		wh, err := tgbotapi.NewWebhook(hook + apiTelegram)
 		dieOnError(err, "failed to create webhook")
+		wh.AllowedUpdates = []string{"message"}
 		resp, err := bot.Request(wh)
 		dieOnError(err, "failed to register webhook")
 		lgr.Info("webhook registration completed", "webhook", resp)
