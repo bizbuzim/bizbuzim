@@ -3,8 +3,9 @@ package telegram
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
-	"strings"
+	"strconv"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/olegsu/bizbuzim/pkg/dal"
@@ -46,30 +47,19 @@ func (h *Handler) Handle(w http.ResponseWriter, r *http.Request) {
 
 func ProcessUpdate(ctx context.Context, lgr *logger.Logger, bot *tgbotapi.BotAPI, msg tgbotapi.Message, db dal.DB) {
 	lgr.Info("processing message", "text", msg.Text, "user", msg.From.UserName, "channel", msg.Chat.Title, "channel-id", msg.Chat.ID)
-	if msg.Text == "/help" {
-		if err := help(ctx, lgr, msg, bot); err != nil {
-			lgr.Info("failed to process /help message")
+	chat := msg.Chat.ID
+	sources, err := dal.SourcesByIdxSourceExternalID(ctx, db, strconv.Itoa(int(chat)))
+	if err != nil {
+		lgr.Info("failed to get source", "error", err.Error())
+		if err := sendMessageToClient(msg.MessageID, "something went wrong...", msg.Chat.ID, bot); err != nil {
+			lgr.Error(err, "failed to send message to client")
 		}
 		return
 	}
-
-	if msg.Text == "/uncompleted" {
-		if err := uncompleted(ctx, lgr, msg, bot); err != nil {
-			lgr.Info("failed to process /uncompleted message")
-		}
-		return
-	}
-
-	if msg.Text == "/expenses" {
-		if err := expenses(ctx, lgr, msg, bot); err != nil {
-			lgr.Info("failed to process /uncompleted message")
-		}
-		return
-	}
-
-	if strings.HasPrefix(msg.Text, "/complete") {
-		if err := complete(ctx, lgr, msg, bot); err != nil {
-			lgr.Info("failed to process /uncompleted message")
+	if len(sources) == 0 {
+		lgr.Info("source not found", "id", chat)
+		if err := sendMessageToClient(msg.MessageID, fmt.Sprintf("source %d not found", msg.Chat.ID), msg.Chat.ID, bot); err != nil {
+			lgr.Error(err, "failed to send message to client")
 		}
 		return
 	}

@@ -40,22 +40,6 @@ var (
 )
 
 func processNewExpenseMessage(ctx context.Context, lgr *logger.Logger, msg tgbotapi.Message, bot *tgbotapi.BotAPI, db dal.DB) error {
-	chat := msg.Chat.ID
-	sources, err := dal.SourcesByIdxSourceExternalID(ctx, db, strconv.Itoa(int(chat)))
-	if err != nil {
-		lgr.Info("failed to get source", "error", err.Error())
-		if err := sendMessageToClient(msg.MessageID, "something went wrong...", msg.Chat.ID, bot); err != nil {
-			lgr.Error(err, "failed to send message to client")
-		}
-		return nil
-	}
-	if len(sources) == 0 {
-		if err := sendMessageToClient(msg.MessageID, fmt.Sprintf("source %d not found", msg.Chat.ID), msg.Chat.ID, bot); err != nil {
-			lgr.Error(err, "failed to send message to client")
-		}
-		return nil
-	}
-
 	replayMessage := strings.Builder{}
 	data, err := attemptToParseMessage(msg.Text, msg.Time())
 	id := uuid.Must(uuid.NewUUID())
