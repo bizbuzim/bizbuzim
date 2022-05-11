@@ -64,7 +64,7 @@ func ProcessUpdate(ctx context.Context, lgr *logger.Logger, bot *tgbotapi.BotAPI
 	}
 	if len(sources) == 0 {
 		lgr.Info("source not found", "id", chat)
-		m := fmt.Sprintf("Hey %s\nThis channgel is not integrated yet, please add it first (id=%d)", msg.From.UserName, msg.Chat.ID)
+		m := fmt.Sprintf("Hey %s, welcome to Bizbuzim.\nThis channel is not integrated yet, please add it first (id=%d)", msg.From.UserName, msg.Chat.ID)
 		if err := sendMessageToClient(msg.MessageID, m, msg.Chat.ID, bot); err != nil {
 			lgr.Error(err, "failed to send message to client")
 		}
