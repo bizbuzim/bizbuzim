@@ -47,6 +47,13 @@ func processNewExpenseMessage(ctx context.Context, lgr *logger.Logger, msg tgbot
 	if msg.From != nil {
 		user = msg.From.String()
 	}
+	chat := msg.Chat.ID
+	sources, err := dal.SourcesByIdxSourceExternalID(ctx, db, strconv.Itoa(int(chat)))
+	if err != nil {
+		lgr.Info("failed to get source", "error", err.Error())
+	} else {
+		lgr.Info("found sources", "sources", sources[0].Name)
+	}
 	if err != nil {
 		lgr.Info("failed to parse messege, storing in raw table", "error", err.Error())
 		raw := dal.RawExpense{
