@@ -41,9 +41,7 @@ func (h *Handler) Handle(w http.ResponseWriter, r *http.Request) {
 		h.Logger.Info("the message was sent by no-one", "update", update)
 		return
 	}
-	if update.Message != nil {
-		go ProcessUpdate(context.Background(), h.Logger, h.TGBot, *update.Message, h.Dal)
-	}
+	go ProcessUpdate(context.Background(), h.Logger, h.TGBot, *update.Message, h.Dal)
 }
 
 func ProcessUpdate(ctx context.Context, lgr *logger.Logger, bot *tgbotapi.BotAPI, msg tgbotapi.Message, db dal.DB) {
