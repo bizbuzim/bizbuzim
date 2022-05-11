@@ -130,10 +130,10 @@ func (re *RawExpense) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// RawExpenseByID retrieves a row from 'public.raw_expenses' as a RawExpense.
+// RawExpenseByPKRawExpensesID retrieves a row from 'public.raw_expenses' as a RawExpense.
 //
 // Generated from index 'PK_raw_expenses_id'.
-func RawExpenseByID(ctx context.Context, db DB, id uuid.UUID) (*RawExpense, error) {
+func RawExpenseByPKRawExpensesID(ctx context.Context, db DB, id uuid.UUID) (*RawExpense, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`id, text, created_at, created_by, external_channel_id ` +

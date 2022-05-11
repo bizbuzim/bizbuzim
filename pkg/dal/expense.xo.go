@@ -134,10 +134,10 @@ func (e *Expense) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// ExpenseByID retrieves a row from 'public.expenses' as a Expense.
+// ExpenseByPKExpensesID retrieves a row from 'public.expenses' as a Expense.
 //
 // Generated from index 'PK_expenses_id'.
-func ExpenseByID(ctx context.Context, db DB, id uuid.UUID) (*Expense, error) {
+func ExpenseByPKExpensesID(ctx context.Context, db DB, id uuid.UUID) (*Expense, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`id, name, payment, price, tags, description, created_at, created_by, external_channel_id ` +
