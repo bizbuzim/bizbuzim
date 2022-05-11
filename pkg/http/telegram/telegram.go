@@ -47,7 +47,7 @@ func (h *Handler) Handle(w http.ResponseWriter, r *http.Request) {
 
 func ProcessUpdate(ctx context.Context, lgr *logger.Logger, bot *tgbotapi.BotAPI, msg tgbotapi.Message, db dal.DB) {
 	lgr.Info("processing message", "text", msg.Text, "user", msg.From.UserName, "channel", msg.Chat.Title, "channel-id", msg.Chat.ID)
-	if msg.Chat.Type != "channel" {
+	if msg.Chat.Type != "group" {
 		if err := sendMessageToClient(msg.MessageID, "Private chats with Bizbuzim bot are is not supported, please open a channel and add me.", msg.Chat.ID, bot); err != nil {
 			lgr.Error(err, "failed to send message to client")
 		}
