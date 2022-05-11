@@ -29,8 +29,8 @@ func (h *Handler) Handle(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write(errMsg)
 		return
 	}
-	if update.Message.From == nil {
-		h.Logger.Info("the message was sent by no-one")
+	if update == nil || update.Message == nil || update.Message.From == nil {
+		h.Logger.Info("the message was sent by no-one", "update", update)
 		return
 	}
 	if update.Message != nil {
