@@ -8,10 +8,8 @@ import (
 
 	"database/sql"
 
-	"github.com/dosco/graphjin/core"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/olegsu/bizbuzim/pkg/fatal"
-	"github.com/olegsu/bizbuzim/pkg/http/graphql"
 	"github.com/olegsu/bizbuzim/pkg/http/telegram"
 	"github.com/olegsu/go-tools/pkg/logger"
 
@@ -54,10 +52,9 @@ func main() {
 	} else {
 		wh, err := tgbotapi.NewWebhook(hook + apiTelegram)
 		dieOnError(err, "failed to create webhook")
-
 		resp, err := bot.Request(wh)
 		dieOnError(err, "failed to register webhook")
-		lgr.Info("webhook registration completed", "description", resp.Description)
+		lgr.Info("webhook registration completed", "webhook", resp)
 
 	}
 	tgHandler := telegram.Handler{
@@ -66,23 +63,12 @@ func main() {
 		TGBot:  bot,
 	}
 	http.HandleFunc(apiTelegram, tgHandler.Handle)
-	if os.Getenv("USE_GRAPHJIN") != "" {
-		err := useGraphjin(db, lgr)
-		fatal.DieOnError(err, "failed to use graphjin")
-	}
 	err = http.ListenAndServe(":8000", nil)
 	dieOnError(err, "failed to start server")
 }
 
 func dieOnError(err error, msg string) {
 	fatal.DieOnError(err, msg)
-}
-
-func newGraphQLHandler(gj *core.GraphJin, lgr *logger.Logger) *graphql.Handler {
-	return &graphql.Handler{
-		Logger: lgr,
-		GJ:     gj,
-	}
 }
 
 func buildDatabaseConnURI(lgr *logger.Logger) string {
@@ -109,15 +95,4 @@ func buildDatabaseConnURI(lgr *logger.Logger) string {
 	}
 
 	return uri
-}
-
-func useGraphjin(db *sql.DB, lgr *logger.Logger) error {
-	gj, err := core.NewGraphJin(nil, db)
-	if err != nil {
-		return err
-	}
-	lgr.Info("graphjin configured")
-
-	http.HandleFunc("/api/v1/graphql", newGraphQLHandler(gj, lgr).Handle)
-	return nil
 }
