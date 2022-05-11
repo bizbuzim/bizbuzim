@@ -55,7 +55,9 @@ func main() {
 		wh.AllowedUpdates = []string{"message"}
 		resp, err := bot.Request(wh)
 		dieOnError(err, "failed to register webhook")
-		lgr.Info("webhook registration completed", "webhook", resp)
+		info, err := bot.GetWebhookInfo()
+		dieOnError(err, "failed to get webhook info")
+		lgr.Info("webhook registration completed", "webhook", resp, "webhook-info", info)
 
 	}
 	tgHandler := telegram.Handler{
