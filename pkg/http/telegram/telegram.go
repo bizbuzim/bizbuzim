@@ -70,7 +70,7 @@ func ProcessUpdate(ctx context.Context, lgr *logger.Logger, bot *tgbotapi.BotAPI
 		}
 		return
 	}
-	if err := processNewExpenseMessage(ctx, lgr, msg, bot, db); err != nil {
+	if err := processNewExpenseMessage(ctx, lgr, msg, bot, sources[0], db); err != nil {
 		lgr.Info("failed to process message", "error", err.Error())
 	}
 }

@@ -3,10 +3,9 @@ package telegram
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"fmt"
-	"strconv"
 	"strings"
-	"time"
 
 	"github.com/brianvoe/gofakeit/v6"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -16,13 +15,14 @@ import (
 )
 
 type (
-	StructuredMessage struct {
-		Name        string
-		Price       float64
-		Categories  []string
-		Source      string
-		Description string
-		Date        time.Time
+	sourceConfiguration struct {
+		Defaults      sourceConfigurationDefaults `json:"defaults"`
+		MessageParser string                      `json:"messageParser"`
+	}
+
+	sourceConfigurationDefaults struct {
+		Source string   `json:"source"`
+		Tags   []string `json:"tags"`
 	}
 )
 
@@ -39,9 +39,16 @@ var (
 	}
 )
 
-func processNewExpenseMessage(ctx context.Context, lgr *logger.Logger, msg tgbotapi.Message, bot *tgbotapi.BotAPI, db dal.DB) error {
+func processNewExpenseMessage(ctx context.Context, lgr *logger.Logger, msg tgbotapi.Message, bot *tgbotapi.BotAPI, source *dal.Source, db dal.DB) error {
+	config := sourceConfiguration{
+		MessageParser: "default",
+	}
+	if err := json.Unmarshal(source.Configuration, &config); err != nil {
+		lgr.Error(err, "failed to parse configuration, using default")
+	}
 	replayMessage := strings.Builder{}
-	data, err := attemptToParseMessage(msg.Text, msg.Time())
+	parse := getParser(config.MessageParser)
+	data, err := parse(msg.Text, msg.Time(), config)
 	id := uuid.Must(uuid.NewUUID())
 	user := ""
 	if msg.From != nil {
@@ -101,48 +108,6 @@ func sendMessageToClient(msg *int, content string, chat int64, bot *tgbotapi.Bot
 	}
 	_, err := bot.Send(m)
 	return err
-}
-
-func attemptToParseMessage(msg string, date time.Time) (*StructuredMessage, error) {
-	parts := strings.Split(msg, "\n")
-	if len(parts) < 3 {
-		return nil, fmt.Errorf("missing fields")
-	}
-
-	name := parts[0]
-
-	p := strings.TrimSpace(parts[1])
-	price, err := strconv.ParseFloat(p, 64)
-	if err != nil {
-		return nil, err
-	}
-
-	source := strings.TrimSpace(parts[2])
-
-	categories := []string{}
-	if len(parts) >= 4 {
-		for _, c := range strings.Split(parts[3], " ") {
-			cat := strings.TrimSpace(c)
-			if cat == "" {
-				continue
-			}
-			categories = append(categories, cat)
-		}
-	}
-
-	description := ""
-	if len(parts) >= 5 {
-		description = strings.Join(parts[4:], "\n")
-	}
-
-	return &StructuredMessage{
-		Name:        name,
-		Source:      source,
-		Categories:  categories,
-		Description: description,
-		Date:        date,
-		Price:       price,
-	}, nil
 }
 
 func random(arr []string) string {
