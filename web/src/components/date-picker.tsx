@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import DateAdapter from "@mui/lab/AdapterMoment";
 import Picker from "@mui/lab/DatePicker";
 import TextField from "@mui/material/TextField";
@@ -9,7 +9,7 @@ export interface PickerProps {
   initial?: Date;
   label?: string;
 }
-export function DatePicker(props: PickerProps) {
+export const DatePicker: React.FC<PickerProps> = (props) => {
   const [startDate, setStartDate] = useState(props.initial || new Date());
 
   return (
@@ -29,4 +29,4 @@ export function DatePicker(props: PickerProps) {
       />
     </LocalizationProvider>
   );
-}
+};

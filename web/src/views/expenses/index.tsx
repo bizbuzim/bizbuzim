@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 
 import { ExpensesContext } from "../../context/expenses";
@@ -16,7 +16,7 @@ const Container = styled.div`
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);
 `;
 
-const Expenses = () => {
+const Expenses: React.FC = () => {
   const { isLoading, error, expenses } = useContext(ExpensesContext);
   const { tags, search, payments } = useContext(FiltersContext);
   if (isLoading) {

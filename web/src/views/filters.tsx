@@ -1,10 +1,9 @@
-import { useContext } from "react";
-import _ from "lodash";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import { BsFilter } from "react-icons/bs";
 import TextField from "@mui/material/TextField";
 
-import BZSelect from "../components/filters/select";
+import { BZSelect } from "../components/filters/select";
 import { ExpensesContext } from "../context/expenses";
 
 import { DatePicker } from "./../components/date-picker";
@@ -32,7 +31,7 @@ export interface Props {
   paymentsSelected: (payments: string[]) => void;
   searchChange: (d: string) => void;
 }
-export function Filters({
+export const Filters: React.FC<Props> = ({
   fromDate,
   toDate,
   fromDateChange,
@@ -40,7 +39,7 @@ export function Filters({
   tagsSelected,
   searchChange,
   paymentsSelected,
-}: Props) {
+}) => {
   const { isLoading, error, tags, payments } = useContext(ExpensesContext);
 
   if (isLoading) {
@@ -95,4 +94,4 @@ export function Filters({
       </FiltersContainer>
     </>
   );
-}
+};

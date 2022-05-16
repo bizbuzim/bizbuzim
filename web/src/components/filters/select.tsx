@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
 import Box from "@mui/material/Box";
@@ -17,15 +17,11 @@ const MenuProps = {
   },
 };
 
-export default function BZSelect({
-  items,
-  title,
-  onItemSelected,
-}: {
+export const BZSelect: React.FC<{
   items: string[];
   title: string;
   onItemSelected: (item: string[]) => void;
-}) {
+}> = ({ items, title, onItemSelected }) => {
   const [selected, setSelected] = useState<string[]>([]);
   return (
     <>
@@ -63,4 +59,4 @@ export default function BZSelect({
       </FormControl>
     </>
   );
-}
+};

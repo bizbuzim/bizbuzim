@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import styled from "styled-components";
 import _ from "lodash";
 
@@ -16,7 +16,7 @@ const Container = styled.div`
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);
 `;
 
-export function Home() {
+export const Home: React.FC = () => {
   const { expenses, isLoading } = useContext(ExpensesContext);
   const [stackedChart, setStackedChart] = useState(false);
   const total = useMemo(() => {
@@ -38,4 +38,4 @@ export function Home() {
       <ExpensesBarChart stacked={stackedChart} />
     </Container>
   );
-}
+};

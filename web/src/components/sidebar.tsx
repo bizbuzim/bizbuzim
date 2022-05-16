@@ -1,3 +1,4 @@
+import React from "react";
 import {
   ProSidebar,
   Menu,
@@ -11,7 +12,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import Button from "@mui/material/Button";
 import LogoutIcon from "@mui/icons-material/Logout";
 
-export function Sidebar() {
+export const Sidebar: React.FC = () => {
   const { logout } = useAuth0();
   return (
     <ProSidebar>
@@ -37,4 +38,4 @@ export function Sidebar() {
       </SidebarFooter>
     </ProSidebar>
   );
-}
+};
