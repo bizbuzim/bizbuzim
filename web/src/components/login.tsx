@@ -12,5 +12,8 @@ export const Login: React.FC = () => {
   if (isLoading) {
     return <div>Loading ...</div>;
   }
+  if (!isAuthenticated) {
+    alert("not authenticated");
+  }
   return <></>;
 };
