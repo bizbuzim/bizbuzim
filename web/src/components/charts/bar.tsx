@@ -83,7 +83,7 @@ export const ExpensesBarChart: React.FC<{ stacked: boolean }> = ({
         }, 0);
       });
       return res;
-    });
+    }).reverse();
   }, [dates]);
   const uniqTags = _.chain(filtered)
     .map((e) => e.tags)
