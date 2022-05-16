@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { useContext, useMemo } from "react";
+import React, { useContext, useMemo } from "react";
 import {
   BarChart,
   Bar,
@@ -19,7 +19,9 @@ import { Expense } from "../../views/expenses/types";
 interface processedExpense extends Expense {
   processed: boolean;
 }
-export function ExpensesBarChart({ stacked }: { stacked: boolean }) {
+export const ExpensesBarChart: React.FC<{ stacked: boolean }> = ({
+  stacked,
+}) => {
   const { expenses, isLoading } = useContext(ExpensesContext);
   const { tags, search, payments } = useContext(FiltersContext);
   let filtered = expenses;
@@ -129,4 +131,4 @@ export function ExpensesBarChart({ stacked }: { stacked: boolean }) {
       </BarChart>
     </ResponsiveContainer>
   );
-}
+};

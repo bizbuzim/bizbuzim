@@ -1,9 +1,7 @@
-import Chance from "chance";
 import _ from "lodash";
 import Chip from "@mui/material/Chip";
 import styled from "styled-components";
 import { useContext } from "react";
-import { color } from "@mui/system";
 
 import { ExpensesContext } from "../../context/expenses";
 
@@ -26,7 +24,10 @@ const StyledTFoot = styled.tfoot`
   color: #fff;
 `;
 
-const Table = ({ headers, rows }: { headers: string[]; rows: Expense[] }) => {
+const Table: React.FC<{
+  headers: string[];
+  rows: Expense[];
+}> = ({ headers, rows }) => {
   return (
     <table style={{ width: "100%" }}>
       <StyledTHead>
