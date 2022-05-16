@@ -1,4 +1,10 @@
 # Bizbuzim UI
 
 ## Setup
-To setup your environment run `REACT_APP_BASE_URL="http://$HASURA_HOST:$HASURA_PORT" yarn start` where `HASURA_HOST` and `HASURA_PORT` are configured.
+* First make sure you have installed all the dependencies: `yarn`
+* Export required variables:
+  * `export HASURA_HOST=...`
+  * `export HASURA_PORT=...`
+  * `export REACT_APP_AUTH0_DOMAIN=...`
+  * `export REACT_APP_AUTH0_CLIENT_ID=...`
+* Start server with `yarn start`;
