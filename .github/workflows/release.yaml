@@ -41,7 +41,6 @@ jobs:
         credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
     - name: Build
       run: |
-        gcloud auth list
         docker build -t $(cat docker-repository.txt)/server:$(cat next_version) .
     - name: Push
       run: |
