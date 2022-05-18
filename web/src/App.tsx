@@ -5,6 +5,7 @@ import { Provider } from "urql";
 import _ from "lodash";
 import { Auth0Provider } from "@auth0/auth0-react";
 import { Chance } from "chance";
+import { InfinitySpin } from "react-loader-spinner";
 
 import { useGetAllExpensesQuery } from "./generated/graphql";
 import createClient from "./services/gql";
@@ -42,9 +43,17 @@ const MainContainer = styled.div`
   overflow: scroll;
 `;
 
+const LoaderContainer = styled.div`
+  display: flex;
+`;
+
 function App() {
   const [token, setToken] = useState("");
-  let application = <></>;
+  let application = (
+    <LoaderContainer>
+      <InfinitySpin width="100%" color="grey" />
+    </LoaderContainer>
+  );
   if (token) {
     application = (
       <Provider value={createClient({ token })}>
