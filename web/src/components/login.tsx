@@ -1,14 +1,24 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import React, { useEffect } from "react";
 
-export const Login: React.FC = () => {
-  const { isLoading, isAuthenticated, loginWithRedirect } = useAuth0();
+export const Login: React.FC<{ onJWTReceived(jwt: string): void }> = ({
+  onJWTReceived,
+}) => {
+  const { isLoading, isAuthenticated, loginWithRedirect, getIdTokenClaims } =
+    useAuth0();
   useEffect(() => {
     if (!isAuthenticated && !isLoading) {
       loginWithRedirect();
       return;
     }
-  }, [isAuthenticated, isLoading, loginWithRedirect]);
+    getIdTokenClaims().then((t) => onJWTReceived(t?.__raw || ""));
+  }, [
+    isAuthenticated,
+    isLoading,
+    loginWithRedirect,
+    getIdTokenClaims,
+    onJWTReceived,
+  ]);
   if (isLoading) {
     return <div>Loading ...</div>;
   }

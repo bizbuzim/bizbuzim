@@ -2,6 +2,12 @@ import { createClient } from "urql";
 
 import { BaseURL } from "./../config";
 
-export default createClient({
-  url: `${BaseURL}/v1/graphql`,
-});
+export default ({ token }: { token: string }) =>
+  createClient({
+    url: `${BaseURL}/v1/graphql`,
+    fetchOptions: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });

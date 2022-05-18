@@ -7,7 +7,7 @@ import { Auth0Provider } from "@auth0/auth0-react";
 import { Chance } from "chance";
 
 import { useGetAllExpensesQuery } from "./generated/graphql";
-import client from "./services/gql";
+import createClient from "./services/gql";
 import { Sidebar } from "./components/sidebar";
 import { Login } from "./components/login";
 import { Filters } from "./views/filters";
@@ -43,6 +43,15 @@ const MainContainer = styled.div`
 `;
 
 function App() {
+  const [token, setToken] = useState("");
+  let application = <></>;
+  if (token) {
+    application = (
+      <Provider value={createClient({ token })}>
+        <Application />
+      </Provider>
+    );
+  }
   return (
     <Container className="app">
       <Auth0Provider
@@ -50,10 +59,8 @@ function App() {
         clientId={Auth0ClientId || ""}
         redirectUri={window.location.origin}
       >
-        <Login />
-        <Provider value={client}>
-          <Application />
-        </Provider>
+        <Login onJWTReceived={setToken} />
+        {application}
       </Auth0Provider>
     </Container>
   );
