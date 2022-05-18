@@ -1,7 +1,3 @@
-.PHONY: dev-tools
-dev-tools:
-	docker build -f Dockerfile.tools -t bizbuzim/tools .
-
 .PHONY: new-migration
 new-migration:
 	migrate create -ext sql -dir ./db/migrations -seq $(name)
@@ -25,11 +21,6 @@ gen-code: check-env
 		-i raw_expenses \
 		-i sources \
 		-j 
-
-.PHONY: dev-setup
-dev-setup:
-	docker compose down
-	UID=$(shell id -u ${USER}) GID=$(shell id -g ${USER}) docker compose up -d
 
 .PHONY: unit-test
 unit-test:
