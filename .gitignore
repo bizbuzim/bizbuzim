@@ -5,3 +5,4 @@ cmd/migration
 */node_modules
 .cover
 node_modules
+.production
