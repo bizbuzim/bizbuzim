@@ -24,6 +24,9 @@ export const Sidebar: React.FC = () => {
           <MenuItem>
             <Link to={"expenses"}>Expenses</Link>
           </MenuItem>
+          <MenuItem>
+            <Link to={"sources"}>Source</Link>
+          </MenuItem>
         </Menu>
       </SidebarContent>
       <SidebarFooter style={{ textAlign: "center" }}>
