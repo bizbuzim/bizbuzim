@@ -6,13 +6,13 @@ import _ from "lodash";
 import { Auth0Provider } from "@auth0/auth0-react";
 import { Chance } from "chance";
 import { InfinitySpin } from "react-loader-spinner";
+import { Divider } from "@mui/material";
 
 import { useGetAllExpensesQuery } from "./generated/graphql";
 import createClient from "./services/gql";
 import { Sidebar } from "./components/sidebar";
 import { Login } from "./components/login";
 import { Filters } from "./views/filters";
-import { Divider } from "./components/divider";
 import { Auth0ClientId, Auth0Domain } from "./config";
 import { Router } from "./components/router";
 import { ExpensesContext } from "./context/expenses";
