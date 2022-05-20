@@ -25,7 +25,7 @@ export const BZSelect: React.FC<{
   const [selected, setSelected] = useState<string[]>([]);
   return (
     <>
-      <FormControl sx={{ m: 1, width: 300 }}>
+      <FormControl sx={{ width: 300 }}>
         <InputLabel>{title}</InputLabel>
         <Select
           multiple

@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
-import { BsFilter } from "react-icons/bs";
 import TextField from "@mui/material/TextField";
 
 import { BZSelect } from "../components/filters/select";
@@ -10,15 +9,15 @@ import { DatePicker } from "./../components/date-picker";
 
 const FiltersContainer = styled.div`
   display: inline-flex;
+  justify-content: space-around;
+  align-items: center;
+  align-content: space-around;
+  gap: 2rem;
 `;
 
 const FilterContainer = styled.div`
-  display: inline-flex;
-  flex-direction: row;
-  margin: 1em;
-  margin-bottom: 0;
-  min-width: 10em;
-  max-width: 15em;
+  margin: 0;
+  max-width: 100%;
   max-height: 5em;
 `;
 
@@ -56,7 +55,6 @@ export const Filters: React.FC<Props> = ({
   return (
     <>
       <FiltersContainer>
-        <BsFilter size={"2em"} />
         <FilterContainer>
           <TextField
             onChange={(e) => searchChange(e.target.value)}
