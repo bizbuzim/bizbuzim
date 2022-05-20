@@ -32,6 +32,7 @@ const Container = styled.div`
 const FiltersContainer = styled.div`
   grid-area: filter;
   height: 10vh;
+  padding-top: 20px;
 `;
 const MenuContainer = styled.div`
   grid-area: menu;
@@ -143,7 +144,7 @@ const Application = () => {
             searchChange={setSearch}
             paymentsSelected={setPayments}
           />
-          <Divider />
+          <Divider style={{ paddingTop: "20px" }} />
         </FiltersContainer>
         <MainContainer>
           <Router />
