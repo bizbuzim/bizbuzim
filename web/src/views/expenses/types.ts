@@ -4,5 +4,5 @@ export interface Expense {
   payment: string;
   tags: string[];
   price: string;
-  created_at: Date;
+  created_at: string;
 }
