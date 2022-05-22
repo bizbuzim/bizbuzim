@@ -12,8 +12,7 @@ const StyledTHead = styled.thead`
   position: sticky;
   position: -webkit-sticky;
   top: 0;
-  background-color: #000;
-  color: #fff;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 `;
 
 const StyledTFoot = styled.tfoot`
@@ -23,59 +22,59 @@ const StyledTFoot = styled.tfoot`
   background-color: #000;
   color: #fff;
 `;
-
+const headers = [
+  { name: "No.", weight: 1 },
+  { name: "Date", weight: 3 },
+  { name: "Name", weight: 5 },
+  { name: "Price", weight: 3 },
+  { name: "Labels", weight: 2 },
+];
 const Table: React.FC<{
-  headers: string[];
   rows: Expense[];
-}> = ({ headers, rows }) => {
+}> = ({ rows }) => {
   return (
-    <table style={{ width: "100%" }}>
+    <table
+      style={{
+        width: "100%",
+      }}
+    >
       <StyledTHead>
-        <tr>
+        <StyledRow>
           {headers.map((h, i) => (
-            <StyledTH key={i}>{h}</StyledTH>
+            <StyledTH key={i} style={{ flex: h.weight }}>
+              {h.name}
+            </StyledTH>
           ))}
-        </tr>
+        </StyledRow>
       </StyledTHead>
-      <tbody>
+      <tbody style={{ overflowY: "hidden" }}>
         {rows.map((v, i) => (
-          <Row
-            key={i}
-            index={i}
-            expense={v}
-            color={i % 2 === 0 ? "gray" : "white"}
-          />
+          <Row key={i} index={i} expense={v} />
         ))}
       </tbody>
       <StyledTFoot>
-        <tr>
+        <StyledRow>
           <td></td>
           <td></td>
           <td>Total: {rows.reduce((v, c) => v + _.toNumber(c.price), 0)}</td>
           <td></td>
           <td></td>
-        </tr>
+        </StyledRow>
       </StyledTFoot>
     </table>
   );
 };
 
-function Row({
-  index,
-  expense,
-  color,
-}: {
-  index: number;
-  expense: Expense;
-  color: string;
-}) {
+function Row({ index, expense }: { index: number; expense: Expense }) {
   return (
-    <StyledRow key={expense.id} color={color}>
-      <StyledTD>{index + 1}</StyledTD>
-      <StyledTD>{new Date(expense.created_at).toLocaleString()}</StyledTD>
-      <StyledTD>{expense.name}</StyledTD>
-      <StyledTD>{expense.price}</StyledTD>
-      <StyledLabelTD>
+    <StyledRow key={expense.id}>
+      <StyledTD style={{ flex: 1 }}>{index + 1}</StyledTD>
+      <StyledTD style={{ flex: 3 }}>
+        {new Date(expense.created_at).toLocaleString()}
+      </StyledTD>
+      <StyledTD style={{ flex: 5 }}>{expense.name}</StyledTD>
+      <StyledTD style={{ flex: 3 }}>{expense.price}</StyledTD>
+      <StyledLabelTD style={{ flex: 2, overflowX: "hidden" }}>
         <Labels tags={expense.tags} />
       </StyledLabelTD>
     </StyledRow>
