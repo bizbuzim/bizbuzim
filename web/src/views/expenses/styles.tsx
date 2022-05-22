@@ -6,7 +6,7 @@ export const StyledRow = styled.tr`
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px #a7a7a7 solid;
-  height: 3em;
+  height: 4em;
 `;
 export const StyledTD = styled.td`
   display: flex;
