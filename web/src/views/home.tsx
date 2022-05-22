@@ -1,6 +1,7 @@
 import React, { useContext, useMemo, useState } from "react";
 import styled from "styled-components";
 import _ from "lodash";
+import { DateTime } from "luxon";
 
 import { ExpensesContext } from "../context/expenses";
 import { ExpensesBarChart } from "../components/charts/bar";
@@ -52,13 +53,11 @@ export const Home: React.FC = () => {
     return expenses.reduce((p, c) => _.toNumber(c.price) + p, 0);
   }, [expenses]);
   const days = useMemo(() => {
-    // TODO: Date is moment after change, replace moment to date-fns
-    if (!to || !to.getTime) {
+    if (!to) {
       return 0;
     }
-    return Math.ceil(
-      (new Date().getTime() - to.getTime()) / (1000 * 3600 * 24)
-    );
+    const now = DateTime.local();
+    return Math.ceil(to.diff(now).as("days"));
   }, [to]);
   if (isLoading) {
     return <></>;

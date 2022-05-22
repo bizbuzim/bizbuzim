@@ -1,26 +1,26 @@
 import React, { useState } from "react";
-import DateAdapter from "@mui/lab/AdapterMoment";
 import Picker from "@mui/lab/DatePicker";
+import AdapterLuxon from "@mui/lab/AdapterLuxon";
 import TextField from "@mui/material/TextField";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import { DateTime } from "luxon";
 
 export interface PickerProps {
-  onDateChanged: (date: Date) => void;
-  initial?: Date;
+  onDateChanged: (date: DateTime) => void;
+  initial?: DateTime;
   label?: string;
 }
 export const DatePicker: React.FC<PickerProps> = (props) => {
   const [startDate, setStartDate] = useState(props.initial || new Date());
 
   return (
-    <LocalizationProvider dateAdapter={DateAdapter}>
+    <LocalizationProvider dateAdapter={AdapterLuxon}>
       <Picker
         label={props.label || "Date"}
         value={startDate}
-        inputFormat="DD/MM/yyyy"
         onChange={(d) => {
           if (!d) {
-            return;
+            return 0;
           }
           setStartDate(d);
           props.onDateChanged(d);
