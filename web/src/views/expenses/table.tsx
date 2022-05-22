@@ -21,8 +21,8 @@ const StyledTFoot = styled.tfoot`
   position: sticky;
   position: -webkit-sticky;
   bottom: 0;
-  background-color: #000;
-  color: #fff;
+  background-color: #dddddd;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 `;
 const headers = [
   { name: "No.", weight: 1 },
@@ -56,11 +56,16 @@ const Table: React.FC<{
       </tbody>
       <StyledTFoot>
         <StyledRow>
-          <td></td>
-          <td></td>
-          <td>Total: {rows.reduce((v, c) => v + _.toNumber(c.price), 0)}</td>
-          <td></td>
-          <td></td>
+          {headers.map((h, i) => {
+            const data = rows
+              .reduce((v, c) => v + _.toNumber(c.price), 0)
+              .toFixed(2);
+            return (
+              <StyledTD key={i} style={{ flex: h.weight }}>
+                {i === 3 ? data : ""}
+              </StyledTD>
+            );
+          })}
         </StyledRow>
       </StyledTFoot>
     </table>
