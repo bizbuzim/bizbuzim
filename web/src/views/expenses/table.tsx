@@ -15,6 +15,7 @@ const StyledTHead = styled.thead`
   position: -webkit-sticky;
   top: 0;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  background-color: #dddddd;
 `;
 
 const StyledTFoot = styled.tfoot`
