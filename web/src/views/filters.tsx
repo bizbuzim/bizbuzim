@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
 import TextField from "@mui/material/TextField";
+import { DateTime } from "luxon";
 
 import { BZSelect } from "../components/filters/select";
 import { ExpensesContext } from "../context/expenses";
@@ -22,10 +23,10 @@ const FilterContainer = styled.div`
 `;
 
 export interface Props {
-  fromDate: Date;
-  fromDateChange: (d: Date) => void;
-  toDate: Date;
-  toDateChange: (d: Date) => void;
+  fromDate: DateTime;
+  fromDateChange: (d: DateTime) => void;
+  toDate: DateTime;
+  toDateChange: (d: DateTime) => void;
   tagsSelected: (tags: string[]) => void;
   paymentsSelected: (payments: string[]) => void;
   searchChange: (d: string) => void;

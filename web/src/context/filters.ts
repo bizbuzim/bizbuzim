@@ -1,17 +1,18 @@
 import { createContext } from "react";
+import { DateTime } from "luxon";
 
 export const FiltersContext = createContext<{
   dates: {
-    from: Date;
-    to: Date;
+    from: DateTime;
+    to: DateTime;
   };
   tags: string[];
   search: string;
   payments: string[];
 }>({
   dates: {
-    from: new Date("04/05/2022"),
-    to: new Date(),
+    from: DateTime.local().minus({ days: 30 }),
+    to: DateTime.local(),
   },
   tags: [],
   search: "",

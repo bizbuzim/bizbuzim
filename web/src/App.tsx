@@ -7,6 +7,7 @@ import { Auth0Provider } from "@auth0/auth0-react";
 import { Chance } from "chance";
 import { InfinitySpin } from "react-loader-spinner";
 import { Divider } from "@mui/material";
+import { DateTime } from "luxon";
 
 import { useGetAllExpensesQuery } from "./generated/graphql";
 import createClient from "./services/gql";
@@ -77,8 +78,10 @@ function App() {
 }
 
 const Application = () => {
-  const [dateFrom, setDateFrom] = useState<Date>(new Date("2022-04-01"));
-  const [dateTo, setDateTo] = useState<Date>(new Date());
+  const [dateFrom, setDateFrom] = useState<DateTime>(
+    DateTime.local().minus({ days: 30 })
+  );
+  const [dateTo, setDateTo] = useState<DateTime>(DateTime.local());
   const [tags, setTags] = useState<string[]>([]);
   const [search, setSearch] = useState("");
   const [payments, setPayments] = useState<string[]>([]);
