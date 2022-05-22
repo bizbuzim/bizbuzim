@@ -7,6 +7,7 @@ import { ExpensesContext } from "../../context/expenses";
 
 import { StyledRow, StyledTD, StyledLabelTD, StyledTH } from "./styles";
 import DateTD from "./date";
+import CurrencyTD from "./currency";
 import { Expense } from "./types";
 
 const StyledTHead = styled.thead`
@@ -72,7 +73,7 @@ function Row({ index, expense }: { index: number; expense: Expense }) {
       <StyledTD style={{ flex: 1 }}>{index + 1}</StyledTD>
       <DateTD date={expense.created_at} />
       <StyledTD style={{ flex: 5 }}>{expense.name}</StyledTD>
-      <StyledTD style={{ flex: 3 }}>{expense.price}</StyledTD>
+      <CurrencyTD price={expense.price} />
       <StyledLabelTD style={{ flex: 2, overflowX: "hidden" }}>
         <Labels tags={expense.tags} />
       </StyledLabelTD>
