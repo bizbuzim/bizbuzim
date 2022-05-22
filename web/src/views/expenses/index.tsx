@@ -42,10 +42,7 @@ const Expenses: React.FC = () => {
   }
   return (
     <Container>
-      <Table
-        headers={["No.", "Date", "Name", "Price", "Labels"]}
-        rows={filtered}
-      />
+      <Table rows={filtered} />
     </Container>
   );
 };
