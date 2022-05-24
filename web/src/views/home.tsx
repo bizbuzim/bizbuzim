@@ -5,6 +5,7 @@ import { DateTime } from "luxon";
 
 import { ExpensesContext } from "../context/expenses";
 import { ExpensesBarChart } from "../components/charts/bar";
+import PaymentsPieChart from "../components/charts/pie";
 import { FiltersContext } from "../context/filters";
 
 const Container = styled.div`
@@ -42,6 +43,20 @@ const ValueContainer = styled.div`
 
 const ValueHeader = styled.div``;
 const ValueContent = styled.div``;
+
+const ChartsContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: 1fr;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+  height: 100%;
+  width: 100%;
+`;
+
+const ChartContainer = styled.div<{ area: string }>`
+  grid-area: ${(props) => props.area};
+`;
 
 export const Home: React.FC = () => {
   const { expenses, isLoading } = useContext(ExpensesContext);
@@ -82,7 +97,14 @@ export const Home: React.FC = () => {
       >
         Stack
       </button>
-      <ExpensesBarChart stacked={stackedChart} />
+      <ChartsContainer>
+        <ChartContainer area="1 / 1 / 2 / 2">
+          <ExpensesBarChart stacked={stackedChart} />
+        </ChartContainer>
+        <ChartContainer area="1 / 2 / 2 / 3">
+          <PaymentsPieChart />
+        </ChartContainer>
+      </ChartsContainer>
     </Container>
   );
 };

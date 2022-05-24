@@ -64,7 +64,6 @@ export const ExpensesBarChart: React.FC<{ stacked: boolean }> = ({
         text: `Expenses ${labels[0]} - ${_.last(labels)}`,
       },
     },
-    responsive: true,
     scales: {
       x: {
         stacked,
