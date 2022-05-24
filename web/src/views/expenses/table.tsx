@@ -52,51 +52,53 @@ const Table: React.FC<{
   rows: Expense[];
 }> = ({ rows }) => {
   const [openSideDrawer, setOpenSideDrawer] = useState(false);
-  const [selectedRow, setSelectedRow] = useState<Expense | null>(null);
+  const [selectedRow, setSelectedRow] = useState<Expense>();
 
   const selectedRowHandle = (expense: Expense) => {
     setOpenSideDrawer(!openSideDrawer);
     setSelectedRow(expense);
   };
   return (
-    <table
-      style={{
-        width: "100%",
-      }}
-    >
-      <StyledTHead>
-        <StyledRow>
-          {headers.map((h, i) => (
-            <StyledTH key={i} style={{ flex: h.weight }}>
-              {h.name}
-            </StyledTH>
+    <>
+      <table
+        style={{
+          width: "100%",
+        }}
+      >
+        <StyledTHead>
+          <StyledRow>
+            {headers.map((h, i) => (
+              <StyledTH key={i} style={{ flex: h.weight }}>
+                {h.name}
+              </StyledTH>
+            ))}
+          </StyledRow>
+        </StyledTHead>
+        <tbody style={{ overflowY: "hidden" }}>
+          {rows.map((v, i) => (
+            <Row
+              key={i}
+              index={i}
+              expense={v}
+              selectedRowHandle={selectedRowHandle}
+            />
           ))}
-        </StyledRow>
-      </StyledTHead>
-      <tbody style={{ overflowY: "hidden" }}>
-        {rows.map((v, i) => (
-          <Row
-            key={i}
-            index={i}
-            expense={v}
-            selectedRowHandle={selectedRowHandle}
-          />
-        ))}
-      </tbody>
-      <StyledTFoot>
-        <StyledRow>
-          {headers.map((h, i) => {
-            const data = rows
-              .reduce((v, c) => v + _.toNumber(c.price), 0)
-              .toFixed(2);
-            return (
-              <StyledTD key={i} style={{ flex: h.weight }}>
-                {i === 3 ? data : ""}
-              </StyledTD>
-            );
-          })}
-        </StyledRow>
-      </StyledTFoot>
+        </tbody>
+        <StyledTFoot>
+          <StyledRow>
+            {headers.map((h, i) => {
+              const data = rows
+                .reduce((v, c) => v + _.toNumber(c.price), 0)
+                .toFixed(2);
+              return (
+                <StyledTD key={i} style={{ flex: h.weight }}>
+                  {i === 3 ? data : ""}
+                </StyledTD>
+              );
+            })}
+          </StyledRow>
+        </StyledTFoot>
+      </table>
       <DrawerContainer>
         <SideDrawer
           open={openSideDrawer}
@@ -104,7 +106,7 @@ const Table: React.FC<{
           expense={selectedRow}
         />
       </DrawerContainer>
-    </table>
+    </>
   );
 };
 
@@ -157,9 +159,24 @@ function SideDrawer({
   setOpenSideDrawer,
 }: {
   open: boolean;
-  expense: Expense | null;
+  expense?: Expense;
   setOpenSideDrawer: (val: boolean) => void;
 }) {
+  let content = <></>;
+  if (expense) {
+    content = (
+      <>
+        <ExpenseHeader>
+          <h2>Expense Details</h2>
+          <CloseIcon
+            style={{ cursor: "pointer" }}
+            onClick={() => setOpenSideDrawer(!open)}
+          />
+        </ExpenseHeader>
+        <ExpenseDetails expense={expense} />
+      </>
+    );
+  }
   return (
     <Drawer
       sx={{
@@ -172,23 +189,19 @@ function SideDrawer({
       open={open}
       onClose={() => setOpenSideDrawer(!open)}
     >
-      <ExpenseHeader>
-        <h2>Expense Details</h2>
-        <CloseIcon onClick={() => setOpenSideDrawer(!open)} />
-      </ExpenseHeader>
-      <ExpenseDetails expense={expense} />
+      {content}
     </Drawer>
   );
 }
 
-function ExpenseDetails({ expense }: { expense: Expense | null }) {
+function ExpenseDetails({ expense }: { expense: Expense }) {
   return (
     <>
-      <Item>Name: {expense && expense.name}</Item>
-      <Item>Date: {expense && expense.created_at}</Item>
-      <Item>Payment: {expense && expense.payment}</Item>
-      <Item>Price: {expense && expense.price}</Item>
-      <Item>Tags: {expense && expense.tags}</Item>
+      <Item>Name: {expense.name}</Item>
+      <Item>Date: {expense.created_at}</Item>
+      <Item>Payment: {expense.payment}</Item>
+      <Item>Price: {expense.price}</Item>
+      <Item>Tags: {expense.tags}</Item>
     </>
   );
 }
