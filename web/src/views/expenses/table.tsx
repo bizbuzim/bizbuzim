@@ -1,7 +1,9 @@
 import _ from "lodash";
 import Chip from "@mui/material/Chip";
 import styled from "styled-components";
-import { useContext } from "react";
+import { useContext, useState } from "react";
+import Drawer from "@mui/material/Drawer";
+import CloseIcon from "@mui/icons-material/Close";
 
 import { ExpensesContext } from "../../context/expenses";
 
@@ -25,6 +27,20 @@ const StyledTFoot = styled.tfoot`
   background-color: #dddddd;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 `;
+
+const DrawerContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const ExpenseHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+const Item = styled.span`
+  padding: 15px 15px 15px 5px;
+`;
 const headers = [
   { name: "No.", weight: 1 },
   { name: "Date", weight: 3 },
@@ -35,47 +51,76 @@ const headers = [
 const Table: React.FC<{
   rows: Expense[];
 }> = ({ rows }) => {
+  const [openSideDrawer, setOpenSideDrawer] = useState(false);
+  const [selectedRow, setSelectedRow] = useState<Expense>();
+
+  const selectedRowHandle = (expense: Expense) => {
+    setOpenSideDrawer(!openSideDrawer);
+    setSelectedRow(expense);
+  };
   return (
-    <table
-      style={{
-        width: "100%",
-      }}
-    >
-      <StyledTHead>
-        <StyledRow>
-          {headers.map((h, i) => (
-            <StyledTH key={i} style={{ flex: h.weight }}>
-              {h.name}
-            </StyledTH>
+    <>
+      <table
+        style={{
+          width: "100%",
+        }}
+      >
+        <StyledTHead>
+          <StyledRow>
+            {headers.map((h, i) => (
+              <StyledTH key={i} style={{ flex: h.weight }}>
+                {h.name}
+              </StyledTH>
+            ))}
+          </StyledRow>
+        </StyledTHead>
+        <tbody style={{ overflowY: "hidden" }}>
+          {rows.map((v, i) => (
+            <Row
+              key={i}
+              index={i}
+              expense={v}
+              selectedRowHandle={selectedRowHandle}
+            />
           ))}
-        </StyledRow>
-      </StyledTHead>
-      <tbody style={{ overflowY: "hidden" }}>
-        {rows.map((v, i) => (
-          <Row key={i} index={i} expense={v} />
-        ))}
-      </tbody>
-      <StyledTFoot>
-        <StyledRow>
-          {headers.map((h, i) => {
-            const data = rows
-              .reduce((v, c) => v + _.toNumber(c.price), 0)
-              .toFixed(2);
-            return (
-              <StyledTD key={i} style={{ flex: h.weight }}>
-                {i === 3 ? data : ""}
-              </StyledTD>
-            );
-          })}
-        </StyledRow>
-      </StyledTFoot>
-    </table>
+        </tbody>
+        <StyledTFoot>
+          <StyledRow>
+            {headers.map((h, i) => {
+              const data = rows
+                .reduce((v, c) => v + _.toNumber(c.price), 0)
+                .toFixed(2);
+              return (
+                <StyledTD key={i} style={{ flex: h.weight }}>
+                  {i === 3 ? data : ""}
+                </StyledTD>
+              );
+            })}
+          </StyledRow>
+        </StyledTFoot>
+      </table>
+      <DrawerContainer>
+        <SideDrawer
+          open={openSideDrawer}
+          setOpenSideDrawer={setOpenSideDrawer}
+          expense={selectedRow}
+        />
+      </DrawerContainer>
+    </>
   );
 };
 
-function Row({ index, expense }: { index: number; expense: Expense }) {
+function Row({
+  index,
+  expense,
+  selectedRowHandle,
+}: {
+  index: number;
+  expense: Expense;
+  selectedRowHandle: (expense: Expense) => void;
+}) {
   return (
-    <StyledRow key={expense.id}>
+    <StyledRow key={expense.id} onClick={() => selectedRowHandle(expense)}>
       <StyledTD style={{ flex: 1 }}>{index + 1}</StyledTD>
       <DateTD date={expense.created_at} />
       <StyledTD style={{ flex: 5 }}>{expense.name}</StyledTD>
@@ -104,6 +149,59 @@ function Labels({ tags }: { tags: string[] }) {
           />
         );
       })}
+    </>
+  );
+}
+
+function SideDrawer({
+  open,
+  expense,
+  setOpenSideDrawer,
+}: {
+  open: boolean;
+  expense?: Expense;
+  setOpenSideDrawer: (val: boolean) => void;
+}) {
+  let content = <></>;
+  if (expense) {
+    content = (
+      <>
+        <ExpenseHeader>
+          <h2>Expense Details</h2>
+          <CloseIcon
+            style={{ cursor: "pointer" }}
+            onClick={() => setOpenSideDrawer(!open)}
+          />
+        </ExpenseHeader>
+        <ExpenseDetails expense={expense} />
+      </>
+    );
+  }
+  return (
+    <Drawer
+      sx={{
+        "& .MuiPaper-root": {
+          width: "30%",
+          padding: "20px",
+        },
+      }}
+      anchor="right"
+      open={open}
+      onClose={() => setOpenSideDrawer(!open)}
+    >
+      {content}
+    </Drawer>
+  );
+}
+
+function ExpenseDetails({ expense }: { expense: Expense }) {
+  return (
+    <>
+      <Item>Name: {expense.name}</Item>
+      <Item>Date: {expense.created_at}</Item>
+      <Item>Payment: {expense.payment}</Item>
+      <Item>Price: {expense.price}</Item>
+      <Item>Tags: {expense.tags}</Item>
     </>
   );
 }
