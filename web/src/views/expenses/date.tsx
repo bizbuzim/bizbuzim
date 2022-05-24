@@ -25,7 +25,7 @@ const DateTD: React.FC<{ date: string }> = ({ date }) => {
   return (
     <Container style={{ flex: 3 }}>
       <AgeContainer>{age}</AgeContainer>
-      <DateContainer>{d.toFormat("dd/mm/yyyy HH:MM")}</DateContainer>
+      <DateContainer>{d.toFormat("dd/MM/yyyy HH:MM")}</DateContainer>
     </Container>
   );
 };
