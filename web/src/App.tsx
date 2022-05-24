@@ -28,6 +28,7 @@ const Container = styled.div`
     "menu main main main main main main main"
     "menu main main main main main main main";
   height: 100vh;
+  background-color: #f1f5f9;
 `;
 
 const FiltersContainer = styled.div`
