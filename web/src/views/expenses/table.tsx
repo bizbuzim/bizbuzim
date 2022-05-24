@@ -1,7 +1,9 @@
 import _ from "lodash";
 import Chip from "@mui/material/Chip";
 import styled from "styled-components";
-import { useContext } from "react";
+import { useContext, useState } from "react";
+import Drawer from "@mui/material/Drawer";
+import CloseIcon from "@mui/icons-material/Close";
 
 import { ExpensesContext } from "../../context/expenses";
 
@@ -24,10 +26,31 @@ const StyledTFoot = styled.tfoot`
   color: #fff;
 `;
 
+const DrawerContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const ExpenseHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+const Item = styled.span`
+  padding: 15px 15px 15px 5px;
+`;
 const Table: React.FC<{
   headers: string[];
   rows: Expense[];
 }> = ({ headers, rows }) => {
+  const [openSideDrawer, setOpenSideDrawer] = useState(false);
+  const [selectedRow, setSelectedRow] = useState<Expense | null>(null);
+
+  const selectedRowHandle = (expense: Expense) => {
+    setOpenSideDrawer(!openSideDrawer);
+    setSelectedRow(expense);
+  };
+
   return (
     <table style={{ width: "100%" }}>
       <StyledTHead>
@@ -44,6 +67,7 @@ const Table: React.FC<{
             index={i}
             expense={v}
             color={i % 2 === 0 ? "gray" : "white"}
+            selectedRowHandle={selectedRowHandle}
           />
         ))}
       </tbody>
@@ -56,6 +80,13 @@ const Table: React.FC<{
           <td></td>
         </tr>
       </StyledTFoot>
+      <DrawerContainer>
+        <SideDrawer
+          open={openSideDrawer}
+          setOpenSideDrawer={setOpenSideDrawer}
+          expense={selectedRow}
+        />
+      </DrawerContainer>
     </table>
   );
 };
@@ -64,13 +95,19 @@ function Row({
   index,
   expense,
   color,
+  selectedRowHandle,
 }: {
   index: number;
   expense: Expense;
   color: string;
+  selectedRowHandle: (expense: Expense) => void;
 }) {
   return (
-    <StyledRow key={expense.id} color={color}>
+    <StyledRow
+      key={expense.id}
+      color={color}
+      onClick={() => selectedRowHandle(expense)}
+    >
       <StyledTD>{index + 1}</StyledTD>
       <StyledTD>{new Date(expense.created_at).toLocaleString()}</StyledTD>
       <StyledTD>{expense.name}</StyledTD>
@@ -99,6 +136,48 @@ function Labels({ tags }: { tags: string[] }) {
           />
         );
       })}
+    </>
+  );
+}
+
+function SideDrawer({
+  open,
+  expense,
+  setOpenSideDrawer,
+}: {
+  open: boolean;
+  expense: Expense | null;
+  setOpenSideDrawer: (val: boolean) => void;
+}) {
+  return (
+    <Drawer
+      sx={{
+        "& .MuiPaper-root": {
+          width: "30%",
+          padding: "20px",
+        },
+      }}
+      anchor="right"
+      open={open}
+      onClose={() => setOpenSideDrawer(!open)}
+    >
+      <ExpenseHeader>
+        <h2>Expense Details</h2>
+        <CloseIcon onClick={() => setOpenSideDrawer(!open)} />
+      </ExpenseHeader>
+      <ExpenseDetails expense={expense} />
+    </Drawer>
+  );
+}
+
+function ExpenseDetails({ expense }: { expense: Expense | null }) {
+  return (
+    <>
+      <Item>Name: {expense && expense.name}</Item>
+      <Item>Date: {expense && expense.created_at}</Item>
+      <Item>Payment: {expense && expense.payment}</Item>
+      <Item>Price: {expense && expense.price}</Item>
+      <Item>Tags: {expense && expense.tags}</Item>
     </>
   );
 }
