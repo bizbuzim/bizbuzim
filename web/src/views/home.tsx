@@ -49,10 +49,7 @@ const ChartsContainer = styled.div`
   justify-content: space-around;
   width: 100%;
   height: 100%;
-`;
-
-const ChartContainer = styled.div`
-  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.4);
+  align-items: flex-start;
 `;
 
 export const Home: React.FC = () => {
@@ -95,12 +92,8 @@ export const Home: React.FC = () => {
         Stack
       </button>
       <ChartsContainer>
-        <ChartContainer style={{ width: "60%", height: "55vh" }}>
-          <ExpensesBarChart stacked={stackedChart} />
-        </ChartContainer>
-        <ChartContainer style={{ width: "20%", height: "35vh" }}>
-          <PaymentsPieChart />
-        </ChartContainer>
+        <ExpensesBarChart stacked={stackedChart} />
+        <PaymentsPieChart />
       </ChartsContainer>
     </Container>
   );
