@@ -12,7 +12,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   flex: 0 0 auto;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   height: 100%;
   min-height: 30rem;
@@ -45,18 +45,13 @@ const ValueHeader = styled.div``;
 const ValueContent = styled.div``;
 
 const ChartsContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: 1fr;
-  grid-column-gap: 0px;
-  grid-row-gap: 0px;
-  height: 100%;
+  display: flex;
+  justify-content: space-around;
   width: 100%;
+  height: 100%;
 `;
 
-const ChartContainer = styled.div<{ area: string }>`
-  grid-area: ${(props) => props.area};
-`;
+const ChartContainer = styled.div``;
 
 export const Home: React.FC = () => {
   const { expenses, isLoading } = useContext(ExpensesContext);
@@ -98,10 +93,10 @@ export const Home: React.FC = () => {
         Stack
       </button>
       <ChartsContainer>
-        <ChartContainer area="1 / 1 / 2 / 2">
+        <ChartContainer style={{ width: "60%" }}>
           <ExpensesBarChart stacked={stackedChart} />
         </ChartContainer>
-        <ChartContainer area="1 / 2 / 2 / 3">
+        <ChartContainer style={{ width: "20%" }}>
           <PaymentsPieChart />
         </ChartContainer>
       </ChartsContainer>
