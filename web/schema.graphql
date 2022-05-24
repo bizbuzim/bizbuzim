@@ -352,6 +352,23 @@ type expenses_variance_fields {
   price: Float
 }
 
+scalar json
+
+"""
+Boolean expression to compare columns of type "json". All fields are combined with logical 'AND'.
+"""
+input json_comparison_exp {
+  _eq: json
+  _gt: json
+  _gte: json
+  _in: [json!]
+  _is_null: Boolean
+  _lt: json
+  _lte: json
+  _neq: json
+  _nin: [json!]
+}
+
 """mutation root"""
 type mutation_root {
   """
@@ -366,6 +383,19 @@ type mutation_root {
   delete single row from the table: "expenses"
   """
   delete_expenses_by_pk(id: uuid!): expenses
+
+  """
+  delete data from the table: "sources"
+  """
+  delete_sources(
+    """filter the rows which have to be deleted"""
+    where: sources_bool_exp!
+  ): sources_mutation_response
+
+  """
+  delete single row from the table: "sources"
+  """
+  delete_sources_by_pk(id: uuid!): sources
 
   """
   insert data into the table: "expenses"
@@ -388,6 +418,28 @@ type mutation_root {
     """upsert condition"""
     on_conflict: expenses_on_conflict
   ): expenses
+
+  """
+  insert data into the table: "sources"
+  """
+  insert_sources(
+    """the rows to be inserted"""
+    objects: [sources_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: sources_on_conflict
+  ): sources_mutation_response
+
+  """
+  insert a single row into the table: "sources"
+  """
+  insert_sources_one(
+    """the row to be inserted"""
+    object: sources_insert_input!
+
+    """upsert condition"""
+    on_conflict: sources_on_conflict
+  ): sources
 
   """
   update data of the table: "expenses"
@@ -414,6 +466,26 @@ type mutation_root {
     _set: expenses_set_input
     pk_columns: expenses_pk_columns_input!
   ): expenses
+
+  """
+  update data of the table: "sources"
+  """
+  update_sources(
+    """sets the columns of the filtered rows to the given values"""
+    _set: sources_set_input
+
+    """filter the rows which have to be updated"""
+    where: sources_bool_exp!
+  ): sources_mutation_response
+
+  """
+  update single row of the table: "sources"
+  """
+  update_sources_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: sources_set_input
+    pk_columns: sources_pk_columns_input!
+  ): sources
 }
 
 scalar numeric
@@ -497,6 +569,214 @@ type query_root {
 
   """fetch data from the table: "expenses" using primary key columns"""
   expenses_by_pk(id: uuid!): expenses
+
+  """
+  fetch data from the table: "sources"
+  """
+  sources(
+    """distinct select on columns"""
+    distinct_on: [sources_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [sources_order_by!]
+
+    """filter the rows returned"""
+    where: sources_bool_exp
+  ): [sources!]!
+
+  """
+  fetch aggregated fields from the table: "sources"
+  """
+  sources_aggregate(
+    """distinct select on columns"""
+    distinct_on: [sources_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [sources_order_by!]
+
+    """filter the rows returned"""
+    where: sources_bool_exp
+  ): sources_aggregate!
+
+  """fetch data from the table: "sources" using primary key columns"""
+  sources_by_pk(id: uuid!): sources
+}
+
+"""
+columns and relationships of "sources"
+"""
+type sources {
+  configuration(
+    """JSON select path"""
+    path: String
+  ): json!
+  external_id: String!
+  id: uuid!
+  name: String!
+  source: String!
+}
+
+"""
+aggregated selection of "sources"
+"""
+type sources_aggregate {
+  aggregate: sources_aggregate_fields
+  nodes: [sources!]!
+}
+
+"""
+aggregate fields of "sources"
+"""
+type sources_aggregate_fields {
+  count(columns: [sources_select_column!], distinct: Boolean): Int!
+  max: sources_max_fields
+  min: sources_min_fields
+}
+
+"""
+Boolean expression to filter rows from the table "sources". All fields are combined with a logical 'AND'.
+"""
+input sources_bool_exp {
+  _and: [sources_bool_exp!]
+  _not: sources_bool_exp
+  _or: [sources_bool_exp!]
+  configuration: json_comparison_exp
+  external_id: String_comparison_exp
+  id: uuid_comparison_exp
+  name: String_comparison_exp
+  source: String_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "sources"
+"""
+enum sources_constraint {
+  """unique or primary key constraint"""
+  PK_sources_id
+}
+
+"""
+input type for inserting data into table "sources"
+"""
+input sources_insert_input {
+  configuration: json
+  external_id: String
+  id: uuid
+  name: String
+  source: String
+}
+
+"""aggregate max on columns"""
+type sources_max_fields {
+  external_id: String
+  id: uuid
+  name: String
+  source: String
+}
+
+"""aggregate min on columns"""
+type sources_min_fields {
+  external_id: String
+  id: uuid
+  name: String
+  source: String
+}
+
+"""
+response of any mutation on the table "sources"
+"""
+type sources_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [sources!]!
+}
+
+"""
+on_conflict condition type for table "sources"
+"""
+input sources_on_conflict {
+  constraint: sources_constraint!
+  update_columns: [sources_update_column!]! = []
+  where: sources_bool_exp
+}
+
+"""Ordering options when selecting data from "sources"."""
+input sources_order_by {
+  configuration: order_by
+  external_id: order_by
+  id: order_by
+  name: order_by
+  source: order_by
+}
+
+"""primary key columns input for table: sources"""
+input sources_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "sources"
+"""
+enum sources_select_column {
+  """column name"""
+  configuration
+
+  """column name"""
+  external_id
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+
+  """column name"""
+  source
+}
+
+"""
+input type for updating data in table "sources"
+"""
+input sources_set_input {
+  configuration: json
+  external_id: String
+  id: uuid
+  name: String
+  source: String
+}
+
+"""
+update columns of table "sources"
+"""
+enum sources_update_column {
+  """column name"""
+  configuration
+
+  """column name"""
+  external_id
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+
+  """column name"""
+  source
 }
 
 type subscription_root {
@@ -542,6 +822,49 @@ type subscription_root {
 
   """fetch data from the table: "expenses" using primary key columns"""
   expenses_by_pk(id: uuid!): expenses
+
+  """
+  fetch data from the table: "sources"
+  """
+  sources(
+    """distinct select on columns"""
+    distinct_on: [sources_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [sources_order_by!]
+
+    """filter the rows returned"""
+    where: sources_bool_exp
+  ): [sources!]!
+
+  """
+  fetch aggregated fields from the table: "sources"
+  """
+  sources_aggregate(
+    """distinct select on columns"""
+    distinct_on: [sources_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [sources_order_by!]
+
+    """filter the rows returned"""
+    where: sources_bool_exp
+  ): sources_aggregate!
+
+  """fetch data from the table: "sources" using primary key columns"""
+  sources_by_pk(id: uuid!): sources
 }
 
 scalar timestamp

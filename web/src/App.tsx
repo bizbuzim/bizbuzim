@@ -6,13 +6,14 @@ import _ from "lodash";
 import { Auth0Provider } from "@auth0/auth0-react";
 import { Chance } from "chance";
 import { InfinitySpin } from "react-loader-spinner";
+import { Divider } from "@mui/material";
+import { DateTime } from "luxon";
 
 import { useGetAllExpensesQuery } from "./generated/graphql";
 import createClient from "./services/gql";
 import { Sidebar } from "./components/sidebar";
 import { Login } from "./components/login";
 import { Filters } from "./views/filters";
-import { Divider } from "./components/divider";
 import { Auth0ClientId, Auth0Domain } from "./config";
 import { Router } from "./components/router";
 import { ExpensesContext } from "./context/expenses";
@@ -32,6 +33,7 @@ const Container = styled.div`
 const FiltersContainer = styled.div`
   grid-area: filter;
   height: 10vh;
+  padding-top: 20px;
 `;
 const MenuContainer = styled.div`
   grid-area: menu;
@@ -76,8 +78,10 @@ function App() {
 }
 
 const Application = () => {
-  const [dateFrom, setDateFrom] = useState<Date>(new Date("2022-04-01"));
-  const [dateTo, setDateTo] = useState<Date>(new Date());
+  const [dateFrom, setDateFrom] = useState<DateTime>(
+    DateTime.local().minus({ days: 30 })
+  );
+  const [dateTo, setDateTo] = useState<DateTime>(DateTime.local());
   const [tags, setTags] = useState<string[]>([]);
   const [search, setSearch] = useState("");
   const [payments, setPayments] = useState<string[]>([]);
@@ -143,7 +147,7 @@ const Application = () => {
             searchChange={setSearch}
             paymentsSelected={setPayments}
           />
-          <Divider />
+          <Divider style={{ paddingTop: "20px" }} />
         </FiltersContainer>
         <MainContainer>
           <Router />

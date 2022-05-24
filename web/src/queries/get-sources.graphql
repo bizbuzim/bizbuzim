@@ -1,0 +1,9 @@
+query FetchSources {
+  sources {
+    id
+    name
+    source
+    external_id
+    configuration
+  }
+}

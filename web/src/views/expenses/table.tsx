@@ -8,22 +8,24 @@ import CloseIcon from "@mui/icons-material/Close";
 import { ExpensesContext } from "../../context/expenses";
 
 import { StyledRow, StyledTD, StyledLabelTD, StyledTH } from "./styles";
+import DateTD from "./date";
+import CurrencyTD from "./currency";
 import { Expense } from "./types";
 
 const StyledTHead = styled.thead`
   position: sticky;
   position: -webkit-sticky;
   top: 0;
-  background-color: #000;
-  color: #fff;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  background-color: #dddddd;
 `;
 
 const StyledTFoot = styled.tfoot`
   position: sticky;
   position: -webkit-sticky;
   bottom: 0;
-  background-color: #000;
-  color: #fff;
+  background-color: #dddddd;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 `;
 
 const DrawerContainer = styled.div`
@@ -39,10 +41,16 @@ const ExpenseHeader = styled.div`
 const Item = styled.span`
   padding: 15px 15px 15px 5px;
 `;
+const headers = [
+  { name: "No.", weight: 1 },
+  { name: "Date", weight: 3 },
+  { name: "Name", weight: 5 },
+  { name: "Price", weight: 3 },
+  { name: "Labels", weight: 2 },
+];
 const Table: React.FC<{
-  headers: string[];
   rows: Expense[];
-}> = ({ headers, rows }) => {
+}> = ({ rows }) => {
   const [openSideDrawer, setOpenSideDrawer] = useState(false);
   const [selectedRow, setSelectedRow] = useState<Expense | null>(null);
 
@@ -50,35 +58,44 @@ const Table: React.FC<{
     setOpenSideDrawer(!openSideDrawer);
     setSelectedRow(expense);
   };
-
   return (
-    <table style={{ width: "100%" }}>
+    <table
+      style={{
+        width: "100%",
+      }}
+    >
       <StyledTHead>
-        <tr>
+        <StyledRow>
           {headers.map((h, i) => (
-            <StyledTH key={i}>{h}</StyledTH>
+            <StyledTH key={i} style={{ flex: h.weight }}>
+              {h.name}
+            </StyledTH>
           ))}
-        </tr>
+        </StyledRow>
       </StyledTHead>
-      <tbody>
+      <tbody style={{ overflowY: "hidden" }}>
         {rows.map((v, i) => (
           <Row
             key={i}
             index={i}
             expense={v}
-            color={i % 2 === 0 ? "gray" : "white"}
             selectedRowHandle={selectedRowHandle}
           />
         ))}
       </tbody>
       <StyledTFoot>
-        <tr>
-          <td></td>
-          <td></td>
-          <td>Total: {rows.reduce((v, c) => v + _.toNumber(c.price), 0)}</td>
-          <td></td>
-          <td></td>
-        </tr>
+        <StyledRow>
+          {headers.map((h, i) => {
+            const data = rows
+              .reduce((v, c) => v + _.toNumber(c.price), 0)
+              .toFixed(2);
+            return (
+              <StyledTD key={i} style={{ flex: h.weight }}>
+                {i === 3 ? data : ""}
+              </StyledTD>
+            );
+          })}
+        </StyledRow>
       </StyledTFoot>
       <DrawerContainer>
         <SideDrawer
@@ -94,25 +111,19 @@ const Table: React.FC<{
 function Row({
   index,
   expense,
-  color,
   selectedRowHandle,
 }: {
   index: number;
   expense: Expense;
-  color: string;
   selectedRowHandle: (expense: Expense) => void;
 }) {
   return (
-    <StyledRow
-      key={expense.id}
-      color={color}
-      onClick={() => selectedRowHandle(expense)}
-    >
-      <StyledTD>{index + 1}</StyledTD>
-      <StyledTD>{new Date(expense.created_at).toLocaleString()}</StyledTD>
-      <StyledTD>{expense.name}</StyledTD>
-      <StyledTD>{expense.price}</StyledTD>
-      <StyledLabelTD>
+    <StyledRow key={expense.id} onClick={() => selectedRowHandle(expense)}>
+      <StyledTD style={{ flex: 1 }}>{index + 1}</StyledTD>
+      <DateTD date={expense.created_at} />
+      <StyledTD style={{ flex: 5 }}>{expense.name}</StyledTD>
+      <CurrencyTD price={expense.price} />
+      <StyledLabelTD style={{ flex: 2, overflowX: "hidden" }}>
         <Labels tags={expense.tags} />
       </StyledLabelTD>
     </StyledRow>

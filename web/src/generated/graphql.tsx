@@ -14,6 +14,7 @@ export type Scalars = {
   Int: number;
   Float: number;
   _text: any;
+  json: any;
   numeric: any;
   timestamp: any;
   uuid: any;
@@ -314,6 +315,19 @@ export type Expenses_Variance_Fields = {
   price?: Maybe<Scalars['Float']>;
 };
 
+/** Boolean expression to compare columns of type "json". All fields are combined with logical 'AND'. */
+export type Json_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['json']>;
+  _gt?: InputMaybe<Scalars['json']>;
+  _gte?: InputMaybe<Scalars['json']>;
+  _in?: InputMaybe<Array<Scalars['json']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _lt?: InputMaybe<Scalars['json']>;
+  _lte?: InputMaybe<Scalars['json']>;
+  _neq?: InputMaybe<Scalars['json']>;
+  _nin?: InputMaybe<Array<Scalars['json']>>;
+};
+
 /** mutation root */
 export type Mutation_Root = {
   __typename?: 'mutation_root';
@@ -321,14 +335,26 @@ export type Mutation_Root = {
   delete_expenses?: Maybe<Expenses_Mutation_Response>;
   /** delete single row from the table: "expenses" */
   delete_expenses_by_pk?: Maybe<Expenses>;
+  /** delete data from the table: "sources" */
+  delete_sources?: Maybe<Sources_Mutation_Response>;
+  /** delete single row from the table: "sources" */
+  delete_sources_by_pk?: Maybe<Sources>;
   /** insert data into the table: "expenses" */
   insert_expenses?: Maybe<Expenses_Mutation_Response>;
   /** insert a single row into the table: "expenses" */
   insert_expenses_one?: Maybe<Expenses>;
+  /** insert data into the table: "sources" */
+  insert_sources?: Maybe<Sources_Mutation_Response>;
+  /** insert a single row into the table: "sources" */
+  insert_sources_one?: Maybe<Sources>;
   /** update data of the table: "expenses" */
   update_expenses?: Maybe<Expenses_Mutation_Response>;
   /** update single row of the table: "expenses" */
   update_expenses_by_pk?: Maybe<Expenses>;
+  /** update data of the table: "sources" */
+  update_sources?: Maybe<Sources_Mutation_Response>;
+  /** update single row of the table: "sources" */
+  update_sources_by_pk?: Maybe<Sources>;
 };
 
 
@@ -340,6 +366,18 @@ export type Mutation_RootDelete_ExpensesArgs = {
 
 /** mutation root */
 export type Mutation_RootDelete_Expenses_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_SourcesArgs = {
+  where: Sources_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Sources_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -359,6 +397,20 @@ export type Mutation_RootInsert_Expenses_OneArgs = {
 
 
 /** mutation root */
+export type Mutation_RootInsert_SourcesArgs = {
+  objects: Array<Sources_Insert_Input>;
+  on_conflict?: InputMaybe<Sources_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Sources_OneArgs = {
+  object: Sources_Insert_Input;
+  on_conflict?: InputMaybe<Sources_On_Conflict>;
+};
+
+
+/** mutation root */
 export type Mutation_RootUpdate_ExpensesArgs = {
   _inc?: InputMaybe<Expenses_Inc_Input>;
   _set?: InputMaybe<Expenses_Set_Input>;
@@ -371,6 +423,20 @@ export type Mutation_RootUpdate_Expenses_By_PkArgs = {
   _inc?: InputMaybe<Expenses_Inc_Input>;
   _set?: InputMaybe<Expenses_Set_Input>;
   pk_columns: Expenses_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_SourcesArgs = {
+  _set?: InputMaybe<Sources_Set_Input>;
+  where: Sources_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Sources_By_PkArgs = {
+  _set?: InputMaybe<Sources_Set_Input>;
+  pk_columns: Sources_Pk_Columns_Input;
 };
 
 /** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
@@ -410,6 +476,12 @@ export type Query_Root = {
   expenses_aggregate: Expenses_Aggregate;
   /** fetch data from the table: "expenses" using primary key columns */
   expenses_by_pk?: Maybe<Expenses>;
+  /** fetch data from the table: "sources" */
+  sources: Array<Sources>;
+  /** fetch aggregated fields from the table: "sources" */
+  sources_aggregate: Sources_Aggregate;
+  /** fetch data from the table: "sources" using primary key columns */
+  sources_by_pk?: Maybe<Sources>;
 };
 
 
@@ -435,6 +507,179 @@ export type Query_RootExpenses_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
+
+export type Query_RootSourcesArgs = {
+  distinct_on?: InputMaybe<Array<Sources_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Sources_Order_By>>;
+  where?: InputMaybe<Sources_Bool_Exp>;
+};
+
+
+export type Query_RootSources_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Sources_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Sources_Order_By>>;
+  where?: InputMaybe<Sources_Bool_Exp>;
+};
+
+
+export type Query_RootSources_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+/** columns and relationships of "sources" */
+export type Sources = {
+  __typename?: 'sources';
+  configuration: Scalars['json'];
+  external_id: Scalars['String'];
+  id: Scalars['uuid'];
+  name: Scalars['String'];
+  source: Scalars['String'];
+};
+
+
+/** columns and relationships of "sources" */
+export type SourcesConfigurationArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregated selection of "sources" */
+export type Sources_Aggregate = {
+  __typename?: 'sources_aggregate';
+  aggregate?: Maybe<Sources_Aggregate_Fields>;
+  nodes: Array<Sources>;
+};
+
+/** aggregate fields of "sources" */
+export type Sources_Aggregate_Fields = {
+  __typename?: 'sources_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Sources_Max_Fields>;
+  min?: Maybe<Sources_Min_Fields>;
+};
+
+
+/** aggregate fields of "sources" */
+export type Sources_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Sources_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "sources". All fields are combined with a logical 'AND'. */
+export type Sources_Bool_Exp = {
+  _and?: InputMaybe<Array<Sources_Bool_Exp>>;
+  _not?: InputMaybe<Sources_Bool_Exp>;
+  _or?: InputMaybe<Array<Sources_Bool_Exp>>;
+  configuration?: InputMaybe<Json_Comparison_Exp>;
+  external_id?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  name?: InputMaybe<String_Comparison_Exp>;
+  source?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "sources" */
+export enum Sources_Constraint {
+  /** unique or primary key constraint */
+  PkSourcesId = 'PK_sources_id'
+}
+
+/** input type for inserting data into table "sources" */
+export type Sources_Insert_Input = {
+  configuration?: InputMaybe<Scalars['json']>;
+  external_id?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  name?: InputMaybe<Scalars['String']>;
+  source?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregate max on columns */
+export type Sources_Max_Fields = {
+  __typename?: 'sources_max_fields';
+  external_id?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['uuid']>;
+  name?: Maybe<Scalars['String']>;
+  source?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Sources_Min_Fields = {
+  __typename?: 'sources_min_fields';
+  external_id?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['uuid']>;
+  name?: Maybe<Scalars['String']>;
+  source?: Maybe<Scalars['String']>;
+};
+
+/** response of any mutation on the table "sources" */
+export type Sources_Mutation_Response = {
+  __typename?: 'sources_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Sources>;
+};
+
+/** on_conflict condition type for table "sources" */
+export type Sources_On_Conflict = {
+  constraint: Sources_Constraint;
+  update_columns?: Array<Sources_Update_Column>;
+  where?: InputMaybe<Sources_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "sources". */
+export type Sources_Order_By = {
+  configuration?: InputMaybe<Order_By>;
+  external_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
+  source?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: sources */
+export type Sources_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** select columns of table "sources" */
+export enum Sources_Select_Column {
+  /** column name */
+  Configuration = 'configuration',
+  /** column name */
+  ExternalId = 'external_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Name = 'name',
+  /** column name */
+  Source = 'source'
+}
+
+/** input type for updating data in table "sources" */
+export type Sources_Set_Input = {
+  configuration?: InputMaybe<Scalars['json']>;
+  external_id?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  name?: InputMaybe<Scalars['String']>;
+  source?: InputMaybe<Scalars['String']>;
+};
+
+/** update columns of table "sources" */
+export enum Sources_Update_Column {
+  /** column name */
+  Configuration = 'configuration',
+  /** column name */
+  ExternalId = 'external_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Name = 'name',
+  /** column name */
+  Source = 'source'
+}
+
 export type Subscription_Root = {
   __typename?: 'subscription_root';
   /** fetch data from the table: "expenses" */
@@ -443,6 +688,12 @@ export type Subscription_Root = {
   expenses_aggregate: Expenses_Aggregate;
   /** fetch data from the table: "expenses" using primary key columns */
   expenses_by_pk?: Maybe<Expenses>;
+  /** fetch data from the table: "sources" */
+  sources: Array<Sources>;
+  /** fetch aggregated fields from the table: "sources" */
+  sources_aggregate: Sources_Aggregate;
+  /** fetch data from the table: "sources" using primary key columns */
+  sources_by_pk?: Maybe<Sources>;
 };
 
 
@@ -465,6 +716,29 @@ export type Subscription_RootExpenses_AggregateArgs = {
 
 
 export type Subscription_RootExpenses_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootSourcesArgs = {
+  distinct_on?: InputMaybe<Array<Sources_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Sources_Order_By>>;
+  where?: InputMaybe<Sources_Bool_Exp>;
+};
+
+
+export type Subscription_RootSources_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Sources_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Sources_Order_By>>;
+  where?: InputMaybe<Sources_Bool_Exp>;
+};
+
+
+export type Subscription_RootSources_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -502,6 +776,11 @@ export type GetAllExpensesQueryVariables = Exact<{
 
 export type GetAllExpensesQuery = { __typename?: 'query_root', expenses: Array<{ __typename?: 'expenses', id: any, name: string, payment: string, tags: any, price: any, created_at: any }> };
 
+export type FetchSourcesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type FetchSourcesQuery = { __typename?: 'query_root', sources: Array<{ __typename?: 'sources', id: any, name: string, source: string, external_id: string, configuration: any }> };
+
 
 export const GetAllExpensesDocument = gql`
     query GetAllExpenses($from: timestamp!, $to: timestamp!) {
@@ -521,6 +800,21 @@ export const GetAllExpensesDocument = gql`
 
 export function useGetAllExpensesQuery(options: Omit<Urql.UseQueryArgs<GetAllExpensesQueryVariables>, 'query'>) {
   return Urql.useQuery<GetAllExpensesQuery>({ query: GetAllExpensesDocument, ...options });
+};
+export const FetchSourcesDocument = gql`
+    query FetchSources {
+  sources {
+    id
+    name
+    source
+    external_id
+    configuration
+  }
+}
+    `;
+
+export function useFetchSourcesQuery(options?: Omit<Urql.UseQueryArgs<FetchSourcesQueryVariables>, 'query'>) {
+  return Urql.useQuery<FetchSourcesQuery>({ query: FetchSourcesDocument, ...options });
 };
 import { IntrospectionQuery } from 'graphql';
 export default {
@@ -1144,6 +1438,46 @@ export default {
             ]
           },
           {
+            "name": "delete_sources",
+            "type": {
+              "kind": "OBJECT",
+              "name": "sources_mutation_response",
+              "ofType": null
+            },
+            "args": [
+              {
+                "name": "where",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "delete_sources_by_pk",
+            "type": {
+              "kind": "OBJECT",
+              "name": "sources",
+              "ofType": null
+            },
+            "args": [
+              {
+                "name": "id",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
+          {
             "name": "insert_expenses",
             "type": {
               "kind": "OBJECT",
@@ -1181,6 +1515,66 @@ export default {
             "type": {
               "kind": "OBJECT",
               "name": "expenses",
+              "ofType": null
+            },
+            "args": [
+              {
+                "name": "object",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              },
+              {
+                "name": "on_conflict",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              }
+            ]
+          },
+          {
+            "name": "insert_sources",
+            "type": {
+              "kind": "OBJECT",
+              "name": "sources_mutation_response",
+              "ofType": null
+            },
+            "args": [
+              {
+                "name": "objects",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "LIST",
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "Any"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "name": "on_conflict",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              }
+            ]
+          },
+          {
+            "name": "insert_sources_one",
+            "type": {
+              "kind": "OBJECT",
+              "name": "sources",
               "ofType": null
             },
             "args": [
@@ -1252,6 +1646,60 @@ export default {
                   "name": "Any"
                 }
               },
+              {
+                "name": "_set",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              },
+              {
+                "name": "pk_columns",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "update_sources",
+            "type": {
+              "kind": "OBJECT",
+              "name": "sources_mutation_response",
+              "ofType": null
+            },
+            "args": [
+              {
+                "name": "_set",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              },
+              {
+                "name": "where",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "update_sources_by_pk",
+            "type": {
+              "kind": "OBJECT",
+              "name": "sources",
+              "ofType": null
+            },
+            "args": [
               {
                 "name": "_set",
                 "type": {
@@ -1423,6 +1871,427 @@ export default {
                 }
               }
             ]
+          },
+          {
+            "name": "sources",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "sources",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "args": [
+              {
+                "name": "distinct_on",
+                "type": {
+                  "kind": "LIST",
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Any"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "limit",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              },
+              {
+                "name": "offset",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              },
+              {
+                "name": "order_by",
+                "type": {
+                  "kind": "LIST",
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Any"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "where",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              }
+            ]
+          },
+          {
+            "name": "sources_aggregate",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "sources_aggregate",
+                "ofType": null
+              }
+            },
+            "args": [
+              {
+                "name": "distinct_on",
+                "type": {
+                  "kind": "LIST",
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Any"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "limit",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              },
+              {
+                "name": "offset",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              },
+              {
+                "name": "order_by",
+                "type": {
+                  "kind": "LIST",
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Any"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "where",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              }
+            ]
+          },
+          {
+            "name": "sources_by_pk",
+            "type": {
+              "kind": "OBJECT",
+              "name": "sources",
+              "ofType": null
+            },
+            "args": [
+              {
+                "name": "id",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "interfaces": []
+      },
+      {
+        "kind": "OBJECT",
+        "name": "sources",
+        "fields": [
+          {
+            "name": "configuration",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": [
+              {
+                "name": "path",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              }
+            ]
+          },
+          {
+            "name": "external_id",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "id",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "name",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "source",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          }
+        ],
+        "interfaces": []
+      },
+      {
+        "kind": "OBJECT",
+        "name": "sources_aggregate",
+        "fields": [
+          {
+            "name": "aggregate",
+            "type": {
+              "kind": "OBJECT",
+              "name": "sources_aggregate_fields",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "nodes",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "sources",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "args": []
+          }
+        ],
+        "interfaces": []
+      },
+      {
+        "kind": "OBJECT",
+        "name": "sources_aggregate_fields",
+        "fields": [
+          {
+            "name": "count",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": [
+              {
+                "name": "columns",
+                "type": {
+                  "kind": "LIST",
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Any"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "distinct",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              }
+            ]
+          },
+          {
+            "name": "max",
+            "type": {
+              "kind": "OBJECT",
+              "name": "sources_max_fields",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "min",
+            "type": {
+              "kind": "OBJECT",
+              "name": "sources_min_fields",
+              "ofType": null
+            },
+            "args": []
+          }
+        ],
+        "interfaces": []
+      },
+      {
+        "kind": "OBJECT",
+        "name": "sources_max_fields",
+        "fields": [
+          {
+            "name": "external_id",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "id",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "name",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "source",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          }
+        ],
+        "interfaces": []
+      },
+      {
+        "kind": "OBJECT",
+        "name": "sources_min_fields",
+        "fields": [
+          {
+            "name": "external_id",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "id",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "name",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "source",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          }
+        ],
+        "interfaces": []
+      },
+      {
+        "kind": "OBJECT",
+        "name": "sources_mutation_response",
+        "fields": [
+          {
+            "name": "affected_rows",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "returning",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "sources",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "args": []
           }
         ],
         "interfaces": []
@@ -1562,6 +2431,152 @@ export default {
             "type": {
               "kind": "OBJECT",
               "name": "expenses",
+              "ofType": null
+            },
+            "args": [
+              {
+                "name": "id",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "sources",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "sources",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "args": [
+              {
+                "name": "distinct_on",
+                "type": {
+                  "kind": "LIST",
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Any"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "limit",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              },
+              {
+                "name": "offset",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              },
+              {
+                "name": "order_by",
+                "type": {
+                  "kind": "LIST",
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Any"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "where",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              }
+            ]
+          },
+          {
+            "name": "sources_aggregate",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "sources_aggregate",
+                "ofType": null
+              }
+            },
+            "args": [
+              {
+                "name": "distinct_on",
+                "type": {
+                  "kind": "LIST",
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Any"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "limit",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              },
+              {
+                "name": "offset",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              },
+              {
+                "name": "order_by",
+                "type": {
+                  "kind": "LIST",
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Any"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "where",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              }
+            ]
+          },
+          {
+            "name": "sources_by_pk",
+            "type": {
+              "kind": "OBJECT",
+              "name": "sources",
               "ofType": null
             },
             "args": [

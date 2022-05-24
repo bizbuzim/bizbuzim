@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@auth0/auth0-react": "^1.9.0",
-    "@date-io/moment": "^2.13.1",
+    "@date-io/luxon": "^2.14.0",
     "@emotion/react": "^11.8.2",
     "@emotion/styled": "^11.8.1",
     "@graphql-codegen/typescript-urql": "^3.5.7",
@@ -13,17 +13,18 @@
     "@mui/material": "^5.5.3",
     "@mui/styled-engine-sc": "^5.5.2",
     "chance": "^1.1.8",
+    "chart.js": "^3.7.1",
     "graphql": "^16.4.0",
     "lodash": "^4.17.21",
-    "moment": "^2.29.1",
+    "luxon": "^2.4.0",
     "react": "^17.0.2",
+    "react-chartjs-2": "^4.1.0",
     "react-dom": "^17.0.2",
     "react-icons": "^4.3.1",
     "react-loader-spinner": "^6.0.0-0",
     "react-pro-sidebar": "^0.7.1",
     "react-router-dom": "6",
     "react-scripts": "5.0.0",
-    "recharts": "^2.1.9",
     "styled-components": "^5.3.5",
     "urql": "^2.2.0",
     "web-vitals": "^2.1.0"
@@ -34,7 +35,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "tsc && eslint \"*/**/*.{js,ts,tsx}\" --max-warnings=0 --cache --cache-strategy metadata",
-    "codegen": "graphql-codegen --config codegen.yml"
+    "codegen": "graphql-codegen --config codegen.yml",
+    "update-schema": "gq https://home.bizbuzim.info/v1/graphql -H 'x-hasura-admin-secret: ${HASURA_ADMIN_SECRET}' --introspect > schema.graphql"
   },
   "browserslist": {
     "production": [
@@ -60,6 +62,7 @@
     "@types/chance": "^1.1.3",
     "@types/jest": "^27.0.1",
     "@types/lodash": "^4.14.181",
+    "@types/luxon": "^2.3.2",
     "@types/node": "^16.7.13",
     "@types/react": "^17.0.20",
     "@types/react-dom": "^17.0.9",

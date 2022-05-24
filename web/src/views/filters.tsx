@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
-import { BsFilter } from "react-icons/bs";
 import TextField from "@mui/material/TextField";
+import { DateTime } from "luxon";
 
 import { BZSelect } from "../components/filters/select";
 import { ExpensesContext } from "../context/expenses";
@@ -10,23 +10,23 @@ import { DatePicker } from "./../components/date-picker";
 
 const FiltersContainer = styled.div`
   display: inline-flex;
+  justify-content: space-around;
+  align-items: center;
+  align-content: space-around;
+  gap: 2rem;
 `;
 
 const FilterContainer = styled.div`
-  display: inline-flex;
-  flex-direction: row;
-  margin: 1em;
-  margin-bottom: 0;
-  min-width: 10em;
-  max-width: 15em;
+  margin: 0;
+  max-width: 100%;
   max-height: 5em;
 `;
 
 export interface Props {
-  fromDate: Date;
-  fromDateChange: (d: Date) => void;
-  toDate: Date;
-  toDateChange: (d: Date) => void;
+  fromDate: DateTime;
+  fromDateChange: (d: DateTime) => void;
+  toDate: DateTime;
+  toDateChange: (d: DateTime) => void;
   tagsSelected: (tags: string[]) => void;
   paymentsSelected: (payments: string[]) => void;
   searchChange: (d: string) => void;
@@ -56,7 +56,6 @@ export const Filters: React.FC<Props> = ({
   return (
     <>
       <FiltersContainer>
-        <BsFilter size={"2em"} />
         <FilterContainer>
           <TextField
             onChange={(e) => searchChange(e.target.value)}
