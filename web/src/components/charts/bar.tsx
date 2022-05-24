@@ -18,6 +18,8 @@ import { ExpensesContext } from "../../context/expenses";
 import { FiltersContext } from "../../context/filters";
 import { Expense } from "../../views/expenses/types";
 
+import { ChartShadowContainer } from "./container";
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -76,7 +78,11 @@ export const ExpensesBarChart: React.FC<{ stacked: boolean }> = ({
   if (isLoading) {
     return <></>;
   }
-  return <Bar options={options} data={{ labels, datasets }} />;
+  return (
+    <ChartShadowContainer width="50vw">
+      <Bar options={options} data={{ labels, datasets }} />
+    </ChartShadowContainer>
+  );
 };
 
 function buildDataset(filtered: Expense[], from: DateTime, to: DateTime) {

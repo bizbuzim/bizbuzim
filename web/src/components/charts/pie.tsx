@@ -7,9 +7,9 @@ import { Pie } from "react-chartjs-2";
 import { Expense } from "../../views/expenses/types";
 import { ExpensesContext } from "../../context/expenses";
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+import { ChartShadowContainer } from "./container";
 
-export const data = {};
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 const PaymentsPieChart: React.FC = () => {
   const { expenses, isLoading } = useContext(ExpensesContext);
@@ -25,7 +25,11 @@ const PaymentsPieChart: React.FC = () => {
     datasets,
     borderWidth: 1,
   };
-  return <Pie data={data} />;
+  return (
+    <ChartShadowContainer width="20vw">
+      <Pie data={data} />
+    </ChartShadowContainer>
+  );
 };
 
 function buildDataset(expenses: Expense[]) {
