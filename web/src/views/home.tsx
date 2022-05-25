@@ -6,6 +6,7 @@ import { DateTime } from "luxon";
 import { ExpensesContext } from "../context/expenses";
 import { ExpensesBarChart } from "../components/charts/bar";
 import PaymentsPieChart from "../components/charts/pie";
+import ExpensesForecastLineChart from "../components/charts/line";
 import { FiltersContext } from "../context/filters";
 
 const Container = styled.div`
@@ -94,8 +95,9 @@ export const Home: React.FC = () => {
         Stack
       </button>
       <ChartsContainer>
-        <ExpensesBarChart stacked={stackedChart} />
+        <ExpensesForecastLineChart />
         <PaymentsPieChart />
+        <ExpensesBarChart stacked={stackedChart} />
       </ChartsContainer>
     </Container>
   );
