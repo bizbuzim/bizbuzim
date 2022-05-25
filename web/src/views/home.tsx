@@ -50,6 +50,8 @@ const ChartsContainer = styled.div`
   width: 100%;
   height: 100%;
   align-items: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
 `;
 
 export const Home: React.FC = () => {
