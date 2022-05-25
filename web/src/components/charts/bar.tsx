@@ -12,12 +12,13 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { DateTime, Interval } from "luxon";
+import { DateTime } from "luxon";
 
 import { ExpensesContext } from "../../context/expenses";
 import { FiltersContext } from "../../context/filters";
 import { Expense } from "../../views/expenses/types";
 
+import { buildDates, formatISODate } from "./date";
 import { ChartShadowContainer } from "./container";
 
 ChartJS.register(
@@ -97,7 +98,7 @@ function buildDataset(filtered: Expense[], from: DateTime, to: DateTime) {
     backgroundColor: "rgb(99, 109, 255)",
   };
   filtered.forEach((e) => {
-    const label = DateTime.fromISO(e.created_at).toFormat("dd/MM/yyyy");
+    const label = formatISODate(e.created_at);
     dataset.data[labels[label]] =
       _.toNumber(e.price) + _.toNumber(dataset.data[labels[label]]);
   });
@@ -155,15 +156,4 @@ function buildStackedDataset(
     datasets: _.map(datasets, (k) => k),
     labels: _.keys(labels),
   };
-}
-
-function buildDates(from: DateTime, to: DateTime): string[] {
-  const res = [];
-  const interval = Interval.fromDateTimes(from, to);
-  let cursor = interval.start.startOf("day");
-  while (cursor < interval.end) {
-    res.push(cursor.toFormat("dd/MM/yyyy"));
-    cursor = cursor.plus({ days: 1 });
-  }
-  return res;
 }
