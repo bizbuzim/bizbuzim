@@ -27,7 +27,7 @@ const Container = styled.div`
     "menu main main main main main main main"
     "menu main main main main main main main"
     "menu main main main main main main main";
-  height: 100vh;
+  height: 100%;
   background-color: #f1f5f9;
 `;
 
@@ -38,7 +38,7 @@ const FiltersContainer = styled.div`
 `;
 const MenuContainer = styled.div`
   grid-area: menu;
-  height: 95rvh;
+  height: 100vh;
 `;
 const MainContainer = styled.div`
   grid-area: main;
