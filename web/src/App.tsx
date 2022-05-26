@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Provider } from "urql";
 import _ from "lodash";
@@ -50,7 +50,7 @@ const LoaderContainer = styled.div`
   display: flex;
 `;
 
-function App() {
+const App: React.FC = () => {
   const [token, setToken] = useState("");
   let application = (
     <LoaderContainer>
@@ -76,7 +76,7 @@ function App() {
       </Auth0Provider>
     </Container>
   );
-}
+};
 
 const Application = () => {
   const [dateFrom, setDateFrom] = useState<DateTime>(
