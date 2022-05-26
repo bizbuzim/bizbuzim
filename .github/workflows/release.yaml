@@ -35,7 +35,7 @@ jobs:
 
         next_version=$(semver-cli inc $bump $current)
         echo "next_version is now $next_version"
-        echo "::set-output name=version::$next_version
+        echo "::set-output name=version::$next_version"
   release:
     name: release
     needs: [prepare]
