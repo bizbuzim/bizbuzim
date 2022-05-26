@@ -11,7 +11,7 @@ const Container = styled.div`
   flex: 0 0 auto;
   justify-content: space-between;
   align-items: flex-start;
-  height: 100%;
+  height: 100vh;
   min-height: 30rem;
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);
 `;

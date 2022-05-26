@@ -19,7 +19,7 @@ const FiltersContainer = styled.div`
 const FilterContainer = styled.div`
   margin: 0;
   max-width: 100%;
-  max-height: 5em;
+  max-height: 10vh;
 `;
 
 export interface Props {
