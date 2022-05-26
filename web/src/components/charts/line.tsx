@@ -41,11 +41,14 @@ const options = {
       text: "",
     },
   },
+<<<<<<< Updated upstream
   scales: {
     x: {
       display: false,
     },
   },
+=======
+>>>>>>> Stashed changes
 };
 
 const ExpensesForecastLineChart: React.FC = () => {

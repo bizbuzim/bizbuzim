@@ -3,7 +3,6 @@ import React, { useContext, useMemo } from "react";
 import Chance from "chance";
 import { Bar } from "react-chartjs-2";
 import {
-  ChartOptions,
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
