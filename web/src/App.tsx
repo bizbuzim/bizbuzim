@@ -21,27 +21,27 @@ import { FiltersContext } from "./context/filters";
 
 const Container = styled.div`
   display: grid;
-  grid-template-areas:
-    "menu filter filter filter filter filter filter filter"
-    "menu main main main main main main main"
-    "menu main main main main main main main"
-    "menu main main main main main main main"
-    "menu main main main main main main main";
-  height: 100%;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: repeat(12, 1fr);
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+  height: 100vh;
   background-color: #f1f5f9;
 `;
 
 const FiltersContainer = styled.div`
   grid-area: filter;
   height: 10vh;
-  padding-top: 20px;
+  grid-area: 1 / 2 / 2 / 13;
+  display: flex;
+  justify-content: space-evenly;
 `;
 const MenuContainer = styled.div`
-  grid-area: menu;
   height: 100vh;
+  grid-area: 1 / 1 / 13 / 2;
 `;
 const MainContainer = styled.div`
-  grid-area: main;
+  grid-area: 2 / 2 / 13 / 13;
   height: 90vh;
   overflow: scroll;
 `;

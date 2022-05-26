@@ -15,7 +15,7 @@ const Container = styled.div`
   flex: 0 0 auto;
   justify-content: flex-start;
   align-items: center;
-  height: 100%;
+  height: 100vh;
   min-height: 30rem;
 `;
 
@@ -48,7 +48,7 @@ const ChartsContainer = styled.div`
   display: flex;
   justify-content: space-around;
   width: 100%;
-  height: 100%;
+  height: 80vh;
   align-items: flex-start;
   gap: 10px;
   flex-wrap: wrap;
