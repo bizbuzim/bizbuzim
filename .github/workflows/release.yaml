@@ -34,7 +34,7 @@ jobs:
         current=$(gh release list | awk '{print $1}' | awk 'NR==1' | sed s/v//g)
 
         semver-cli inc $bump $current > next_version
-        echo "::set-output name=version::${{needs.prepare.outputs.version}}"
+        echo "::set-output name=version::$(cat next_version)
   release:
     name: release
     needs: [prepare]
