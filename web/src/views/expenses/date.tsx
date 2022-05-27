@@ -12,10 +12,13 @@ const Container = styled(StyledTD)`
 const AgeContainer = styled.div``;
 const DateContainer = styled.div``;
 
-const DateTD: React.FC<{ date: string }> = ({ date }) => {
+const DateTD: React.FC<{ date: string; now?: DateTime }> = ({
+  date,
+  now = DateTime.local(),
+}) => {
   const d = DateTime.fromISO(date);
   const age = useMemo(() => {
-    const diff = Math.ceil(d.diffNow("days").as("days"));
+    const diff = Math.ceil(d.diff(now, "days").as("days"));
     if (diff) {
       return diff * -1 + " days ago";
     }
