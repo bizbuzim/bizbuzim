@@ -7,7 +7,7 @@ import {
   SidebarContent,
   SidebarHeader,
 } from "react-pro-sidebar";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import { useAuth0 } from "@auth0/auth0-react";
 import Button from "@mui/material/Button";
@@ -18,17 +18,21 @@ import HomeIcon from "@mui/icons-material/Home";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import SourceIcon from "@mui/icons-material/Source";
 
-import logo from "../assets/bizbuzim.png";
-
 export const Sidebar: React.FC = () => {
   const { logout } = useAuth0();
   const [collapsed, setCollapsed] = useState(false);
   return (
-    <ProSidebar collapsed={collapsed}>
+    <ProSidebar
+      style={{
+        boxShadow: "0 8px 16px 0 rgba(0, 0, 0, 0.25)",
+      }}
+      collapsed={collapsed}
+    >
       <SidebarHeader
         style={{
           display: "flex",
           justifyContent: collapsed ? "flex-end" : "space-between",
+          alignItems: "center",
         }}
       >
         <Header
@@ -80,7 +84,6 @@ const Header: React.FC<{ collapsed: boolean; onClick(): void }> = ({
   collapsed,
   onClick,
 }) => {
-  const navigate = useNavigate();
   if (collapsed) {
     return (
       <ArrowRightIcon
@@ -93,12 +96,20 @@ const Header: React.FC<{ collapsed: boolean; onClick(): void }> = ({
 
   return (
     <>
-      <img
-        src={logo}
-        alt="bizbuzim"
-        style={{ width: "80px", height: "80px", cursor: "pointer" }}
-        onClick={() => navigate("/")}
-      />
+      <div
+        style={{
+          padding: "24px",
+          textTransform: "uppercase",
+          fontWeight: "bold",
+          fontSize: 14,
+          letterSpacing: "1px",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+        }}
+      >
+        Bizbuzim
+      </div>
       <ArrowLeftIcon
         style={{ width: "50px", height: "50px" }}
         onClick={() => onClick()}
