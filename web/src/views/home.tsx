@@ -53,7 +53,7 @@ const ValueContent = styled.div`
 
 const ChartsContainer = styled.div`
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   width: 100%;
   height: 80vh;
   align-items: flex-start;
