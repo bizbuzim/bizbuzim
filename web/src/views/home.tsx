@@ -1,3 +1,5 @@
+import exp from "constants";
+
 import React, { useContext, useMemo, useState } from "react";
 import styled from "styled-components";
 import _ from "lodash";
@@ -31,18 +33,23 @@ const ValueContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  align-items: center;
-  background-color: rgb(44, 51, 88);
-  color: rgb(204, 204, 220);
+  align-items: flex-start;
+  background-color: rgb(255, 255, 255);
   min-height: 10vh;
-  width: 10vh;
+  width: 20vh;
   :hover {
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
   }
 `;
 
-const ValueHeader = styled.div``;
-const ValueContent = styled.div``;
+const ValueHeader = styled.div`
+  padding-left: 10px;
+  color: #999999;
+`;
+const ValueContent = styled.div`
+  padding-left: 10px;
+  font-size: x-large;
+`;
 
 const ChartsContainer = styled.div`
   display: flex;
@@ -59,6 +66,15 @@ export const Home: React.FC = () => {
   const {
     dates: { to },
   } = useContext(FiltersContext);
+  const { payments, tags } = useMemo(() => {
+    const payments = new Set<string>();
+    const tags = new Set<string>();
+    _.forEach(expenses, (e) => {
+      payments.add(e.payment);
+      _.forEach(e.tags, (t) => tags.add(t));
+    });
+    return { payments, tags };
+  }, [expenses]);
   const [stackedChart, setStackedChart] = useState(false);
   const total = useMemo(() => {
     return expenses.reduce((p, c) => _.toNumber(c.price) + p, 0);
@@ -84,6 +100,14 @@ export const Home: React.FC = () => {
         <ValueContainer>
           <ValueHeader>Days Left</ValueHeader>
           <ValueContent>{days}</ValueContent>
+        </ValueContainer>
+        <ValueContainer>
+          <ValueHeader>Payment Types</ValueHeader>
+          <ValueContent>{_.size(payments)}</ValueContent>
+        </ValueContainer>
+        <ValueContainer>
+          <ValueHeader>Unique Tags</ValueHeader>
+          <ValueContent>{_.size(tags)}</ValueContent>
         </ValueContainer>
       </Values>
       <button
