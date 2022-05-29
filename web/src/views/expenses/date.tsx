@@ -13,7 +13,7 @@ const Container = styled(StyledTD)`
 const AgeContainer = styled.div``;
 const DateContainer = styled.div``;
 
-export const DateTD: React.FC<{ date: string; now?: DateTime }> = ({
+const DateTD: React.FC<{ date: string; now?: DateTime }> = ({
   date,
   now = DateTime.local(),
 }) => {
