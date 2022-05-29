@@ -1,0 +1,29 @@
+[
+{
+	"uri": "http://localhost/",
+	"title": "",
+	"tags": [],
+	"description": "",
+	"content": "Chapter 1 Basics Discover what this Hugo theme is all about and the core concepts behind it.\n"
+},
+{
+	"uri": "http://localhost/",
+	"title": "Bizbuzim",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "http://localhost/categories/",
+	"title": "Categories",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "http://localhost/tags/",
+	"title": "Tags",
+	"tags": [],
+	"description": "",
+	"content": ""
+}]

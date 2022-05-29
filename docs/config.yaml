@@ -1,0 +1,9 @@
+baseURL: "http://localhost"
+title: "Bizbuzim"
+theme: "hugo-theme-learn"
+outputs:
+  home: ["HTML", "JSON", "RSS"]
+params:
+  editURL: http://github.com/olegsu/bizbuzim/docs/
+  disableNextPrev: true
+  themeVariant: "green"
