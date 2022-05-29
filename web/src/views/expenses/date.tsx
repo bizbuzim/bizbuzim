@@ -2,6 +2,7 @@ import { DateTime } from "luxon";
 import React, { useMemo } from "react";
 import styled from "styled-components";
 
+import { CalculateAge } from "./age";
 import { StyledTD } from "./styles";
 
 const Container = styled(StyledTD)`
@@ -18,12 +19,8 @@ const DateTD: React.FC<{ date: string; now?: DateTime }> = ({
 }) => {
   const d = DateTime.fromISO(date);
   const age = useMemo(() => {
-    const diff = Math.ceil(d.diff(now, "days").as("days"));
-    if (diff) {
-      return diff * -1 + " days ago";
-    }
-    return "Today";
-  }, [d]);
+    return CalculateAge(d, now);
+  }, [d, now]);
 
   return (
     <Container style={{ flex: 3 }}>
