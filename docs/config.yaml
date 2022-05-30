@@ -1,4 +1,4 @@
-baseURL: "http://localhost"
+baseURL: https://olegsu.github.io/bizbuzim/
 title: "Bizbuzim"
 theme: "hugo-theme-learn"
 outputs:
