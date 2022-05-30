@@ -6,3 +6,4 @@ cmd/migration
 .cover
 node_modules
 .production
+.DS_Store
