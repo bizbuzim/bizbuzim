@@ -7,3 +7,4 @@ cmd/migration
 node_modules
 .production
 .DS_Store
+.hugo_build.lock
