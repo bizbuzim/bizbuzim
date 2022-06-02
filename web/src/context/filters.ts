@@ -1,6 +1,8 @@
 import { createContext } from "react";
 import { DateTime } from "luxon";
 
+import { Expense } from "./../views/expenses/types";
+
 export const FiltersContext = createContext<{
   dates: {
     from: DateTime;
@@ -18,3 +20,13 @@ export const FiltersContext = createContext<{
   search: "",
   payments: [],
 });
+
+export function applyFilterTags(
+  expenses: Expense[],
+  tags: string[]
+): Expense[] {
+  const filtered = expenses.filter((e) => {
+    return e.tags.some((t) => tags.includes(t));
+  });
+  return filtered;
+}

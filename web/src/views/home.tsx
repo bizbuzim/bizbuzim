@@ -9,7 +9,7 @@ import { ExpensesContext } from "../context/expenses";
 import { ExpensesBarChart } from "../components/charts/bar";
 import PaymentsPieChart from "../components/charts/pie";
 import ExpensesForecastLineChart from "../components/charts/line";
-import { FiltersContext } from "../context/filters";
+import { FiltersContext, applyFilterTags } from "../context/filters";
 
 const Container = styled.div`
   display: flex;
@@ -64,7 +64,8 @@ const ChartsContainer = styled.div`
 export const Home: React.FC = () => {
   const { expenses, isLoading } = useContext(ExpensesContext);
   const {
-    dates: { to },
+    tags: tagsFilter,
+    dates: { from, to },
   } = useContext(FiltersContext);
   const { payments, tags } = useMemo(() => {
     const payments = new Set<string>();
@@ -77,8 +78,12 @@ export const Home: React.FC = () => {
   }, [expenses]);
   const [stackedChart, setStackedChart] = useState(false);
   const total = useMemo(() => {
+    if (tagsFilter) {
+      const filterdExpenses = applyFilterTags(expenses, tagsFilter);
+      return filterdExpenses.reduce((p, c) => _.toNumber(c.price) + p, 0);
+    }
     return expenses.reduce((p, c) => _.toNumber(c.price) + p, 0);
-  }, [expenses]);
+  }, [expenses, tagsFilter]);
   const days = useMemo(() => {
     if (!to) {
       return 0;
