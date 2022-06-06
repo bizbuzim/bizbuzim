@@ -25,8 +25,7 @@ export function applyFilterTags(
   expenses: Expense[],
   tags: string[]
 ): Expense[] {
-  const filtered = expenses.filter((e) => {
+  return expenses.filter((e) => {
     return e.tags.some((t) => tags.includes(t));
   });
-  return filtered;
 }

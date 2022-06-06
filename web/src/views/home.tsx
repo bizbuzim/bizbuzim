@@ -78,11 +78,11 @@ export const Home: React.FC = () => {
   }, [expenses]);
   const [stackedChart, setStackedChart] = useState(false);
   const total = useMemo(() => {
+    let results = expenses;
     if (tagsFilter) {
-      const filterdExpenses = applyFilterTags(expenses, tagsFilter);
-      return filterdExpenses.reduce((p, c) => _.toNumber(c.price) + p, 0);
+      results = applyFilterTags(expenses, tagsFilter);
     }
-    return expenses.reduce((p, c) => _.toNumber(c.price) + p, 0);
+    return results.reduce((p, c) => _.toNumber(c.price) + p, 0);
   }, [expenses, tagsFilter]);
   const days = useMemo(() => {
     if (!to) {
