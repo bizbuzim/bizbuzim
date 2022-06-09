@@ -79,7 +79,7 @@ export const Home: React.FC = () => {
   const [stackedChart, setStackedChart] = useState(false);
   const total = useMemo(() => {
     let results = expenses;
-    if (tagsFilter) {
+    if (tagsFilter.length) {
       results = applyFilterTags(expenses, tagsFilter);
     }
     return results.reduce((p, c) => _.toNumber(c.price) + p, 0);
