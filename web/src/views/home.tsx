@@ -13,6 +13,7 @@ import {
   FiltersContext,
   applyFilterTags,
   applyFilterPayments,
+  applySearchFilter,
 } from "../context/filters";
 
 const Container = styled.div`
@@ -68,6 +69,7 @@ const ChartsContainer = styled.div`
 export const Home: React.FC = () => {
   const { expenses, isLoading } = useContext(ExpensesContext);
   const {
+    search: searchFilter,
     tags: tagsFilter,
     payments: paymentsFilter,
     dates: { from, to },
@@ -90,8 +92,12 @@ export const Home: React.FC = () => {
     if (paymentsFilter) {
       results = applyFilterPayments(expenses, paymentsFilter);
     }
+
+    if (searchFilter) {
+      results = applySearchFilter(expenses, searchFilter);
+    }
     return results.reduce((p, c) => _.toNumber(c.price) + p, 0);
-  }, [expenses, tagsFilter, paymentsFilter]);
+  }, [expenses, tagsFilter, paymentsFilter, searchFilter]);
   const days = useMemo(() => {
     if (!to) {
       return 0;
