@@ -87,7 +87,7 @@ export const Home: React.FC = () => {
     if (tagsFilter.length) {
       results = applyFilterTags(expenses, tagsFilter);
     }
-    if (paymentsFilter) {
+    if (paymentsFilter.length) {
       results = applyFilterPayments(expenses, paymentsFilter);
     }
     return results.reduce((p, c) => _.toNumber(c.price) + p, 0);
