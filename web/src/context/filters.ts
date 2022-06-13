@@ -29,3 +29,10 @@ export function applyFilterTags(
     return e.tags.some((t) => tags.includes(t));
   });
 }
+
+export function applyFilterPayments(
+  expenses: Expense[],
+  payments: string[]
+): Expense[] {
+  return expenses.filter((e) => payments.includes(e.payment));
+}

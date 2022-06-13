@@ -5,8 +5,8 @@ import { Expense } from "../../views/expenses/types";
 
 const chance = new Chance();
 const tags = ["loan", "house", "pets", "kids", "personal", "car"];
-const payments = ["visa", "bank-transfer"];
-function generate(): Expense {
+const payments = ["visa", "bank-transfer", "cash", "cc-1", "cc-2", "sibus"];
+export function generate(): Expense {
   return {
     id: chance.guid({ version: 4 }),
     name: chance.name(),
