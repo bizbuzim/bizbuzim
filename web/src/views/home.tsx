@@ -92,8 +92,7 @@ export const Home: React.FC = () => {
     if (paymentsFilter) {
       results = applyFilterPayments(expenses, paymentsFilter);
     }
-
-    if (searchFilter) {
+    if (searchFilter !== "") {
       results = applySearchFilter(expenses, searchFilter);
     }
     return results.reduce((p, c) => _.toNumber(c.price) + p, 0);
