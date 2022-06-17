@@ -20,9 +20,10 @@ const MenuProps = {
 export const BZSelect: React.FC<{
   items: string[];
   title: string;
+  initial: string[];
   onItemSelected: (item: string[]) => void;
-}> = ({ items, title, onItemSelected }) => {
-  const [selected, setSelected] = useState<string[]>([]);
+}> = ({ items, title, onItemSelected, initial }) => {
+  const [selected, setSelected] = useState<string[]>(initial);
   return (
     <>
       <FormControl sx={{ width: 300 }}>
@@ -33,7 +34,6 @@ export const BZSelect: React.FC<{
           style={{
             minWidth: "8rem",
           }}
-          label={"oleg"}
           onChange={(event: SelectChangeEvent<string[]>) => {
             const { value } = event.target;
             const r = typeof value === "string" ? value.split(",") : value;
@@ -43,9 +43,9 @@ export const BZSelect: React.FC<{
           input={<OutlinedInput label={title} />}
           renderValue={(selected: string[]) => (
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-              {selected.map((value: string) => (
-                <Chip key={value} label={value} />
-              ))}
+              {selected.map((value: string) => {
+                return <Chip key={value} label={value} />;
+              })}
             </Box>
           )}
           MenuProps={MenuProps}

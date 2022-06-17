@@ -141,12 +141,15 @@ const Application = () => {
         <FiltersContainer>
           <Filters
             fromDate={dateFrom}
-            toDate={dateTo}
             fromDateChange={setDateFrom}
+            toDate={dateTo}
             toDateChange={setDateTo}
+            initialTags={tags}
             tagsSelected={setTags}
-            searchChange={setSearch}
+            initialPayments={payments}
             paymentsSelected={setPayments}
+            initialSearch={search}
+            searchChange={setSearch}
           />
           <Divider style={{ paddingTop: "20px" }} />
         </FiltersContainer>
