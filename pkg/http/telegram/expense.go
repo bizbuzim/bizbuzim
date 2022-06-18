@@ -82,6 +82,7 @@ func processNewExpenseMessage(ctx context.Context, lgr *logger.Logger, msg tgbot
 			Tags:        data.Categories,
 			Description: data.Description,
 			CreatedAt:   msg.Time(),
+			ExpensedAt:  msg.Time(),
 			CreatedBy:   user,
 			ExternalChannelID: sql.NullString{
 				String: fmt.Sprintf("%d", msg.Chat.ID),
