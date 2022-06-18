@@ -5,7 +5,7 @@ new-migration:
 .PHONY: run-migrations
 run-migrations: check-env
 	echo "Running migrations"
-	migrate -path=/app/db/migrations -database ${POSTGRESQL_URL} up
+	migrate -path=./db/migrations -database ${POSTGRESQL_URL} up
 	pg_dump -s --host=localhost -U postgres --port 5432 -d postgres --table=expenses --table=raw_expenses > db/schema.sql
 	
 
