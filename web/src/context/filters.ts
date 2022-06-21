@@ -36,3 +36,10 @@ export function applyFilterPayments(
 ): Expense[] {
   return expenses.filter((e) => payments.includes(e.payment));
 }
+
+export function applySearchFilter(
+  expenses: Expense[],
+  search: string
+): Expense[] {
+  return expenses.filter((e) => e.name.includes(search));
+}
