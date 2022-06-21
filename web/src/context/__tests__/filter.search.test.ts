@@ -7,54 +7,16 @@ import { generate } from "./filter.tag.test";
 
 const chance = new Chance();
 
-describe("filter expenses bt search", () => {
-  it("shuld return all expenses realted to search", () => {
+describe("filter expenses by search", () => {
+  it("should return all expenses matched to search", () => {
     const expenses: Expense[] = [];
-    for (let i = 0; i < chance.integer({ min: 10, max: 100 }); i++) {
+    for (let i = 0; i < chance.integer({ min: 100, max: 1000 }); i++) {
       expenses.push(generate());
     }
-    const res = applySearchFilter(expenses, "loan");
+    const res = applySearchFilter(expenses, expenses[0].name);
+    expect(res.length).toBeGreaterThanOrEqual(1);
     res.forEach((e) => {
-      expect(e.name).toContain("loan");
-    });
-  });
-});
-
-describe("filter expenses bt search", () => {
-  it("shuld return all expenses realted to search", () => {
-    const expenses: Expense[] = [];
-    for (let i = 0; i < chance.integer({ min: 10, max: 100 }); i++) {
-      expenses.push(generate());
-    }
-    const res = applySearchFilter(expenses, "Daisy Higgins");
-    res.forEach((e) => {
-      expect(e.name).toContain("Daisy Higgins");
-    });
-  });
-});
-
-describe("filter expenses bt search", () => {
-  it("shuld return all expenses realted to search", () => {
-    const expenses: Expense[] = [];
-    for (let i = 0; i < chance.integer({ min: 10, max: 100 }); i++) {
-      expenses.push(generate());
-    }
-    const res = applySearchFilter(expenses, "Daisy Higg");
-    res.forEach((e) => {
-      expect(e.name).toContain("Estella Bowen");
-    });
-  });
-});
-
-describe("filter expenses bt search", () => {
-  it("shuld return all expenses realted to search", () => {
-    const expenses: Expense[] = [];
-    for (let i = 0; i < chance.integer({ min: 10, max: 100 }); i++) {
-      expenses.push(generate());
-    }
-    const res = applySearchFilter(expenses, "Daisy Higgins");
-    res.forEach((e) => {
-      expect(e.name).toContain("Mamie Brown");
+      expect(e.name).toContain(expenses[0].name);
     });
   });
 });
