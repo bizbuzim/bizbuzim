@@ -2,8 +2,11 @@ name: docs
 
 on:
   push:
+    branches:
+      - main
     paths:
-      - "docs/*"
+      - docs/**
+      - .github/workflows/docs.yaml
 jobs:
   deploy-docs:
     runs-on: ubuntu-20.04
