@@ -1,13 +1,9 @@
-
-   
 name: docs
 
 on:
   push:
-    tags:
-      - '*'
     paths:
-    - 'docs/*'
+      - "docs/*"
 jobs:
   deploy-docs:
     runs-on: ubuntu-20.04
@@ -19,7 +15,7 @@ jobs:
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v2
         with:
-          hugo-version: '0.98.0'
+          hugo-version: "0.98.0"
           extended: true
       - name: Build
         run: hugo --minify -s docs
