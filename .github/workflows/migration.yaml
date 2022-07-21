@@ -1,0 +1,24 @@
+name: migration
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - db/**
+      - .github/workflows/migration.yaml
+jobs:
+  migration:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: docker/setup-buildx-action@v2
+      - uses: docker/build-push-action@v3
+        with:
+          push: false
+          tags: bizbuzim/migrate:latest
+          file: cmd/tools/migration/Dockerfile
+          load: true
+      - run: |
+          docker run bizbuzim/migrate migrate --help
+          docker run bizbuzim/migrate pg_dump --help
