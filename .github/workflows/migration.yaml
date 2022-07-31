@@ -20,4 +20,4 @@ jobs:
           file: cmd/tools/migration/Dockerfile
           load: true
       - run: |
-          docker run -e POSTGRES_HOST=${{ secrets.POSTGRES_HOST_PRODUCTION }} -e PGPASSWORD=${{ secrets.PGPASSWORD_PRODUCTION }} bizbuzim/migrate
+          docker run -e POSTGRES_HOST=${{ secrets.POSTGRES_HOST_PRODUCTION }} -e PGPASSWORD=${{ secrets.PGPASSWORD_PRODUCTION }} -e POSTGRESQL_URL=${{ secrets.POSTGRESQL_URL_PRODUCTION }} bizbuzim/migrate
