@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 14.1 (Debian 14.1-1.pgdg110+1)
--- Dumped by pg_dump version 14.1
+-- Dumped from database version 14.2
+-- Dumped by pg_dump version 14.4
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -21,21 +21,6 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: channel_configurations; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.channel_configurations (
-    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    name character varying NOT NULL,
-    source character varying NOT NULL,
-    external_id character varying NOT NULL,
-    configuration json DEFAULT '{}'::jsonb NOT NULL
-);
-
-
-ALTER TABLE public.channel_configurations OWNER TO postgres;
-
---
 -- Name: expenses; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -48,7 +33,8 @@ CREATE TABLE public.expenses (
     description character varying DEFAULT ''::character varying NOT NULL,
     created_at timestamp without time zone DEFAULT now() NOT NULL,
     created_by character varying NOT NULL,
-    external_channel_id character varying
+    external_channel_id character varying,
+    expensed_at timestamp without time zone NOT NULL
 );
 
 
@@ -70,12 +56,19 @@ CREATE TABLE public.raw_expenses (
 ALTER TABLE public.raw_expenses OWNER TO postgres;
 
 --
--- Name: channel_configurations PK_channel_configurations_id; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: sources; Type: TABLE; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.channel_configurations
-    ADD CONSTRAINT "PK_channel_configurations_id" PRIMARY KEY (id);
+CREATE TABLE public.sources (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    name character varying NOT NULL,
+    source character varying NOT NULL,
+    external_id character varying NOT NULL,
+    configuration json DEFAULT '{}'::jsonb NOT NULL
+);
 
+
+ALTER TABLE public.sources OWNER TO postgres;
 
 --
 -- Name: expenses PK_expenses_id; Type: CONSTRAINT; Schema: public; Owner: postgres
@@ -91,6 +84,21 @@ ALTER TABLE ONLY public.expenses
 
 ALTER TABLE ONLY public.raw_expenses
     ADD CONSTRAINT "PK_raw_expenses_id" PRIMARY KEY (id);
+
+
+--
+-- Name: sources PK_sources_id; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.sources
+    ADD CONSTRAINT "PK_sources_id" PRIMARY KEY (id);
+
+
+--
+-- Name: idx_source_external_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_source_external_id ON public.sources USING btree (external_id);
 
 
 --
