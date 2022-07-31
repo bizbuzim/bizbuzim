@@ -7,6 +7,7 @@ on:
     paths:
       - db/**
       - .github/workflows/migration.yaml
+      - cmd/tools/migration/**
 jobs:
   migration:
     runs-on: ubuntu-20.04
