@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -112,8 +111,7 @@ func main() {
 		}
 	}
 	out, err := run(context.Background(), lgr, time.Second*30, "xo", xo...)
-	dieOnError(err, "failed to run xo")
-	fmt.Println(string(out))
+	dieOnError(err, "failed to run xo"+" -- "+string(out))
 }
 
 func dieOnError(err error, msg string) {
