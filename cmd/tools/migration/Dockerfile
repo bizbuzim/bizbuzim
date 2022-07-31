@@ -2,7 +2,7 @@ FROM migrate/migrate as migrate
 
 FROM golang:1.18-alpine3.15 as build
 
-RUN apk update
+RUN apk update && apk add gcc g++ make
 
 WORKDIR /app
 
@@ -14,6 +14,8 @@ COPY . .
 
 RUN go build -o bizbuzim-migration cmd/tools/migration/main.go
 
+RUN go install github.com/xo/xo@latest
+
 FROM alpine:3.15
 
 WORKDIR /app
@@ -24,6 +26,7 @@ COPY --from=migrate /usr/bin/migrate /usr/bin/migrate
 COPY --from=build /app/bizbuzim-migration /usr/bin/bizbuzim-migration
 COPY --from=build /app/cmd/tools/migration/tables.yaml /app/tables.yaml
 COPY --from=build /app/db/migrations /app/db/migrations
+COPY --from=build /go/bin/xo /usr/local/bin/xo
 
 ENV MIGRATION_TABLES=/app/tables.yaml
 ENV MIGRATIONS=/app/db/migrations
