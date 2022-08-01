@@ -8,9 +8,9 @@ import (
 
 	"database/sql"
 
+	"github.com/bizbuzim/bizbuzim/pkg/fatal"
+	"github.com/bizbuzim/bizbuzim/pkg/http/telegram"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"github.com/olegsu/bizbuzim/pkg/fatal"
-	"github.com/olegsu/bizbuzim/pkg/http/telegram"
 	"github.com/olegsu/go-tools/pkg/logger"
 
 	_ "github.com/lib/pq"

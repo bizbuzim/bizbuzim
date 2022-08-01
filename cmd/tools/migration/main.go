@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/olegsu/bizbuzim/pkg/fatal"
+	"github.com/bizbuzim/bizbuzim/pkg/fatal"
 	"github.com/olegsu/go-tools/pkg/logger"
 	"gopkg.in/yaml.v3"
 )

@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/bizbuzim/bizbuzim/pkg/dal"
 	"github.com/brianvoe/gofakeit/v6"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/google/uuid"
-	"github.com/olegsu/bizbuzim/pkg/dal"
 	"github.com/olegsu/go-tools/pkg/logger"
 )
 

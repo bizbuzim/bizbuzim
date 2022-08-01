@@ -26,7 +26,7 @@ gen-code: check-env
 unit-test:
 	rm -rf .cover/ .test/
 	mkdir .cover/ .test/
-	go test -v -covermode=atomic -coverprofile=".cover/cover.out" github.com/olegsu/bizbuzim/.../.
+	go test -v -covermode=atomic -coverprofile=".cover/cover.out" github.com/bizbuzim/bizbuzim/.../.
 	go tool cover -html=.cover/cover.out -o=.cover/coverage.html
 
 	
