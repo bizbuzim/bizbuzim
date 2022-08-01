@@ -93,25 +93,26 @@ func main() {
 		err = os.WriteFile(schema, d, os.ModePerm)
 		dieOnError(err, schema)
 	}
-
-	lgr.Info("Starting to generate code")
-	xo := []string{
-		"schema", postgresURL,
-		"-o", "pkg/dal",
-		"--go-pkg", "dal",
-		"-j",
-	}
-	for _, object := range tables {
-		for k, v := range object {
-			if k == "name" {
-				xo = append(xo, []string{
-					"-i", v,
-				}...)
+	if os.Getenv("GEN_CODE") != "" {
+		lgr.Info("Starting to generate code")
+		xo := []string{
+			"schema", postgresURL,
+			"-o", "pkg/dal",
+			"--go-pkg", "dal",
+			"-j",
+		}
+		for _, object := range tables {
+			for k, v := range object {
+				if k == "name" {
+					xo = append(xo, []string{
+						"-i", v,
+					}...)
+				}
 			}
 		}
+		out, err := run(context.Background(), lgr, time.Second*30, "xo", xo...)
+		dieOnError(err, "failed to run xo"+" -- "+string(out))
 	}
-	out, err := run(context.Background(), lgr, time.Second*30, "xo", xo...)
-	dieOnError(err, "failed to run xo"+" -- "+string(out))
 }
 
 func dieOnError(err error, msg string) {
