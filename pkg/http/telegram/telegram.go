@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/bizbuzim/bizbuzim/pkg/dal"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"github.com/olegsu/bizbuzim/pkg/dal"
 	"github.com/olegsu/go-tools/pkg/logger"
 )
 

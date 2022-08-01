@@ -4,6 +4,6 @@ theme: "hugo-theme-learn"
 outputs:
   home: ["HTML", "JSON", "RSS"]
 params:
-  editURL: http://github.com/olegsu/bizbuzim/docs/
+  editURL: http://github.com/bizbuzim/bizbuzim/docs/
   disableNextPrev: true
   themeVariant: "green"
