@@ -1,6 +1,6 @@
-module github.com/olegsu/bizbuzim
+module github.com/bizbuzim/bizbuzim
 
-go 1.17
+go 1.18
 
 require (
 	github.com/brianvoe/gofakeit/v6 v6.11.0
