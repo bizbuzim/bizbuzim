@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { useContext, useState } from "react";
 import Drawer from "@mui/material/Drawer";
 import CloseIcon from "@mui/icons-material/Close";
+import Button from "@mui/material/Button";
 
 import { ExpensesContext } from "../../context/expenses";
 
@@ -38,8 +39,22 @@ const ExpenseHeader = styled.div`
   justify-content: space-between;
   align-items: center;
 `;
-const Item = styled.span`
+
+const ButtonsContainer = styled.div<{ edit: boolean }>`
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  padding: 10px 0px;
+`;
+const Item = styled.label`
   padding: 15px 15px 15px 5px;
+`;
+
+const Input = styled.input<{ disabled: boolean }>`
+  border: ${(props) => props.disabled && "none"};
+  outline: ${(props) => props.disabled && "none"};
+  background-color: white;
+  font-size: 15px;
 `;
 const headers = [
   { name: "No.", weight: 1 },
@@ -53,7 +68,7 @@ const Table: React.FC<{
 }> = ({ rows }) => {
   const [openSideDrawer, setOpenSideDrawer] = useState(false);
   const [selectedRow, setSelectedRow] = useState<Expense>();
-
+  const [editExpense, setEditExpense] = useState(false);
   const selectedRowHandle = (expense: Expense) => {
     setOpenSideDrawer(!openSideDrawer);
     setSelectedRow(expense);
@@ -104,6 +119,8 @@ const Table: React.FC<{
           open={openSideDrawer}
           setOpenSideDrawer={setOpenSideDrawer}
           expense={selectedRow}
+          editExpense={editExpense}
+          setEditExpense={setEditExpense}
         />
       </DrawerContainer>
     </>
@@ -157,10 +174,14 @@ function SideDrawer({
   open,
   expense,
   setOpenSideDrawer,
+  editExpense,
+  setEditExpense,
 }: {
   open: boolean;
   expense?: Expense;
   setOpenSideDrawer: (val: boolean) => void;
+  editExpense: boolean;
+  setEditExpense: (val: boolean) => void;
 }) {
   let content = <></>;
   if (expense) {
@@ -173,7 +194,33 @@ function SideDrawer({
             onClick={() => setOpenSideDrawer(!open)}
           />
         </ExpenseHeader>
-        <ExpenseDetails expense={expense} />
+        <ExpenseDetails expense={expense} editExpense={editExpense} />
+        {editExpense && (
+          <ButtonsContainer edit={editExpense}>
+            <Button variant="contained" color="success">
+              Save
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => setEditExpense(!editExpense)}
+            >
+              Cancel
+            </Button>
+          </ButtonsContainer>
+        )}
+        <ButtonsContainer edit={editExpense}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              setEditExpense(!editExpense);
+            }}
+          >
+            Edit Expense
+          </Button>
+          <Button variant="contained">Delete Expense</Button>
+        </ButtonsContainer>
       </>
     );
   }
@@ -194,14 +241,39 @@ function SideDrawer({
   );
 }
 
-function ExpenseDetails({ expense }: { expense: Expense }) {
+function ExpenseDetails({
+  expense,
+  editExpense,
+}: {
+  expense: Expense;
+  editExpense: boolean;
+}) {
   return (
     <>
-      <Item>Name: {expense.name}</Item>
-      <Item>Date: {expense.created_at}</Item>
-      <Item>Payment: {expense.payment}</Item>
-      <Item>Price: {expense.price}</Item>
-      <Item>Tags: {expense.tags}</Item>
+      <Item>
+        Name:
+        <Input
+          type="text"
+          value={expense.name}
+          disabled={!editExpense}
+          onChange={(e) => console.log(e.target.value)}
+        />
+      </Item>
+      <Item>
+        Date:
+        <Input type="text" value={expense.created_at} disabled={!editExpense} />
+      </Item>
+      <Item>
+        Payment:
+        <Input type="text" value={expense.payment} disabled={!editExpense} />
+      </Item>
+      <Item>
+        Price:
+        <Input type="text" value={expense.price} disabled={!editExpense} />
+      </Item>
+      <Item>
+        Tags: <Input type="text" value={expense.tags} disabled={!editExpense} />
+      </Item>
     </>
   );
 }
