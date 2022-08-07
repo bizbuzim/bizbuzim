@@ -72,6 +72,7 @@ export type Expenses = {
   created_at: Scalars['timestamp'];
   created_by: Scalars['String'];
   description: Scalars['String'];
+  expensed_at: Scalars['timestamp'];
   external_channel_id?: Maybe<Scalars['String']>;
   id: Scalars['uuid'];
   name: Scalars['String'];
@@ -124,6 +125,7 @@ export type Expenses_Bool_Exp = {
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
   created_by?: InputMaybe<String_Comparison_Exp>;
   description?: InputMaybe<String_Comparison_Exp>;
+  expensed_at?: InputMaybe<Timestamp_Comparison_Exp>;
   external_channel_id?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
@@ -148,6 +150,7 @@ export type Expenses_Insert_Input = {
   created_at?: InputMaybe<Scalars['timestamp']>;
   created_by?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
+  expensed_at?: InputMaybe<Scalars['timestamp']>;
   external_channel_id?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
   name?: InputMaybe<Scalars['String']>;
@@ -162,6 +165,7 @@ export type Expenses_Max_Fields = {
   created_at?: Maybe<Scalars['timestamp']>;
   created_by?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
+  expensed_at?: Maybe<Scalars['timestamp']>;
   external_channel_id?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
   name?: Maybe<Scalars['String']>;
@@ -175,6 +179,7 @@ export type Expenses_Min_Fields = {
   created_at?: Maybe<Scalars['timestamp']>;
   created_by?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
+  expensed_at?: Maybe<Scalars['timestamp']>;
   external_channel_id?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
   name?: Maybe<Scalars['String']>;
@@ -203,6 +208,7 @@ export type Expenses_Order_By = {
   created_at?: InputMaybe<Order_By>;
   created_by?: InputMaybe<Order_By>;
   description?: InputMaybe<Order_By>;
+  expensed_at?: InputMaybe<Order_By>;
   external_channel_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
@@ -225,6 +231,8 @@ export enum Expenses_Select_Column {
   /** column name */
   Description = 'description',
   /** column name */
+  ExpensedAt = 'expensed_at',
+  /** column name */
   ExternalChannelId = 'external_channel_id',
   /** column name */
   Id = 'id',
@@ -243,6 +251,7 @@ export type Expenses_Set_Input = {
   created_at?: InputMaybe<Scalars['timestamp']>;
   created_by?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
+  expensed_at?: InputMaybe<Scalars['timestamp']>;
   external_channel_id?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
   name?: InputMaybe<Scalars['String']>;
@@ -283,6 +292,8 @@ export enum Expenses_Update_Column {
   CreatedBy = 'created_by',
   /** column name */
   Description = 'description',
+  /** column name */
+  ExpensedAt = 'expensed_at',
   /** column name */
   ExternalChannelId = 'external_channel_id',
   /** column name */
@@ -774,7 +785,7 @@ export type GetAllExpensesQueryVariables = Exact<{
 }>;
 
 
-export type GetAllExpensesQuery = { __typename?: 'query_root', expenses: Array<{ __typename?: 'expenses', id: any, name: string, payment: string, tags: any, price: any, created_at: any }> };
+export type GetAllExpensesQuery = { __typename?: 'query_root', expenses: Array<{ __typename?: 'expenses', id: any, name: string, payment: string, tags: any, price: any, expensed_at: any }> };
 
 export type FetchSourcesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -785,15 +796,15 @@ export type FetchSourcesQuery = { __typename?: 'query_root', sources: Array<{ __
 export const GetAllExpensesDocument = gql`
     query GetAllExpenses($from: timestamp!, $to: timestamp!) {
   expenses(
-    order_by: {created_at: desc}
-    where: {_and: {created_at: {_gte: $from, _lt: $to}}}
+    order_by: {expensed_at: desc}
+    where: {_and: {expensed_at: {_gte: $from, _lt: $to}}}
   ) {
     id
     name
     payment
     tags
     price
-    created_at
+    expensed_at
   }
 }
     `;
@@ -857,6 +868,17 @@ export default {
           },
           {
             "name": "description",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "expensed_at",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -1139,6 +1161,14 @@ export default {
             "args": []
           },
           {
+            "name": "expensed_at",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "external_channel_id",
             "type": {
               "kind": "SCALAR",
@@ -1203,6 +1233,14 @@ export default {
           },
           {
             "name": "description",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "expensed_at",
             "type": {
               "kind": "SCALAR",
               "name": "Any"

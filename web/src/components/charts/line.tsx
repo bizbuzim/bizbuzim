@@ -80,7 +80,7 @@ function buildDataset(expenses: Expense[], from: DateTime, to: DateTime) {
     labels[date] = index;
   });
   const lastDayWithExpenses = _.chain(expenses)
-    .map((e) => formatISODate(e.created_at))
+    .map((e) => formatISODate(e.expensed_at))
     .uniq()
     .reverse()
     .last()
@@ -94,7 +94,7 @@ function buildDataset(expenses: Expense[], from: DateTime, to: DateTime) {
   };
   const daily = new Array(_.size(labels)).fill(0);
   expenses.forEach((e) => {
-    const label = formatISODate(e.created_at);
+    const label = formatISODate(e.expensed_at);
     daily[labels[label]] =
       _.toNumber(e.price) + _.toNumber(daily[labels[label]]);
   });

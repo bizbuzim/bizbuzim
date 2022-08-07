@@ -90,6 +90,7 @@ type expenses {
   created_at: timestamp!
   created_by: String!
   description: String!
+  expensed_at: timestamp!
   external_channel_id: String
   id: uuid!
   name: String!
@@ -138,6 +139,7 @@ input expenses_bool_exp {
   created_at: timestamp_comparison_exp
   created_by: String_comparison_exp
   description: String_comparison_exp
+  expensed_at: timestamp_comparison_exp
   external_channel_id: String_comparison_exp
   id: uuid_comparison_exp
   name: String_comparison_exp
@@ -168,6 +170,7 @@ input expenses_insert_input {
   created_at: timestamp
   created_by: String
   description: String
+  expensed_at: timestamp
   external_channel_id: String
   id: uuid
   name: String
@@ -181,6 +184,7 @@ type expenses_max_fields {
   created_at: timestamp
   created_by: String
   description: String
+  expensed_at: timestamp
   external_channel_id: String
   id: uuid
   name: String
@@ -193,6 +197,7 @@ type expenses_min_fields {
   created_at: timestamp
   created_by: String
   description: String
+  expensed_at: timestamp
   external_channel_id: String
   id: uuid
   name: String
@@ -225,6 +230,7 @@ input expenses_order_by {
   created_at: order_by
   created_by: order_by
   description: order_by
+  expensed_at: order_by
   external_channel_id: order_by
   id: order_by
   name: order_by
@@ -252,6 +258,9 @@ enum expenses_select_column {
   description
 
   """column name"""
+  expensed_at
+
+  """column name"""
   external_channel_id
 
   """column name"""
@@ -277,6 +286,7 @@ input expenses_set_input {
   created_at: timestamp
   created_by: String
   description: String
+  expensed_at: timestamp
   external_channel_id: String
   id: uuid
   name: String
@@ -317,6 +327,9 @@ enum expenses_update_column {
 
   """column name"""
   description
+
+  """column name"""
+  expensed_at
 
   """column name"""
   external_channel_id

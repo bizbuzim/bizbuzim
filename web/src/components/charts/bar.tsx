@@ -97,7 +97,7 @@ function buildDataset(filtered: Expense[], from: DateTime, to: DateTime) {
     backgroundColor: "rgb(99, 109, 255)",
   };
   filtered.forEach((e) => {
-    const label = formatISODate(e.created_at);
+    const label = formatISODate(e.expensed_at);
     dataset.data[labels[label]] =
       _.toNumber(e.price) + _.toNumber(dataset.data[labels[label]]);
   });
@@ -147,7 +147,7 @@ function buildStackedDataset(
   _.chain(filtered)
     .forEach((e) => {
       const tag = _.get(e, "tags", [defaultLabel])[0];
-      const i = labels[DateTime.fromISO(e.created_at).toFormat("dd/MM/yyyy")];
+      const i = labels[DateTime.fromISO(e.expensed_at).toFormat("dd/MM/yyyy")];
       datasets[tag].data[i] = e.price;
     })
     .value();
