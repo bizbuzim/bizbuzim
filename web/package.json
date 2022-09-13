@@ -38,7 +38,7 @@
     "eject": "react-scripts eject",
     "lint": "tsc && eslint \"*/**/*.{js,ts,tsx}\" --max-warnings=0 --cache --cache-strategy metadata",
     "codegen": "graphql-codegen --config codegen.yml",
-    "update-schema": "gq https://home.bizbuzim.info/v1/graphql -H 'x-hasura-admin-secret: ${HASURA_ADMIN_SECRET}' --introspect > schema.graphql"
+    "update-schema": "gq https://gql.bizbuzim.info/v1/graphql -H \"x-hasura-admin-secret: $HASURA_ADMIN_SECRET\" --introspect > schema.graphql"
   },
   "browserslist": {
     "production": [

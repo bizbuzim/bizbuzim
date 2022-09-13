@@ -139,7 +139,7 @@ function Row({
   return (
     <StyledRow key={expense.id} onClick={() => selectedRowHandle(expense)}>
       <StyledTD style={{ flex: 1 }}>{index + 1}</StyledTD>
-      <DateTD date={expense.created_at} />
+      <DateTD date={expense.expensed_at} />
       <StyledTD style={{ flex: 5 }}>{expense.name}</StyledTD>
       <CurrencyTD price={expense.price} />
       <StyledLabelTD style={{ flex: 2, overflowX: "hidden" }}>

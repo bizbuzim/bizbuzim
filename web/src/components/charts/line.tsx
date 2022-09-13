@@ -79,49 +79,55 @@ function buildDataset(expenses: Expense[], from: DateTime, to: DateTime) {
   _.forEach(buildDates(from, to), (date, index) => {
     labels[date] = index;
   });
-  const lastDayWithExpenses = _.chain(expenses)
-    .map((e) => formatISODate(e.created_at))
+  const now = DateTime.local();
+  const dates = _.chain(expenses)
+    .map((e) => DateTime.fromISO(e.expensed_at))
     .uniq()
     .reverse()
-    .last()
     .value();
-  const lastIndex = labels[lastDayWithExpenses];
+  const first = _.head(dates);
+  const today = _.last(_.filter(dates, (e) => e < now));
+  const todayIndex = labels[today?.toFormat("dd/MM/yyyy") || ""];
+  const last = _.last(dates);
   const dataset = {
-    data: new Array(lastIndex).fill(0),
-    label: `${from.toFormat("dd/MM")} - ${to.toFormat("dd/MM")}`,
+    data: new Array(_.size(labels)).fill(undefined),
+    label: `${formatDate(first)} - ${formatDate(today)}`,
     borderColor: "rgb(99, 130, 255)",
     backgroundColor: "rgba(99, 104, 255, 0.5)",
   };
-  const daily = new Array(_.size(labels)).fill(0);
-  expenses.forEach((e) => {
-    const label = formatISODate(e.created_at);
-    daily[labels[label]] =
-      _.toNumber(e.price) + _.toNumber(daily[labels[label]]);
-  });
-  daily.forEach((d, i) => {
-    if (i >= lastIndex) {
-      return;
-    }
-    dataset.data[i] = d + _.get(dataset, `data.${i - 1}`, 0);
-  });
-
   const forecast = {
-    data: new Array(_.size(labels) + lastIndex).fill(undefined),
-    label: "Forecast",
+    data: new Array(_.size(labels)).fill(undefined),
+    label: `forcast: ${formatDate(today)} - ${formatDate(last)}`,
     borderColor: "rgb(255, 99, 99)",
     backgroundColor: "rgba(255, 99, 99, 0.5)",
   };
-  const last = _.last(dataset.data);
-  forecast.data = _.map(forecast.data, (k, i) => {
-    if (i + 1 < lastIndex) {
-      return undefined;
-    }
-    return last;
+  const daily = new Array(_.size(labels)).fill(0);
+  expenses.forEach((e) => {
+    const label = formatISODate(e.expensed_at);
+    daily[labels[label]] =
+      _.toNumber(e.price) + _.toNumber(daily[labels[label]]);
   });
+  let sum = 0;
+  daily.forEach((d, i) => {
+    if (i > todayIndex) {
+      forecast.data[i] = sum + d;
+    } else {
+      dataset.data[i] = sum + d;
+    }
+    sum += d;
+  });
+
   return {
     labels: _.keys(labels),
     datasets: [dataset, forecast],
   };
+}
+
+function formatDate(d: DateTime | undefined): string {
+  if (!d) {
+    return "";
+  }
+  return d.toFormat("dd/MM");
 }
 
 export default ExpensesForecastLineChart;

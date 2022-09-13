@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/olegsu/bizbuzim/pkg/dal"
-	"github.com/olegsu/bizbuzim/pkg/tests"
+	"github.com/bizbuzim/bizbuzim/pkg/dal"
+	"github.com/bizbuzim/bizbuzim/pkg/tests"
 	"github.com/olegsu/go-tools/pkg/logger"
 	"github.com/stretchr/testify/assert"
 )

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/olegsu/bizbuzim/pkg/fatal"
+	"github.com/bizbuzim/bizbuzim/pkg/fatal"
 )
 
 func MustParseTime(layout string, value string) time.Time {
